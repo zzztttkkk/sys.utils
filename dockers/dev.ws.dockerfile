@@ -2,7 +2,7 @@ FROM alpine:latest as dev_ws_base
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories && \
     apk update && \
-    apk add su-exec tzdata libpq postgresql postgresql-url_encode python3 py3-pip \
+    apk add su-exec tzdata libpq postgresql postgresql-contrib postgresql-url_encode python3 py3-pip \
     rm -rf /var/cache/apk/*
 
 RUN mkdir /usr/scripts/
