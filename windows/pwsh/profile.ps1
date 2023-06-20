@@ -234,6 +234,13 @@ function mergefrom() {
 	git merge origin/$target 
 }
 
+function gsetting {
+	git config user.name "zzztttkkk"
+	git config user.email "ztkisalreadytaken@gmail.com"
+	git config http.proxy $global:proxy
+	git config https.proxy $global:proxy
+}
+
 function wslip() {
 	wsl hostname -I
 }
