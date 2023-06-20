@@ -25,6 +25,12 @@ function resetproxy() {
 	$env:https_proxy = ""
 }
 
+if (get-command gum -errorAction SilentlyContinue) {
+}else{
+	go install github.com/charmbracelet/gum@latest
+}
+
+
 $global:__sshcMap = @{};
 $global:dockerExe = "docker"
 
@@ -67,19 +73,19 @@ function sshdown([String] $name, [String] $remote, [String] $local) {
 	}
 }
 
-function pcli {
+function pgcli {
 	param (
 		[String] $name
 	)
 
-	Invoke-Expression "$global:dockerExe exec -it --user postgres postgresdb psql $name" 
+	Invoke-Expression "$global:dockerExe exec -it --user postgres ws psql -h /tmp/pgmain $name" 
 }
 
 function rcli {
 	Invoke-Expression "$global:dockerExe exec -it redisdb redis-cli"
 }
 
-function mcli {
+function mgcli {
 	Invoke-Expression "$global:dockerExe exec -it mongodb mongosh -u root -p 123456"
 }
 
@@ -88,13 +94,12 @@ function gs() {
 	git submodule foreach --recursive "git status"
 }
 
-function local:timeDiffFromIntnet() {
-	$difftxt = (&w32tm /stripchart /computer:ntp.aliyun.com /dataonly /samples:1)[-1].trim("s").split(", ")[-1];
-	return [math]::abs([float]$difftxt)
-}
-
-
 function cz() {
+	function local:timeDiffFromIntnet() {
+		$difftxt = (&w32tm /stripchart /computer:ntp.aliyun.com /dataonly /samples:1)[-1].trim("s").split(", ")[-1];
+		return [math]::abs([float]$difftxt)
+	}
+
 	$tdiff = timeDiffFromIntnet
 	if ($tdiff -ge 3) {
 		Write-Output "System Time Diff From Intnet"
