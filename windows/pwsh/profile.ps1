@@ -78,7 +78,7 @@ function pgcli {
 		[String] $name
 	)
 
-	Invoke-Expression "$global:dockerExe exec -it --user postgres ws psql -h /tmp/pgmain $name" 
+	Invoke-Expression "$global:dockerExe exec -it --user postgres postgresdb psql $name" 
 }
 
 function rcli {
@@ -86,7 +86,11 @@ function rcli {
 }
 
 function mgcli {
-	Invoke-Expression "$global:dockerExe exec -it mongodb mongosh -u root -p 123456"
+	param (
+		[String] $name
+	)
+
+	Invoke-Expression "$global:dockerExe exec -it mongodb mongosh -u root -p 123456 $name"
 }
 
 function gs() {
