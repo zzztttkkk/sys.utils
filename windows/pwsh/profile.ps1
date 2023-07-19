@@ -78,10 +78,12 @@ function pgcli {
 		[String] $name
 	)
 
+	Invoke-Expression "$global:dockerExe start postgresdb"
 	Invoke-Expression "$global:dockerExe exec -it --user postgres postgresdb psql $name" 
 }
 
 function rcli {
+	Invoke-Expression "$global:dockerExe start redisdb"
 	Invoke-Expression "$global:dockerExe exec -it redisdb redis-cli"
 }
 
@@ -90,6 +92,7 @@ function mgcli {
 		[String] $name
 	)
 
+	Invoke-Expression "$global:dockerExe start mongodb"
 	Invoke-Expression "$global:dockerExe exec -it mongodb mongosh -u root -p 123456 $name"
 }
 
