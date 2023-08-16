@@ -26,7 +26,8 @@ function resetproxy() {
 }
 
 if (get-command gum -errorAction SilentlyContinue) {
-}else{
+}
+else {
 	go install github.com/charmbracelet/gum@latest
 }
 
@@ -323,6 +324,15 @@ function hash() {
 
 function netlistening() {
 	netstat -ano -p TCP | grep LISTENING
+}
+
+function fslink() {
+	param (
+		[string]$link,
+		[string]$target
+	)
+
+	New-Item -Path $link -ItemType SymbolicLink -Value $target
 }
 
 $local = "$PSScriptRoot/local.ps1"
