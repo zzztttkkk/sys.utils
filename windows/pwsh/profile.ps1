@@ -335,6 +335,13 @@ function fslink() {
 	New-Item -Path $link -ItemType SymbolicLink -Value $target
 }
 
+function rmfs([String] $path){
+	if($path -eq "") {
+		return;
+	}
+	rm -Path $path -r --force
+}
+
 $local = "$PSScriptRoot/local.ps1"
 if (Test-Path -Path $local) {
 	. $local
