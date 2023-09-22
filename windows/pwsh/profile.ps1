@@ -34,6 +34,7 @@ else {
 
 $global:__sshcMap = @{};
 $global:dockerExe = "docker"
+$global:dockerComposeExe = "docker-compose"
 
 # ssh connect
 function sshc {
@@ -74,6 +75,16 @@ function sshdown([String] $name, [String] $remote, [String] $local) {
 	}
 }
 
+# docker group
+
+function containerd(){
+	Invoke-Expression "$global:dockerExe $args"
+}
+
+function compose() {
+	Invoke-Expression "$global:dockerComposeExe $args"
+}
+
 function pgcli {
 	param (
 		[String] $name
@@ -96,6 +107,8 @@ function mgcli {
 	Invoke-Expression "$global:dockerExe start mongodb"
 	Invoke-Expression "$global:dockerExe exec -it mongodb mongosh -u root -p 123456 $name"
 }
+
+# git group
 
 function gs() {
 	git status
