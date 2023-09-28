@@ -122,7 +122,7 @@ function cz() {
 	}
 
 	$tdiff = timeDiffFromIntnet
-	if ($tdiff -ge 3) {
+	if ($tdiff -ge 60) {
 		Write-Output "System Time Diff From Intnet"
 		return;
 	}
