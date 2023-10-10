@@ -355,6 +355,16 @@ function rmfs([String] $path){
 	rm -Path $path -r --force
 }
 
+$global:godot_projects_path = ""
+$global:godot_exe = ""
+
+function godot(){
+	$projects = ls -Directory D:\godot\ | foreach-object {$_.FullName}
+	$project = &gum choose $projects
+	echo $project
+}
+
+
 $local = "$PSScriptRoot/local.ps1"
 if (Test-Path -Path $local) {
 	. $local
