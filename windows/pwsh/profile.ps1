@@ -365,16 +365,15 @@ function rmfs([String] $path){
 	if($path -eq "") {
 		return;
 	}
-	rm -Path $path -r --force
+	Remove-Item -Path $path -r --force
 }
 
 $global:godot_projects_path = ""
-$global:godot_exe = ""
 
-function godot(){
-	$projects = ls -Directory D:\godot\ | foreach-object {$_.FullName}
+function godotproject(){
+	$projects = Get-ChildItem -Directory $global:godot_projects_path | foreach-object {$_.Name}
 	$project = &gum choose $projects
-	echo $project
+	Set-Location "$global:godot_projects_path/$project"
 }
 
 
