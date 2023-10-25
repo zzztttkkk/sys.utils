@@ -17,6 +17,12 @@ def pwsh():
 
     shutil.copyfile(src_path, dist_path)
 
+def ahk():
+    dist = "C:/Users/ztk/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/.ahk"
+    if os.path.exists(dist):
+        return
+    shutil.copyfile(os.path.join(os.path.dirname(os.path.dirname(__file__)), "files/.ahk"), dist)
+
 
 def docker():
     dp = os.path.join(pathlib.Path.home(), "Documents/DevContainers")
@@ -32,3 +38,4 @@ docker()
 
 if sys.platform == "win32":
     pwsh()
+    ahk()
