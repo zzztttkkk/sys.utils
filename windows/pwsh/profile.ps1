@@ -110,12 +110,30 @@ function mgcli {
 
 # git group
 
+function gsetting {
+	git config user.name "zzztttkkk"
+	git config user.email "ztkisalreadytaken@gmail.com"
+	git config http.proxy $global:proxy
+	git config https.proxy $global:proxy
+}
+
+function ___autogs(){
+	$url = git config --get remote.origin.url
+	if($url -match ".*github.com/zzztttkkk.*"){
+		gsetting
+	}
+}
+
 function gs() {
+	___autogs
+
 	git status
 	git submodule foreach --recursive "git status"
 }
 
 function cz() {
+	___autogs
+
 	function local:timeDiffFromIntnet() {
 		$difftxt = (&w32tm /stripchart /computer:ntp.aliyun.com /dataonly /samples:1)[-1].trim("s").split(", ")[-1];
 		return [math]::abs([float]$difftxt)
@@ -260,12 +278,7 @@ function mergefrom() {
 	git merge origin/$target 
 }
 
-function gsetting {
-	git config user.name "zzztttkkk"
-	git config user.email "ztkisalreadytaken@gmail.com"
-	git config http.proxy $global:proxy
-	git config https.proxy $global:proxy
-}
+
 
 function wslip() {
 	wsl hostname -I
@@ -357,7 +370,7 @@ function rmfs([String] $path){
 
 $global:godot_projects_path = ""
 
-function godotproject(){
+function gdp(){
 	$projects = Get-ChildItem -Directory $global:godot_projects_path | foreach-object {$_.Name}
 	$project = &gum choose $projects
 	Set-Location "$global:godot_projects_path/$project"
