@@ -370,7 +370,7 @@ function rmfs([String] $path){
 
 $global:godot_projects_path = ""
 
-function gdp(){
+function gdps(){
 	$projects = Get-ChildItem -Directory $global:godot_projects_path | foreach-object {$_.Name}
 	$project = &gum choose $projects
 	Set-Location "$global:godot_projects_path/$project"
