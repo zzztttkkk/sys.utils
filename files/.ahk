@@ -1,1 +1,1 @@
-#t:: Run("pwsh")
+#t:: Run("pwsh -WorkingDirectory ~")
