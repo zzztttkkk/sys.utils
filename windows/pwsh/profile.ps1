@@ -33,8 +33,6 @@ else {
 
 
 $global:__sshcMap = @{};
-$global:dockerExe = "docker"
-$global:dockerComposeExe = "docker-compose"
 
 # ssh connect
 function sshc {
@@ -76,27 +74,18 @@ function sshdown([String] $name, [String] $remote, [String] $local) {
 }
 
 # docker group
-
-function containerd(){
-	Invoke-Expression "$global:dockerExe $args"
-}
-
-function compose() {
-	Invoke-Expression "$global:dockerComposeExe $args"
-}
-
 function pgcli {
 	param (
 		[String] $name
 	)
 
-	Invoke-Expression "$global:dockerExe start postgresdb"
-	Invoke-Expression "$global:dockerExe exec -it --user postgres postgresdb psql $name" 
+	Invoke-Expression "docker start postgresdb"
+	Invoke-Expression "docker exec -it --user postgres postgresdb psql $name" 
 }
 
 function rcli {
-	Invoke-Expression "$global:dockerExe start redisdb"
-	Invoke-Expression "$global:dockerExe exec -it redisdb redis-cli"
+	Invoke-Expression "docker start redisdb"
+	Invoke-Expression "docker exec -it redisdb redis-cli"
 }
 
 function mgcli {
@@ -104,8 +93,8 @@ function mgcli {
 		[String] $name
 	)
 
-	Invoke-Expression "$global:dockerExe start mongodb"
-	Invoke-Expression "$global:dockerExe exec -it mongodb mongosh -u root -p 123456 $name"
+	Invoke-Expression "docker start mongodb"
+	Invoke-Expression "docker exec -it mongodb mongosh -u root -p 123456 $name"
 }
 
 # git group
