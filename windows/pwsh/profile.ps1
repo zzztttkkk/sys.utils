@@ -1,3 +1,5 @@
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+
 & $HOME/.pyenv/Scripts/activate.ps1
 
 Set-Alias which Get-Command
