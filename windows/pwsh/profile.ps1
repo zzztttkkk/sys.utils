@@ -1,4 +1,4 @@
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
 
 & $HOME/.pyenv/Scripts/activate.ps1
 
@@ -108,9 +108,9 @@ function gsetting {
 	git config https.proxy $global:proxy
 }
 
-function ___autogs(){
+function ___autogs() {
 	$url = git config --get remote.origin.url
-	if($url -match ".*github.com/zzztttkkk.*"){
+	if ($url -match ".*github.com/zzztttkkk.*") {
 		gsetting
 	}
 }
@@ -270,16 +270,15 @@ function mergefrom() {
 }
 
 
-
 function wslip() {
 	wsl hostname -I
 }
 
 function nc() {
 	param(
-    	[string] $_host,
+		[string] $_host,
 		[int] $_port
-  	)
+	)
 
 	Test-NetConnection -ComputerName $_host -Port $_port
 }
@@ -357,8 +356,8 @@ function fslink() {
 	New-Item -Path $link -ItemType SymbolicLink -Value $target
 }
 
-function rmfs([String] $path){
-	if($path -eq "") {
+function rmfs([String] $path) {
+	if ($path -eq "") {
 		return;
 	}
 	Remove-Item -Path $path -r --force
@@ -366,8 +365,8 @@ function rmfs([String] $path){
 
 $global:godot_projects_path = ""
 
-function gdps(){
-	$projects = Get-ChildItem -Directory $global:godot_projects_path | foreach-object {$_.Name}
+function gdps() {
+	$projects = Get-ChildItem -Directory $global:godot_projects_path | foreach-object { $_.Name }
 	$project = &gum choose $projects
 	Set-Location "$global:godot_projects_path/$project"
 }
