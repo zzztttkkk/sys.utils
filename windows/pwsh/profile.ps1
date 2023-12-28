@@ -343,7 +343,15 @@ function hash() {
 	
 }
 
-function netlistening() {
+function hex(){
+	param (
+		[int] $num = 0
+	)
+	$val = "{0:X}" -f $num
+	echo $val
+}
+
+function listeningports() {
 	netstat -ano -p TCP | grep LISTENING
 }
 
