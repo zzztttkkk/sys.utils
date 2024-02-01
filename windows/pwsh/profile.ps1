@@ -1,6 +1,7 @@
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
 
 & $HOME/.pyenv/Scripts/activate.ps1
+Invoke-Expression (&scoop-search --hook)
 
 Set-Alias which Get-Command
 Set-Alias grep Select-String
