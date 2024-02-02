@@ -105,7 +105,7 @@ function private:__gsetting {
 function private:___autogs() {
 	$url = git config --get remote.origin.url
 	if ($url -match ".*github.com/zzztttkkk.*") {
-		__gsetting
+		$private:__gsetting
 	}
 }
 
@@ -133,8 +133,8 @@ function cz() {
 	$itype = read-host -Prompt "Choice Commit Type:
 1: Feat   2: Style    3: Bugfix
 4: Chore  5: Refactor 6: Doc
-7: Test   8: Try   	  9: Deploy
-0: Init	  a: Perf	  b: IgnoreThis
+7: Test   8: Try      9: Deploy
+0: Init	  a: Perf     b: IgnoreThis
 "
 	switch ($itype) {
 		0 {
