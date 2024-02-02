@@ -379,7 +379,6 @@ function gdps() {
 	Set-Location "$global:godot_projects_path/$project"
 }
 
-
 $local = "$PSScriptRoot/local.ps1"
 if (Test-Path -Path $local) {
 	. $local
