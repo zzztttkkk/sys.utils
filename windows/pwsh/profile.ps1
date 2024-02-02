@@ -206,6 +206,10 @@ function grh() {
 	git reset --hard
 }
 
+function gl(){
+	git log -1
+}
+
 function pulla() {    
 	$branch = &git rev-parse --abbrev-ref HEAD
 	git pull origin $branch --allow-unrelated-histories
@@ -215,14 +219,6 @@ function pulla() {
 function pushc() {
 	$branch = &git rev-parse --abbrev-ref HEAD
 	git push origin $branch
-}
-
-function gcheckout() {
-	param (
-		[string]$target
-	)
-	git checkout -B $target
-	git submodule foreach --recursive "git checkout -B $target"
 }
 
 function mergefrom() {
@@ -348,14 +344,6 @@ function rmfs([String] $path) {
 		return;
 	}
 	Remove-Item -Path $path -r --force
-}
-
-$global:godot_projects_path = ""
-
-function gdps() {
-	$projects = Get-ChildItem -Directory $global:godot_projects_path | foreach-object { $_.Name }
-	$project = &gum choose $projects
-	Set-Location "$global:godot_projects_path/$project"
 }
 
 $local = "$PSScriptRoot/local.ps1"
