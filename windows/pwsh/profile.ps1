@@ -178,9 +178,12 @@ function cz() {
 		}
 	}
 
-	$scope = $(gum input --prompt="Scope")
-	$summary = $(gum input --prompt="Summary")
-	$content = $(gum write --prompt="Commit message content")
+	echo "Scope"
+	$scope = $(gum input)
+	echo "Summary"
+	$summary = $(gum input)
+	echo "Content"
+	$content = $(gum write)
 
 	git add *
 	if (!$scope) {
