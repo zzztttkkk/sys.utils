@@ -1,18 +1,11 @@
-$env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
-
 & $HOME/.pyenv/Scripts/activate.ps1
-Invoke-Expression (&scoop-search-multisource --hook)
+Invoke-Expression (&"scoop-search-multisource" --hook)
 
 Set-Alias which Get-Command
 Set-Alias grep Select-String
 
 function google ($search) {
 	$url = "https://www.google.com/search?q=" + $search
-	Start-Process $url
-}
-
-function bing ($search) {
-	$url = "https://cn.bing.com/search?ensearch=1&q=" + $search
 	Start-Process $url
 }
 
@@ -102,110 +95,92 @@ function mgcli {
 
 # git group
 
-function gsetting {
+function private:__gsetting {
 	git config user.name "zzztttkkk"
 	git config user.email "ztkisalreadytaken@gmail.com"
 	git config http.proxy $global:proxy
 	git config https.proxy $global:proxy
 }
 
-function ___autogs() {
+function private:___autogs() {
 	$url = git config --get remote.origin.url
 	if ($url -match ".*github.com/zzztttkkk.*") {
-		gsetting
+		__gsetting
 	}
 }
 
 function gs() {
-	___autogs
+	$private:___autogs
 
 	git status
 	git submodule foreach --recursive "git status"
 }
 
 function cz() {
-	___autogs
+	$private:___autogs
 
-	function local:timeDiffFromIntnet() {
+	function timeDiffFromIntnet() {
 		$difftxt = (&w32tm /stripchart /computer:ntp.aliyun.com /dataonly /samples:1)[-1].trim("s").split(", ")[-1];
 		return [math]::abs([float]$difftxt)
 	}
 
 	$tdiff = timeDiffFromIntnet
 	if ($tdiff -ge 60) {
-		Write-Output "System Time Diff From Intnet"
+		Write-Output "System Time Diff With Intnet"
 		return;
 	}
 
 	$itype = read-host -Prompt "Choice Commit Type:
-1: feat   2: fix    3: chore
-4: refactor 5: docs 6: style
-7: test   8: pref   9: init
-0: tag
+1: Feat   2: Style    3: Bugfix
+4: Chore  5: Refactor 6: Doc
+7: Test   8: Try   	  9: Deploy
+0: Init	  a: Perf	  b: IgnoreThis
 "
 	switch ($itype) {
 		0 {
-			$commit_type = "🔖tag"
+			$commit_type = "🎉 Init"
 		}
 		1 {
-			$commit_type = "✨feat"
+			$commit_type = "✨ Feat"
 		}
 		2 {
-			$commit_type = "🐛fix"
+			$commit_type = "🎨 Style"
 		}
 		3 {
-			$commit_type = "🧱chore"
+			$commit_type = "🐛 Bugfix"
 		}
 		4 {
-			$commit_type = "🔨refactor"
+			$commit_type = "🧹 Chore"
 		}
 		5 {
-			$commit_type = "📚docs"
+			$commit_type = "🛠 Refactor"
 		}
 		6 {
-			$commit_type = "🌅style"
+			$commit_type = "📚 Doc"
 		}
 		7 {
-			$commit_type = "🧪test"
+			$commit_type = "🧪 Test"
 		}
 		8 {
-			$commit_type = "🚀pref"
+			$commit_type = "🤞 Try"
 		}
 		9 {
-			$commit_type = "🎉init"
+			$commit_type = "🚀 Deploy"
+		}
+		'a' {
+			$commit_type = "⚡️ Perf"
+		}
+		'b' {
+			$commit_type = "🤡 IgnoreThis"
 		}
 		default {
-			$commit_type = "🧱chore"
+			$commit_type = "🧹 Chore"
 		}
 	}
 
-	$scope = read-host -Prompt "Scope"
-	$summary = read-host -Prompt "Summary"
-	$scope = $scope.trim()
-	$summary = $summary.trim()
-
-	$_cl = 0;
-	$content = "";
-	$_el = 0;
-	while (1) {
-		if ($_cl -eq 0) {
-			$line = read-host -Prompt "Content"
-		}
-		else {
-			$line = read-host
-		}
-
-		if ($line.trim() -eq "") {
-			$_el = $_el + 1;
-			if ($_el -eq 2) {
-				break;
-			}
-		}
-		$content = $content + $line + "\r\n"
-		$_cl = $_cl + 1
-	}
-
-	$content = $content.trim().trim("\r\n");
+	$scope = $(gum input --prompt="Scope")
+	$summary = $(gum input --prompt="Summary")
+	$content = $(gum write --prompt="Commit message content")
 
 	git add *
 	if (!$scope) {
