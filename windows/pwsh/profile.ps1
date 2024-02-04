@@ -95,7 +95,7 @@ function mgcli {
 
 # git group
 
-function private:__gsetting {
+function __gsetting {
 	git config user.name "zzztttkkk"
 	git config user.email "ztkisalreadytaken@gmail.com"
 	git config http.proxy $global:proxy
@@ -105,7 +105,7 @@ function private:__gsetting {
 function private:___autogs() {
 	$url = git config --get remote.origin.url
 	if ($url -match ".*github.com/zzztttkkk.*") {
-		$private:__gsetting
+		__gsetting
 	}
 }
 
