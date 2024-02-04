@@ -178,12 +178,33 @@ function cz() {
 		}
 	}
 
-	echo "Scope"
-	$scope = $(gum input)
-	echo "Summary"
-	$summary = $(gum input)
-	echo "Content"
-	$content = $(gum write)
+	$scope = read-host -Prompt "Scope"
+	$summary = read-host -Prompt "Summary"
+	$scope = $scope.trim()
+	$summary = $summary.trim()
+
+	$_cl = 0;
+	$content = "";
+	$_el = 0;
+	while (1) {
+		if ($_cl -eq 0) {
+			$line = read-host -Prompt "Content"
+		}
+		else {
+			$line = read-host
+		}
+
+		if ($line.trim() -eq "") {
+			$_el = $_el + 1;
+			if ($_el -eq 2) {
+				break;
+			}
+		}
+		$content = $content + $line + "\r\n"
+		$_cl = $_cl + 1
+	}
+
+	$content = $content.trim().trim("\r\n");
 
 	git add *
 	if (!$scope) {
