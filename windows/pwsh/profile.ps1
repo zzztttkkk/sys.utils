@@ -3,6 +3,7 @@ Invoke-Expression (&"scoop-search-multisource" --hook)
 
 Set-Alias which Get-Command
 Set-Alias grep Select-String
+$ENV:ETC_PATH = "C:/Windows/System32/drivers/etc"
 
 function google ($search) {
 	$url = "https://www.google.com/search?q=" + $search
