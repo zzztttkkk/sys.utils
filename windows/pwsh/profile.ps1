@@ -280,12 +280,18 @@ function nc() {
 	Test-NetConnection -ComputerName $_host -Port $_port
 }
 
-function fexp() {
+# explorer.exe
+function fexp {
 	param (
 		[string]$target = "."
 	)
+	$path = resolve-path $target
+	explorer.exe $path
+}
 
-	explorer $target
+function exprestart(){
+	taskkill /f /im explorer.exe
+	start explorer.exe
 }
 
 function loop() {
