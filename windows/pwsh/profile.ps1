@@ -29,26 +29,57 @@ else {
 }
 
 
-$global:__sshcMap = @{};
+$global:__sshcAuthMap = @{};
+$global:__sshcPortMap = @{};
+
+function private:get_with_default() {
+	$v = ($args[0])[$args[1]];
+	if (!$v) {
+		return $args[2];
+	}
+	return $v;
+}
 
 # ssh connect
 function sshc {
 	param (
 		[String] $name
 	)
-	ssh $global:__sshcMap[$name];
+
+	$port = $global:__sshcPortMap[$name]
+	if ( !$port ) {
+		$port = 22 
+	}
+
+	$auth = $global:__sshcAuthMap[$name]
+	if (!$auth) {
+		echo "empty auth for $name"
+		return
+	}
+
+	ssh $auth -p $port
 }
 
 # ssh upload
 function sshup([String] $name, [String] $local, [String] $remote) {
-	$temp = $global:__sshcMap[$name]
+	$temp = $global:__sshcAuthMap[$name]
+	if (!$temp) {
+		echo "empty auth for $name"
+		return
+	}
+
+	$port = $global:__sshcPortMap[$name]
+	if ( !$port ) {
+		$port = 22 
+	}
+
 	$print_remote = $false;
 	if ([string]::IsNullOrEmpty($remote)) {
 		$remote = "/tmp/" + [guid]::NewGuid().ToString();
 		$print_remote = $true;
 	}
 	$temp = $temp + ":" + $remote
-	scp $local $temp
+	scp -P $port $local $temp
 	if ($print_remote) {
 		Write-Output "Remote: $remote"
 	}
@@ -56,7 +87,17 @@ function sshup([String] $name, [String] $local, [String] $remote) {
 
 # ssh download
 function sshdown([String] $name, [String] $remote, [String] $local) {
-	$temp = $global:__sshcMap[$name]
+	$temp = $global:__sshcAuthMap[$name]
+	if (!$temp) {
+		echo "empty auth for $name"
+		return
+	}
+
+	$port = $global:__sshcPortMap[$name]
+	if ( !$port ) {
+		$port = 22 
+	}
+
 	$print_local = $false;
 	if ([string]::IsNullOrEmpty($local)) {
 		$local = $env:USERPROFILE + "/Downloads/" + [guid]::NewGuid().ToString();
@@ -64,7 +105,7 @@ function sshdown([String] $name, [String] $remote, [String] $local) {
 	}
 
 	$temp = $temp + ":" + $remote
-	scp $temp $local
+	scp -P $port $temp $local
 	if ($print_local) {
 		Write-Output "Local: $local"
 	}
