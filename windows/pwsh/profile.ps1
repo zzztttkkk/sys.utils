@@ -148,6 +148,11 @@ function private:___autogs() {
 	$url = git config --get remote.origin.url
 	if ($url -match ".*github.com/zzztttkkk.*") {
 		__gsetting
+		return
+	}
+	if ($url -match ".*zzztttkkk.uk*") {
+		__gsetting
+		return
 	}
 }
 
