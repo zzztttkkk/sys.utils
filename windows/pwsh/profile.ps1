@@ -47,7 +47,7 @@ function sshc {
 	)
 
 	$port = $global:__sshcPortMap[$name]
-	if ( !$port ) {
+	if (!$port) {
 		$port = 22 
 	}
 
@@ -118,7 +118,20 @@ function pgcli {
 	)
 
 	Invoke-Expression "docker start postgresdb"
-	Invoke-Expression "docker exec -it --user postgres postgresdb psql $name" 
+	Invoke-Expression "docker exec -it --user postgres postgresdb psql $name"
+}
+
+function mycli {
+	param (
+		[String] $name
+	)
+
+	if ($name -eq "") {
+		$name = "mysql"
+	}
+
+	Invoke-Expression "docker start mysqldb"
+	Invoke-Expression "docker exec -it mysqldb mysql -u root --password=123456 -D $name"
 }
 
 function rcli {
