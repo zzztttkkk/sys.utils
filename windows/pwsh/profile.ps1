@@ -57,7 +57,7 @@ function sshc {
 		return
 	}
 
-	ssh $auth -p $port
+	ssh $auth -p $port $args
 }
 
 # ssh upload

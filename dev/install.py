@@ -27,18 +27,6 @@ def ahk():
     )
 
 
-def docker():
-    dp = os.path.join(pathlib.Path.home(), "Documents/DevContainers")
-    if not os.path.exists(dp):
-        os.makedirs(dp)
-
-    src_root_path = os.path.dirname(os.path.dirname(__file__))
-    dist_root_path = dp
-    shutil.copytree(f"{src_root_path}/dockers", dist_root_path, dirs_exist_ok=True)
-
-
-docker()
-
 if sys.platform == "win32":
     pwsh()
     ahk()
