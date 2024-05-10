@@ -4,6 +4,7 @@ Invoke-Expression (&"scoop-search-multisource" --hook)
 Set-Alias which Get-Command
 Set-Alias grep Select-String
 Set-Alias vbox vboxmanage
+Set-Alias ll ls
 
 $ENV:ETC_PATH = "C:/Windows/System32/drivers/etc"
 
