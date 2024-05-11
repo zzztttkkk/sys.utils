@@ -133,8 +133,8 @@ function mycli {
 		$name = "mysql"
 	}
 
-	Invoke-Expression "docker start mysqldb"
-	Invoke-Expression "docker exec -it mysqldb mysql -u root --password=123456 -D $name"
+	Invoke-Expression "docker start mysqld"
+	Invoke-Expression "docker exec -it mysqld mysql -u root --password=123456 --auto-rehash -D $name"
 }
 
 function rcli {
