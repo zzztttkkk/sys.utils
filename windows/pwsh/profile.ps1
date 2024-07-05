@@ -436,6 +436,14 @@ function rmfs([String] $path) {
 	Remove-Item -Path $path -r --force
 }
 
+function netreset() {
+	ipconfig /flushdns
+	ipconfig /registerdns
+	ipconfig /release
+	ipconfig /renew
+	netsh winsock reset
+}
+
 $local = "$PSScriptRoot/local.ps1"
 if (Test-Path -Path $local) {
 	. $local
