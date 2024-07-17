@@ -152,42 +152,47 @@ function mgcli {
 }
 
 # git group
-
-function __gsetting {
+function mygitsettings {
 	git config user.name "zzztttkkk"
 	git config user.email "ztkisalreadytaken@gmail.com"
 	git config http.proxy $global:proxy
 	git config https.proxy $global:proxy
+	echo "REST GIT SETTINGS"
 }
 
-function private:___autogs() {
-	$url = git config --get remote.origin.url
-	if ($url -match ".*github.com/zzztttkkk.*") {
-		__gsetting
+function automygitsettings() {
+	$name = git config --get user.name
+	if ($name -eq "zzztttkkk") {
 		return
 	}
-	if ($url -match ".*zzztttkkk.uk*") {
-		__gsetting
+
+	$url = git config --get remote.origin.url
+	if ($url -match ".*github.com/zzztttkkk/.*") {
+		mygitsettings
+		return
+	}
+	if ($url -match ".*git.zzztttkkk.uk/.*") {
+		mygitsettings
 		return
 	}
 }
 
 function gs() {
-	$private:___autogs
+	automygitsettings
 
 	git status
 	git submodule foreach --recursive "git status"
 }
 
 function cz() {
-	$private:___autogs
+	automygitsettings
 
-	function timeDiffFromIntnet() {
+	function timediff() {
 		$difftxt = (&w32tm /stripchart /computer:ntp.aliyun.com /dataonly /samples:1)[-1].trim("s").split(", ")[-1];
 		return [math]::abs([float]$difftxt)
 	}
 
-	$tdiff = timeDiffFromIntnet
+	$tdiff = timediff
 	if ($tdiff -ge 60) {
 		Write-Output "System Time Diff With Intnet"
 		return;
@@ -234,7 +239,7 @@ function cz() {
 			$commit_type = "⚡️ Perf"
 		}
 		'b' {
-			$commit_type = "🤡 IgnoreThis"
+			$commit_type = "😏 IgnoreThis"
 		}
 		default {
 			$commit_type = "🧹 Chore"
