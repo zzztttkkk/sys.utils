@@ -36,14 +36,6 @@ else {
 $global:__sshcAuthMap = @{};
 $global:__sshcPortMap = @{};
 
-function private:get_with_default() {
-	$v = ($args[0])[$args[1]];
-	if (!$v) {
-		return $args[2];
-	}
-	return $v;
-}
-
 # ssh connect
 function sshc {
 	param (
@@ -355,6 +347,10 @@ function fexp {
 	)
 	$path = resolve-path $target
 	explorer.exe $path
+}
+
+function fexpetc() {
+	fexp $ENV:ETC_PATH
 }
 
 function exprestart(){
