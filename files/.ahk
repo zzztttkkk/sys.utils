@@ -1,7 +1,10 @@
 #Include _jxon.ahk
 
-_pwdstxt := FileRead(EnvGet("HOMEPATH") . "/.config/.ahkpwds.json")
-pwds := Jxon_Load(&_pwdstxt)
+try {
+    _pwdstxt := FileRead(EnvGet("HOMEPATH") . "/.config/.ahkpwds.json")
+    pwds := Jxon_Load(&_pwdstxt)
+} catch {
+}
 
 clear_clipboard() {
     A_Clipboard := ""
