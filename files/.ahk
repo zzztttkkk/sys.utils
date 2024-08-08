@@ -26,12 +26,11 @@ pwd_to_clipboard(name) {
 
 #!p::
 {
-    for name in ["Warframe"]
-        try
-        {
-            pwd_to_clipboard(name)
-            break
-        }
-        catch
-        { }
+    title := WinGetTitle("A")
+    try
+    {
+        pwd_to_clipboard(title)
+    }
+    catch
+    { }
 }
