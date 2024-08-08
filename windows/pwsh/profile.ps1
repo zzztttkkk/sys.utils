@@ -11,7 +11,17 @@ $ENV:ETC_PATH = "C:/Windows/System32/drivers/etc"
 
 function google ($search) {
 	$url = "https://www.google.com/search?q=" + $search
-	Start-Process $url
+	Start-Process "msedge.exe" -ArgumentList $url
+}
+
+function trce ($txt) {
+	$url = "https://translate.google.com/?sl=zh-CN&tl=en&text=" + $txt
+	Start-Process "msedge.exe" -ArgumentList $url
+}
+
+function trec ($txt) {
+	$url = "https://translate.google.com/?tl=zh-CN&sl=en&text=" + $txt
+	Start-Process "msedge.exe" -ArgumentList $url
 }
 
 $global:proxy = "";
@@ -307,25 +317,24 @@ function mergefrom() {
 	param (
 		[string]$target
 	)
-
-	Write-Output "----------------merge from $target----------------"
-
 	if ($target -eq "") {
 		exit
 	}
+
+	Write-Output "----------------merge from $target----------------"
 
 	pulla
 
 	$branch = &git rev-parse --abbrev-ref HEAD
 
 	if ($target -eq $branch) {
+		Write-Output "----------------same branch----------------"
 		exit
 	}
 
 	git fetch origin $target
 	git merge origin/$target 
 }
-
 
 function wslip() {
 	wsl hostname -I
@@ -420,22 +429,6 @@ function hex(){
 
 function listeningports() {
 	netstat -ano -p TCP | grep LISTENING
-}
-
-function fslink() {
-	param (
-		[string]$link,
-		[string]$target
-	)
-
-	New-Item -Path $link -ItemType SymbolicLink -Value $target
-}
-
-function rmfs([String] $path) {
-	if ($path -eq "") {
-		return;
-	}
-	Remove-Item -Path $path -r --force
 }
 
 function netreset() {
