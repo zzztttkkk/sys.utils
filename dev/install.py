@@ -19,12 +19,14 @@ def pwsh():
 
 
 def ahk():
-    dist = f"{os.path.expanduser('~')}/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/.ahk"
-    if os.path.exists(dist):
-        os.remove(dist)
-    shutil.copyfile(
-        os.path.join(os.path.dirname(os.path.dirname(__file__)), "files/.ahk"), dist
-    )
+    for name in [".ahk", "_jxon.ahk"]:
+        dist = f"{os.path.expanduser('~')}/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/{name}"
+        if os.path.exists(dist):
+            os.remove(dist)
+        shutil.copyfile(
+            os.path.join(os.path.dirname(os.path.dirname(__file__)), f"files/{name}"),
+            dist,
+        )
 
 
 if sys.platform == "win32":
