@@ -1,8 +1,8 @@
 #Include _jxon.ahk
 
 try {
-    _pwdstxt := FileRead(EnvGet("HOMEPATH") . "/.config/.ahkpwds.json")
-    pwds := Jxon_Load(&_pwdstxt)
+    _datatxt := FileRead(EnvGet("HOMEPATH") . "/.config/.ahk.json")
+    data := Jxon_Load(&_datatxt)
 } catch {
 }
 
@@ -12,6 +12,7 @@ clear_clipboard() {
 
 pwd_to_clipboard(name) {
     pid := WinGetPID(name)
+    pwds := data["passwords"]
     A_Clipboard := pwds[name]
     SetTimer(clear_clipboard, -3000)
 }
