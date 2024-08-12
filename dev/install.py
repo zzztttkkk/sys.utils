@@ -19,7 +19,7 @@ def pwsh():
 
 
 def ahk():
-    for name in [".ahk", "_jxon.ahk"]:
+    for name in [".ahk", "_jxon.ahk", "Notify.ahk"]:
         dist = f"{os.path.expanduser('~')}/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/{name}"
         if os.path.exists(dist):
             os.remove(dist)

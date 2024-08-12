@@ -1,4 +1,5 @@
 #Include _jxon.ahk
+#Include Notify.ahk
 
 try {
     ___txt__ := FileRead(EnvGet("HOMEPATH") . "/.config/.ahk.json")
@@ -15,8 +16,8 @@ pwd_to_clipboard(name) {
     pwds := CFG["passwords"]
     A_Clipboard := pwds[name]
     SetTimer(clear_clipboard, -3000)
+    Notify.Show('Info', 'Password is on clipboard now, ' . name, , , , 'DUR=2')
 }
-
 
 #t::
 {
