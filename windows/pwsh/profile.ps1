@@ -14,12 +14,12 @@ function google ($search) {
 	Start-Process "msedge.exe" -ArgumentList $url
 }
 
-function trce ($txt) {
+function transce ($txt) {
 	$url = "https://translate.google.com/?sl=zh-CN&tl=en&text=" + $txt
 	Start-Process "msedge.exe" -ArgumentList $url
 }
 
-function trec ($txt) {
+function transec ($txt) {
 	$url = "https://translate.google.com/?tl=zh-CN&sl=en&text=" + $txt
 	Start-Process "msedge.exe" -ArgumentList $url
 }
