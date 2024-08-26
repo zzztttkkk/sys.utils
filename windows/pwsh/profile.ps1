@@ -439,6 +439,12 @@ function netreset() {
 	netsh winsock reset
 }
 
+$global:__vscode_workspace_file_dir = ""
+
+function codews() {
+	code $global:__vscode_workspace_file_dir
+}
+
 $local = "$PSScriptRoot/local.ps1"
 if (Test-Path -Path $local) {
 	. $local
