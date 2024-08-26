@@ -1,0 +1,177 @@
+{
+    "apps": [
+        {
+            "Source": "main",
+            "Name": "7zip",
+            "Version": "24.08",
+            "Info": "",
+            "Updated": "2024-08-15T14:14:26.3104752+08:00"
+        },
+        {
+            "Source": "main",
+            "Name": "cmake",
+            "Version": "3.30.2",
+            "Info": "",
+            "Updated": "2024-08-16T17:56:39.1635731+08:00"
+        },
+        {
+            "Source": "main",
+            "Name": "dark",
+            "Version": "3.14",
+            "Info": "",
+            "Updated": "2024-06-19T16:37:44.7548161+08:00"
+        },
+        {
+            "Source": "extras",
+            "Name": "dismplusplus",
+            "Version": "10.1.1002.1B",
+            "Info": "",
+            "Updated": "2024-06-19T16:37:50.1214384+08:00"
+        },
+        {
+            "Source": "lemon",
+            "Name": "drawio",
+            "Version": "24.7.5",
+            "Info": "",
+            "Updated": "2024-08-08T13:41:57.0592001+08:00"
+        },
+        {
+            "Source": "main",
+            "Name": "dust",
+            "Version": "1.1.1",
+            "Info": "",
+            "Updated": "2024-08-06T17:26:59.6544772+08:00"
+        },
+        {
+            "Source": "main",
+            "Name": "fastfetch",
+            "Version": "2.22.0",
+            "Info": "",
+            "Updated": "2024-08-26T17:11:42.7402064+08:00"
+        },
+        {
+            "Source": "extras",
+            "Name": "Flow-launcher",
+            "Version": "1.19.0",
+            "Info": "",
+            "Updated": "2024-08-22T10:49:44.3201889+08:00"
+        },
+        {
+            "Source": "main",
+            "Name": "fnm",
+            "Version": "1.37.1",
+            "Info": "",
+            "Updated": "2024-07-25T09:44:39.2559995+08:00"
+        },
+        {
+            "Source": "main",
+            "Name": "go",
+            "Version": "1.23.0",
+            "Info": "",
+            "Updated": "2024-08-15T14:15:34.8943699+08:00"
+        },
+        {
+            "Source": "extras",
+            "Name": "godot-mono",
+            "Version": "4.3",
+            "Info": "",
+            "Updated": "2024-08-22T10:48:55.9155621+08:00"
+        },
+        {
+            "Source": "extras",
+            "Name": "hibit-uninstaller",
+            "Version": "3.2.30",
+            "Info": "",
+            "Updated": "2024-07-09T09:38:15.9231154+08:00"
+        },
+        {
+            "Source": "main",
+            "Name": "mingw",
+            "Version": "14.1.0-rt_v12-rev0",
+            "Info": "",
+            "Updated": "2024-08-26T17:12:28.4809423+08:00"
+        },
+        {
+            "Source": "main",
+            "Name": "nodejs",
+            "Version": "22.7.0",
+            "Info": "",
+            "Updated": "2024-08-23T11:47:33.2397458+08:00"
+        },
+        {
+            "Source": "main",
+            "Name": "pnpm",
+            "Version": "9.8.0",
+            "Info": "",
+            "Updated": "2024-08-23T11:48:07.6196165+08:00"
+        },
+        {
+            "Source": "main",
+            "Name": "python",
+            "Version": "3.12.5",
+            "Info": "",
+            "Updated": "2024-08-08T13:53:55.5875298+08:00"
+        },
+        {
+            "Source": "https://raw.githubusercontent.com/plicit/scoop-search-multisource/master/scoop-search-multisource.json",
+            "Name": "scoop-search-multisource",
+            "Version": "0.1.20240202",
+            "Info": "",
+            "Updated": "2024-06-19T16:40:57.5374805+08:00"
+        },
+        {
+            "Source": "extras",
+            "Name": "sqlitebrowser",
+            "Version": "3.13.0",
+            "Info": "",
+            "Updated": "2024-08-06T17:27:17.8786404+08:00"
+        },
+        {
+            "Source": "extras",
+            "Name": "sumatrapdf",
+            "Version": "3.5.2",
+            "Info": "",
+            "Updated": "2024-06-19T16:41:03.9996528+08:00"
+        },
+        {
+            "Source": "extras",
+            "Name": "telegram",
+            "Version": "5.4.1",
+            "Info": "",
+            "Updated": "2024-08-22T10:49:01.4967042+08:00"
+        },
+        {
+            "Source": "extras",
+            "Name": "tiled",
+            "Version": "1.11.0",
+            "Info": "",
+            "Updated": "2024-07-04T15:58:38.7230485+08:00"
+        }
+    ],
+    "buckets": [
+        {
+            "Name": "main",
+            "Source": "https://github.com/ScoopInstaller/Main",
+            "Updated": "2024-08-26T16:29:51+08:00",
+            "Manifests": 1339
+        },
+        {
+            "Name": "extras",
+            "Source": "https://github.com/ScoopInstaller/Extras",
+            "Updated": "2024-08-26T16:32:43+08:00",
+            "Manifests": 2060
+        },
+        {
+            "Name": "versions",
+            "Source": "https://github.com/ScoopInstaller/Versions",
+            "Updated": "2024-08-26T16:37:17+08:00",
+            "Manifests": 469
+        },
+        {
+            "Name": "lemon",
+            "Source": "https://github.com/hoilc/scoop-lemon",
+            "Updated": "2024-08-26T14:24:45+08:00",
+            "Manifests": 1212
+        }
+    ]
+}
