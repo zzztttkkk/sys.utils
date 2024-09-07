@@ -1,6 +1,5 @@
 & $HOME/.pyenv/Scripts/activate.ps1
 fnm env --use-on-cd | Out-String | Invoke-Expression
-Invoke-Expression (&"scoop-search-multisource" --hook)
 
 Set-Alias which Get-Command
 Set-Alias grep Select-String
