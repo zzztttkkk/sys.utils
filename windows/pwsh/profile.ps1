@@ -441,7 +441,6 @@ function netreset() {
 	netsh winsock reset
 }
 
-
 function __vscodechoose() {
 	param (
 		[String] $search,
@@ -478,56 +477,11 @@ function vsc() {
 	__vscodechoose $search $global:__code_projects_dir
 }
 
-
-
-function vbox() {
-	param (
-		[String] $cmd = ""
-	)
-
-	if ( [string]::IsNullOrEmpty($cmd) ) {
-		$cmd = gum choose list run stop raw
-	}
-
-	if ( [string]::IsNullOrEmpty($cmd) ) {
-		return
-	}
-
-	$exe = "C:/Program Files/Oracle/VirtualBox/VBoxManage.exe"
-	$vms = (&$exe list vms) | ForEach-Object { $_ -split " " | Select-Object -First 1 } | ForEach-Object { $_.Trim('"') }
-	
-	switch ($cmd) {
-		list {
-			echo $vms
-			return
-		}
-		run {
-			$name = gum choose $vms
-			if ( [string]::IsNullOrEmpty($name) ) {
-				return
-			}
-			&$exe startvm $name --type=headless
-			return 
-		}
-		stop {
-			$name = gum choose $vms
-			if ( [string]::IsNullOrEmpty($name) ) {
-				return
-			}
-			&$exe controlvm $name poweroff
-		}
-		show {
-			$name = gum choose $vms
-			if ( [string]::IsNullOrEmpty($name) ) {
-				return
-			}
-			&$exe startvm $name --type=gui
-			return
-		}
-		raw {
-			&$exe $args
-			return
-		}
+# https://stackoverflow.com/a/48500013/6683474
+function time { 
+	$Command = "$args";
+	Measure-Command { 
+		Invoke-Expression $Command 2>&1 | out-default
 	}
 }
 
