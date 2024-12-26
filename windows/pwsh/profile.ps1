@@ -477,11 +477,27 @@ function vsc() {
 	__vscodechoose $search $global:__code_projects_dir
 }
 
-# https://stackoverflow.com/a/48500013/6683474
-function time { 
-	$Command = "$args";
-	Measure-Command { 
-		Invoke-Expression $Command 2>&1 | out-default
+
+function fkill(){
+	param (
+		[String] $val = "",
+		[String] $prop = "ProcessName",
+		[String] $op = "eq"
+	)
+	if ($val -eq "" ) {
+		return
+	}
+	$operators = @('-eq', '-ne', '-gt', '-lt', '-ge', '-le', '-like', '-notlike', '-match', '-notmatch', '-in', '-notin', '-and', '-or', '-not', '-is', '-isnot', '-ceq', '-cne', '-cgt', '-clt', '-cge', '-cle', '-clike', '-cnotlike', '-cmatch', '-cnotmatch')
+	if ($operators -notcontains $op) {
+		throw "bad operator: $op"
+	}
+	$ids = Invoke-Expression "ps | where -Property $prop -Value $val -$op | select -ExpandProperty Id"
+	foreach ( $tmpid in $ids ) {
+		try{
+			stop-process -id $tmpid
+		}catch{
+			Write-Warning "Failed to terminate process: $tmpid"
+		}
 	}
 }
 
