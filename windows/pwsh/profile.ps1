@@ -487,11 +487,12 @@ function fkill(){
 	if ($val -eq "" ) {
 		return
 	}
+	$op = "-${op}"
 	$operators = @('-eq', '-ne', '-gt', '-lt', '-ge', '-le', '-like', '-notlike', '-match', '-notmatch', '-in', '-notin', '-and', '-or', '-not', '-is', '-isnot', '-ceq', '-cne', '-cgt', '-clt', '-cge', '-cle', '-clike', '-cnotlike', '-cmatch', '-cnotmatch')
 	if ($operators -notcontains $op) {
 		throw "bad operator: $op"
 	}
-	$ids = Invoke-Expression "ps | where -Property $prop -Value $val -$op | select -ExpandProperty Id"
+	$ids = Invoke-Expression "ps | where -Property $prop -Value $val $op | select -ExpandProperty Id"
 	foreach ( $tmpid in $ids ) {
 		try{
 			stop-process -id $tmpid
