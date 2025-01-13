@@ -338,8 +338,8 @@ function mergefrom() {
 	git merge origin/$target 
 }
 
-# last git commit hash
-function gch() {
+# git last commit hash
+function glch() {
 	param (
 		[bool] $long
 	)
