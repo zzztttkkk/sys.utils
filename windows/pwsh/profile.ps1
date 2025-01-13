@@ -338,6 +338,18 @@ function mergefrom() {
 	git merge origin/$target 
 }
 
+# last git commit hash
+function gch() {
+	param (
+		[bool] $long
+	)
+	if ( $long ) {
+		git rev-parse HEAD
+	} else {
+		git rev-parse --short HEAD
+	}
+}
+
 function wslip() {
 	wsl hostname -I
 }
