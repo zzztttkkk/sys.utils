@@ -304,10 +304,6 @@ function gl(){
 	git log -1
 }
 
-function gch(){
-	git log --format="%H" -1
-}
-
 function pulla() {    
 	$branch = &git rev-parse --abbrev-ref HEAD
 	git pull origin $branch --allow-unrelated-histories
@@ -317,6 +313,7 @@ function pulla() {
 function pushc() {
 	$branch = &git rev-parse --abbrev-ref HEAD
 	git push origin $branch
+	glch
 }
 
 function mergefrom() {
