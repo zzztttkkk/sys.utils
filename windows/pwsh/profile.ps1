@@ -248,9 +248,13 @@ function cz() {
 	}
 
 	$scope = read-host -Prompt "Scope"
-	$summary = read-host -Prompt "Summary"
+	$summary = ""
+	do {
+		$summary = read-host -Prompt "Summary"
+		$summary = $summary.trim()
+	} while( !$summary )
+
 	$scope = $scope.trim()
-	$summary = $summary.trim()
 
 	$_cl = 0;
 	$content = "";
