@@ -491,7 +491,6 @@ function vsc() {
 	__vscodechoose $search $global:__code_projects_dir
 }
 
-
 function fkill(){
 	param (
 		[String] $val = "",
@@ -516,11 +515,39 @@ function fkill(){
 	}
 }
 
+function cacheclean(){
+	# node
+	echo ">>>>>>>>>>>> npm <<<<<<<<<<<<<<<"
+	npm cache clean --force
+	echo ">>>>>>>>>>>> pnpm <<<<<<<<<<<<<<<"
+	pnpm cache delete
+	try {
+		echo ">>>>>>>>>>>> nodegyp <<<<<<<<<<<<<<<"
+		rm -r -fo ~/AppData/Local/node-gyp
+	}catch{
+		""
+	}
+
+	# go
+	echo ">>>>>>>>>>>> go <<<<<<<<<<<<<<<"
+	go clean -cache
+	try {
+		echo ">>>>>>>>>>>> gopls <<<<<<<<<<<<<<<"
+		rm -r -fo ~/AppData/Local/gopls
+	}catch{
+		""
+	}
+
+	# rust
+	echo ">>>>>>>>>>>> rust <<<<<<<<<<<<<<<"
+	cargo cache -a
+}
+
+
 $local = "$PSScriptRoot/local.ps1"
 if (Test-Path -Path $local) {
 	. $local
 }
-
 
 if ( ! $global:__code_projects_dir ) {
 	$global:__code_projects_dir = "d:/codes"
