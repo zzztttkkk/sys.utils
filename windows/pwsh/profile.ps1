@@ -521,6 +521,7 @@ function cacheclean(){
 	npm cache clean --force
 	echo ">>>>>>>>>>>> pnpm <<<<<<<<<<<<<<<"
 	pnpm cache delete
+	pnpm store prune
 	try {
 		echo ">>>>>>>>>>>> nodegyp <<<<<<<<<<<<<<<"
 		rm -r -fo ~/AppData/Local/node-gyp
