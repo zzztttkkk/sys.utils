@@ -479,6 +479,7 @@ function __vscodechoose() {
 	}
 
 	code $root/$name
+	exit
 }
 
 $global:__code_projects_dir = ""
@@ -518,4 +519,9 @@ function fkill(){
 $local = "$PSScriptRoot/local.ps1"
 if (Test-Path -Path $local) {
 	. $local
+}
+
+
+if ( ! $global:__code_projects_dir ) {
+	$global:__code_projects_dir = "d:/codes"
 }
