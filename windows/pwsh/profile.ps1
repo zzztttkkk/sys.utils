@@ -34,13 +34,6 @@ function resetproxy() {
 	$env:https_proxy = ""
 }
 
-if (get-command gum -errorAction SilentlyContinue) {
-}
-else {
-	go install github.com/charmbracelet/gum@latest
-}
-
-
 $global:__sshcAuthMap = @{};
 $global:__sshcPortMap = @{};
 
@@ -349,6 +342,42 @@ function glch() {
 	} else {
 		git rev-parse --short HEAD
 	}
+}
+
+function mktag(){
+	param (
+		[string] $tag
+	)
+
+	if ( ! (Test-Path "./.git") ) {
+		Write-Output "Not a git repository"
+		return
+	}
+
+	if ($tag -eq "") {
+		$tag = (gum input --placeholder="tag name").Trim()
+	}
+	if ($tag -eq "") {
+		echo "empty tag name"
+		return
+	}
+
+	function worktreeclean() {
+		$status = git status
+		return $status -match ".*nothing to commit, working tree clean$"
+	}
+	
+	if ( !(worktreeclean) ) {
+		gum confirm "Working tree is not clean, should make a commit?" --default="no" && cz
+	}
+	
+	do {
+		$summary = gum input --placeholder="tag summary"
+		$summary = $summary.trim()
+	} while( !$summary )
+
+	git tag -a $tag -m $summary
+	git push --tag
 }
 
 function wslip() {
