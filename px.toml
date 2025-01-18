@@ -1,0 +1,3 @@
+[cmds.install]
+prog = "python"
+args = ["./dev/install.py"]

@@ -9,13 +9,7 @@ def pwsh():
     if not os.path.exists(dp):
         os.makedirs(dp)
 
-    dist_path = os.path.join(dp, "Microsoft.PowerShell_profile.ps1")
-    src_path = os.path.join(
-        os.path.dirname(os.path.dirname(__file__)),
-        "windows/pwsh/profile.ps1",
-    )
-
-    shutil.copyfile(src_path, dist_path)
+    shutil.copytree("./pwsh", dp, dirs_exist_ok=True)
 
 
 def ahk():
@@ -32,3 +26,6 @@ def ahk():
 if sys.platform == "win32":
     pwsh()
     ahk()
+
+
+print("Installation complete.")
