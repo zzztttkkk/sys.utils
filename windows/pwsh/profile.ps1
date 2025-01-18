@@ -303,6 +303,11 @@ function pulla() {
 	git submodule foreach --recursive "pwsh -Command pulla"
 }
 
+function fetcha() {    
+	git fetch --all
+	git submodule foreach --recursive "git fetch --all"
+}
+
 function pushc() {
 	$branch = &git rev-parse --abbrev-ref HEAD
 	git push origin $branch
