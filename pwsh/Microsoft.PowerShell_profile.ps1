@@ -171,6 +171,10 @@ function cacheclean() {
 . $PSScriptRoot/ssh.ps1
 . $PSScriptRoot/vscode.ps1
 
+if (Test-Path -Path "C:\Program Files\Oracle\VirtualBox\VBoxManage.exe") {
+	. $PSScriptRoot/vbox.ps1
+}
+
 $local = "$PSScriptRoot/local.ps1"
 if (Test-Path -Path $local) {
 	. $local
