@@ -35,3 +35,12 @@ function vsc() {
     )
     __vscodechoose $search $global:__code_projects_dir
 }
+
+if ( ! $global:__code_projects_dir ) {
+    if ($IsWindows) {
+        $global:__code_projects_dir = "d:/codes"
+    }
+    if ($IsLinux) {
+        $global:__code_projects_dir = "/mnt/d/codes"
+    }
+}

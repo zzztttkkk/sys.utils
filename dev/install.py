@@ -5,7 +5,15 @@ import shutil
 
 
 def pwsh():
-    dp = os.path.join(pathlib.Path.home(), "Documents/PowerShell")
+    dp = ""
+    match sys.platform:
+        case "win32":
+            dp = os.path.join(pathlib.Path.home(), "Documents/PowerShell")
+        case "linux":
+            dp = os.path.join(pathlib.Path.home(), ".config/powershell")
+        case _:
+            return
+
     if not os.path.exists(dp):
         os.makedirs(dp)
 
@@ -13,6 +21,9 @@ def pwsh():
 
 
 def ahk():
+    if sys.platform != "win32":
+        return
+
     for name in [".ahk", "_jxon.ahk", "Notify.ahk"]:
         dist = f"{os.path.expanduser('~')}/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/{name}"
         if os.path.exists(dist):
@@ -23,9 +34,8 @@ def ahk():
         )
 
 
-if sys.platform == "win32":
-    pwsh()
-    ahk()
+pwsh()
+ahk()
 
 
 print("Installation complete.")
