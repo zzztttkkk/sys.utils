@@ -34,8 +34,17 @@ function cz() {
     automygitsettings
 
     function timediff() {
-        $difftxt = (&w32tm /stripchart /computer:ntp.aliyun.com /dataonly /samples:1)[-1].trim("s").split(", ")[-1];
-        return [math]::abs([float]$difftxt)
+        if($IsWindows){
+            $difftxt = (&w32tm /stripchart /computer:ntp.aliyun.com /dataonly /samples:1)[-1].trim("s").split(", ")[-1];
+            return [math]::abs([float]$difftxt)
+        }
+
+        if($IsLinux) {
+            $ntptimestring = ((ntpdate -q ntp.aliyun.com) -split ' ')[0..2] | join-string -Separator ' '
+            $ntptimestamp = [int]$(date --date $ntptimestring +%s)
+            $hosttimestamp = [int]$(date --date "now" +%s)
+            return [math]::abs($hosttimestamp - $ntptimestamp)
+        }
     }
 
     $tdiff = timediff

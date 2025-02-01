@@ -1,7 +1,3 @@
-
-
-fnm env --use-on-cd | Out-String | Invoke-Expression
-
 $global:proxy = "";
 
 function useproxy() {
