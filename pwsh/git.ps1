@@ -120,18 +120,17 @@ function cz() {
         else {
             $line = read-host
         }
-
         if ($line.trim() -eq "") {
             $_el = $_el + 1;
             if ($_el -eq 2) {
                 break;
             }
         }
-        $content = $content + $line + "\r\n"
+        $content = $content + $line + "`n"
         $_cl = $_cl + 1
     }
 
-    $content = $content.trim().trim("\r\n");
+    $content = $content.trim();
 
     git add *
     if (!$scope) {
