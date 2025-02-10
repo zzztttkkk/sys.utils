@@ -110,7 +110,7 @@ function cz() {
     if (!$summary) {
         $summary = "-"
     }
-    $m1 = "[" + $commit_type + "] (" + $scope + "): " + $summary
+    $m1 = "[" + $ctype + "] (" + $scope + "): " + $summary
 
     if ($content -eq "") {
         git commit -m $m1
