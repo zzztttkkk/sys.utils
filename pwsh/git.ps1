@@ -53,52 +53,23 @@ function cz() {
         return;
     }
 
-    $itype = read-host -Prompt "Choice Commit Type:
-1: Feat   2: Style    3: Bugfix
-4: Chore  5: Refactor 6: Doc
-7: Test   8: Try      9: Deploy
-0: Init	  a: Perf     b: IgnoreThis
-"
-    switch ($itype) {
-        0 {
-            $commit_type = "🎉 Init"
+    $defaultctype = "🧹 Chore"
+    [string[]] $allctypes = @(
+        "♿ Aiiy", "✨ Feat", "🎨 Style",
+        "🐛 Bugfix", "🧹 Chore", "🛠 Refactor",
+        "📚 Doc", "🧪 Test", "🎉 Release",
+        "🚧 WIP", "⚡️ Perf", "🗑 Reverts"
+    )
+    for($i=0; $i -lt $allctypes.count; $i++){
+        $tmp = "{0}: {1}" -f $i, $allctypes[$i]
+        if ($allctypes[$i] -eq $defaultctype) {
+            $defaultctype = $tmp
         }
-        1 {
-            $commit_type = "✨ Feat"
-        }
-        2 {
-            $commit_type = "🎨 Style"
-        }
-        3 {
-            $commit_type = "🐛 Bugfix"
-        }
-        4 {
-            $commit_type = "🧹 Chore"
-        }
-        5 {
-            $commit_type = "🛠 Refactor"
-        }
-        6 {
-            $commit_type = "📚 Doc"
-        }
-        7 {
-            $commit_type = "🧪 Test"
-        }
-        8 {
-            $commit_type = "🤞 Try"
-        }
-        9 {
-            $commit_type = "🚀 Deploy"
-        }
-        'a' {
-            $commit_type = "⚡️ Perf"
-        }
-        'b' {
-            $commit_type = "😏 IgnoreThis"
-        }
-        default {
-            $commit_type = "🧹 Chore"
-        }
+        $allctypes[$i] = $tmp
+    }
+    $ctype = gum choose $allctypes --selected=$defaultctype
+    if ($ctype -eq $null) {
+        return 
     }
 
     $scope = read-host -Prompt "Scope"

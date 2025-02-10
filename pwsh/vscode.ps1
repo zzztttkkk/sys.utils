@@ -23,7 +23,7 @@ function __vscodechoose() {
         exit 1
     }
 
-    Start-Process -NoNewWindow code $root/$name
+    Start-Process -FilePath code -ArgumentList $root/$name -WindowStyle Hidden
     exit
 }
 

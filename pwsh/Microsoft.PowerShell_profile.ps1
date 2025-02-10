@@ -43,9 +43,15 @@ function hash() {
 		$algs = $tmp -split " "
 		$algname = &gum choose --selected="md5" $algs
 	}
+	if($algname -eq $null) {
+		return;
+	}
 
 	if ($outputtype -eq "") {
 		$outputtype = &gum choose --selected="hex" "base64" "bin" "hex" 
+	}
+	if($outputtype -eq $null) {
+		return;
 	}
 
 	switch ($outputtype) {

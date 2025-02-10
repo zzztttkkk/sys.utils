@@ -8,7 +8,7 @@ function vboxctrl(){
 
     if ( $vmname -eq "" ) {
         $tmp = gum choose (vbox list vms)
-        if ( $tmp -eq "" ) {
+        if ( $tmp -eq $null ) {
             return
         }
         $vmname = (($tmp -split "{")[1] -split "}")[0]
@@ -16,7 +16,7 @@ function vboxctrl(){
 
     if ( $op -eq "" ) {
         $op = gum choose "pause" "resume" "poweroff" "reboot" "shutdown" "start"
-        if ( $op -eq "" ) {
+        if ( $op -eq $null ) {
             return
         }
     }
