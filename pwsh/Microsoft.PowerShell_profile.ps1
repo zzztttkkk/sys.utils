@@ -1,3 +1,6 @@
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+chcp 65001
+
 $global:proxy = "";
 
 function useproxy() {
