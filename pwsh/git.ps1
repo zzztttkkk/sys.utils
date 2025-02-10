@@ -71,6 +71,7 @@ function cz() {
     if ($ctype -eq $null) {
         return 
     }
+    $ctype = ($ctype -split ": ")[1]
 
     $scope = read-host -Prompt "Scope"
     $summary = ""
