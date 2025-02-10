@@ -1,5 +1,5 @@
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-chcp 65001
+$OutputEncoding = [System.Console]::OutputEncoding = [System.Console]::InputEncoding = [System.Text.Encoding]::UTF8
+$PSDefaultParameterValues['*:Encoding'] = 'utf8'
 
 $global:proxy = "";
 
