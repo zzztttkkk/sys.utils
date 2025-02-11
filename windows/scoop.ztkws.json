@@ -1,254 +1,275 @@
 {
+    "apps": [
+        {
+            "Info": "",
+            "Name": "7zip",
+            "Source": "main",
+            "Updated": "2024-12-10T13:31:00.8276396+08:00",
+            "Version": "24.09"
+        },
+        {
+            "Info": "",
+            "Name": "chafa",
+            "Source": "main",
+            "Updated": "2025-02-05T16:53:24.3082168+08:00",
+            "Version": "1.14.5"
+        },
+        {
+            "Info": "",
+            "Name": "cmake",
+            "Source": "main",
+            "Updated": "2025-02-05T09:33:20.3515745+08:00",
+            "Version": "3.31.5"
+        },
+        {
+            "Info": "",
+            "Name": "dark",
+            "Source": "main",
+            "Updated": "2024-06-19T16:37:44.7548161+08:00",
+            "Version": "3.14"
+        },
+        {
+            "Info": "",
+            "Name": "dismplusplus",
+            "Source": "extras",
+            "Updated": "2024-06-19T16:37:50.1214384+08:00",
+            "Version": "10.1.1002.1B"
+        },
+        {
+            "Info": "",
+            "Name": "drawio",
+            "Source": "lemon",
+            "Updated": "2025-02-05T09:33:44.63176+08:00",
+            "Version": "26.0.9"
+        },
+        {
+            "Info": "",
+            "Name": "dust",
+            "Source": "main",
+            "Updated": "2024-08-06T17:26:59.6544772+08:00",
+            "Version": "1.1.1"
+        },
+        {
+            "Info": "",
+            "Name": "fastfetch",
+            "Source": "main",
+            "Updated": "2025-02-05T09:33:47.8656211+08:00",
+            "Version": "2.35.0"
+        },
+        {
+            "Info": "",
+            "Name": "ffmpeg",
+            "Source": "main",
+            "Updated": "2024-10-08T10:07:26.1291004+08:00",
+            "Version": "7.1"
+        },
+        {
+            "Info": "",
+            "Name": "Flow-launcher",
+            "Source": "extras",
+            "Updated": "2024-11-20T12:20:43.6720141+08:00",
+            "Version": "1.19.4"
+        },
+        {
+            "Info": "",
+            "Name": "fnm",
+            "Source": "main",
+            "Updated": "2024-11-20T12:20:18.536009+08:00",
+            "Version": "1.38.1"
+        },
+        {
+            "Info": "",
+            "Name": "git",
+            "Source": "main",
+            "Updated": "2025-01-16T17:21:18.3964441+08:00",
+            "Version": "2.47.1.2"
+        },
+        {
+            "Info": "",
+            "Name": "go",
+            "Source": "main",
+            "Updated": "2025-02-05T09:34:32.0057083+08:00",
+            "Version": "1.23.6"
+        },
+        {
+            "Info": "",
+            "Name": "go-size-analyzer",
+            "Source": "main",
+            "Updated": "2025-02-08T09:43:17.260951+08:00",
+            "Version": "1.7.6"
+        },
+        {
+            "Info": "",
+            "Name": "godot-mono",
+            "Source": "extras",
+            "Updated": "2024-08-22T10:48:55.9155621+08:00",
+            "Version": "4.3"
+        },
+        {
+            "Info": "",
+            "Name": "Graphviz",
+            "Source": "main",
+            "Updated": "2024-12-31T14:25:48.0299514+08:00",
+            "Version": "12.2.1"
+        },
+        {
+            "Info": "",
+            "Name": "hibit-uninstaller",
+            "Source": "extras",
+            "Updated": "2025-01-16T17:21:24.7888637+08:00",
+            "Version": "3.2.50"
+        },
+        {
+            "Info": "",
+            "Name": "innounp",
+            "Source": "main",
+            "Updated": "2025-02-05T09:34:43.9601643+08:00",
+            "Version": "2.64.1"
+        },
+        {
+            "Info": "",
+            "Name": "llvm",
+            "Source": "main",
+            "Updated": "2025-01-16T17:22:17.4277921+08:00",
+            "Version": "19.1.7"
+        },
+        {
+            "Info": "",
+            "Name": "mingw",
+            "Source": "main",
+            "Updated": "2025-01-20T09:29:44.3868597+08:00",
+            "Version": "14.2.0-rt_v12-rev1"
+        },
+        {
+            "Info": "",
+            "Name": "nasm",
+            "Source": "main",
+            "Updated": "2024-08-27T11:20:48.958369+08:00",
+            "Version": "2.16.03"
+        },
+        {
+            "Info": "",
+            "Name": "nilesoft-shell",
+            "Source": "extras",
+            "Updated": "2025-01-06T18:13:14.7935638+08:00",
+            "Version": "1.9.18"
+        },
+        {
+            "Info": "",
+            "Name": "nodejs",
+            "Source": "main",
+            "Updated": "2025-02-05T09:35:05.8812231+08:00",
+            "Version": "23.7.0"
+        },
+        {
+            "Info": "",
+            "Name": "nsis",
+            "Source": "extras",
+            "Updated": "2024-09-04T13:45:48.2651333+08:00",
+            "Version": "3.10"
+        },
+        {
+            "Info": "",
+            "Name": "pnpm",
+            "Source": "main",
+            "Updated": "2025-02-05T09:35:20.1767909+08:00",
+            "Version": "10.2.0"
+        },
+        {
+            "Info": "",
+            "Name": "python",
+            "Source": "main",
+            "Updated": "2025-02-05T09:35:51.9532578+08:00",
+            "Version": "3.13.2"
+        },
+        {
+            "Info": "",
+            "Name": "rustup",
+            "Source": "main",
+            "Updated": "2024-08-27T11:19:04.902057+08:00",
+            "Version": "1.27.1"
+        },
+        {
+            "Info": "",
+            "Name": "scoop-search-multisource",
+            "Source": "https://raw.githubusercontent.com/plicit/scoop-search-multisource/master/scoop-search-multisource.json",
+            "Updated": "2024-06-19T16:40:57.5374805+08:00",
+            "Version": "0.1.20240202"
+        },
+        {
+            "Info": "",
+            "Name": "sqlitebrowser",
+            "Source": "extras",
+            "Updated": "2024-10-23T13:37:19.1534183+08:00",
+            "Version": "3.13.1"
+        },
+        {
+            "Info": "",
+            "Name": "sumatrapdf",
+            "Source": "extras",
+            "Updated": "2024-06-19T16:41:03.9996528+08:00",
+            "Version": "3.5.2"
+        },
+        {
+            "Info": "",
+            "Name": "swift",
+            "Source": "main",
+            "Updated": "2025-01-24T17:36:34.988497+08:00",
+            "Version": "6.0.3"
+        },
+        {
+            "Info": "",
+            "Name": "telegram",
+            "Source": "extras",
+            "Updated": "2025-02-05T09:36:07.5009863+08:00",
+            "Version": "5.10.7"
+        },
+        {
+            "Info": "",
+            "Name": "tiled",
+            "Source": "extras",
+            "Updated": "2025-02-05T09:36:14.567251+08:00",
+            "Version": "1.11.2"
+        },
+        {
+            "Info": "",
+            "Name": "vim",
+            "Source": "main",
+            "Updated": "2024-12-18T12:06:16.1121789+08:00",
+            "Version": "9.1.0"
+        },
+        {
+            "Info": "Held package",
+            "Name": "zed-nightly",
+            "Source": "versions",
+            "Updated": "2025-01-13T09:44:07.4900572+08:00",
+            "Version": "20250112"
+        }
+    ],
     "buckets": [
         {
             "Name": "main",
             "Source": "https://github.com/ScoopInstaller/Main",
-            "Updated": "2025-01-13T08:40:05+08:00",
-            "Manifests": 1354
+            "Updated": "2025-02-10T16:30:38+08:00",
+            "Manifests": 1357
         },
         {
             "Name": "extras",
             "Source": "https://github.com/ScoopInstaller/Extras",
-            "Updated": "2025-01-13T08:41:42+08:00",
-            "Manifests": 2117
+            "Updated": "2025-02-10T16:33:07+08:00",
+            "Manifests": 2127
         },
         {
             "Name": "versions",
             "Source": "https://github.com/ScoopInstaller/Versions",
-            "Updated": "2025-01-13T04:30:46+08:00",
-            "Manifests": 476
+            "Updated": "2025-02-10T16:40:07+08:00",
+            "Manifests": 477
         },
         {
             "Name": "lemon",
             "Source": "https://github.com/hoilc/scoop-lemon",
-            "Updated": "2025-01-13T09:25:40+08:00",
-            "Manifests": 1349
-        }
-    ],
-    "apps": [
-        {
-            "Info": "",
-            "Version": "24.09",
-            "Updated": "2024-12-10T13:31:00.8276396+08:00",
-            "Source": "main",
-            "Name": "7zip"
-        },
-        {
-            "Info": "",
-            "Version": "3.31.4",
-            "Updated": "2025-01-13T09:40:41.9226373+08:00",
-            "Source": "main",
-            "Name": "cmake"
-        },
-        {
-            "Info": "",
-            "Version": "3.14",
-            "Updated": "2024-06-19T16:37:44.7548161+08:00",
-            "Source": "main",
-            "Name": "dark"
-        },
-        {
-            "Info": "",
-            "Version": "10.1.1002.1B",
-            "Updated": "2024-06-19T16:37:50.1214384+08:00",
-            "Source": "extras",
-            "Name": "dismplusplus"
-        },
-        {
-            "Info": "",
-            "Version": "26.0.4",
-            "Updated": "2025-01-07T18:12:09.3641414+08:00",
-            "Source": "lemon",
-            "Name": "drawio"
-        },
-        {
-            "Info": "",
-            "Version": "1.1.1",
-            "Updated": "2024-08-06T17:26:59.6544772+08:00",
-            "Source": "main",
-            "Name": "dust"
-        },
-        {
-            "Info": "",
-            "Version": "2.34.0",
-            "Updated": "2025-01-09T14:13:17.9505792+08:00",
-            "Source": "main",
-            "Name": "fastfetch"
-        },
-        {
-            "Info": "",
-            "Version": "7.1",
-            "Updated": "2024-10-08T10:07:26.1291004+08:00",
-            "Source": "main",
-            "Name": "ffmpeg"
-        },
-        {
-            "Info": "",
-            "Version": "1.19.4",
-            "Updated": "2024-11-20T12:20:43.6720141+08:00",
-            "Source": "extras",
-            "Name": "Flow-launcher"
-        },
-        {
-            "Info": "",
-            "Version": "1.38.1",
-            "Updated": "2024-11-20T12:20:18.536009+08:00",
-            "Source": "main",
-            "Name": "fnm"
-        },
-        {
-            "Info": "",
-            "Version": "2.47.1",
-            "Updated": "2024-11-27T16:38:16.2055739+08:00",
-            "Source": "main",
-            "Name": "git"
-        },
-        {
-            "Info": "",
-            "Version": "1.23.4",
-            "Updated": "2024-12-10T13:44:31.5978447+08:00",
-            "Source": "main",
-            "Name": "go"
-        },
-        {
-            "Info": "",
-            "Version": "4.3",
-            "Updated": "2024-08-22T10:48:55.9155621+08:00",
-            "Source": "extras",
-            "Name": "godot-mono"
-        },
-        {
-            "Info": "",
-            "Version": "12.2.1",
-            "Updated": "2024-12-31T14:25:48.0299514+08:00",
-            "Source": "main",
-            "Name": "Graphviz"
-        },
-        {
-            "Info": "",
-            "Version": "3.2.40",
-            "Updated": "2024-10-08T10:04:56.1706764+08:00",
-            "Source": "extras",
-            "Name": "hibit-uninstaller"
-        },
-        {
-            "Info": "",
-            "Version": "1.76",
-            "Updated": "2024-12-16T15:22:06.4712718+08:00",
-            "Source": "main",
-            "Name": "innounp"
-        },
-        {
-            "Info": "",
-            "Version": "19.1.6",
-            "Updated": "2024-12-25T10:39:02.7279929+08:00",
-            "Source": "main",
-            "Name": "llvm"
-        },
-        {
-            "Info": "",
-            "Version": "14.2.0-rt_v12-rev0",
-            "Updated": "2024-09-09T18:14:26.0136455+08:00",
-            "Source": "main",
-            "Name": "mingw"
-        },
-        {
-            "Info": "",
-            "Version": "2.16.03",
-            "Updated": "2024-08-27T11:20:48.958369+08:00",
-            "Source": "main",
-            "Name": "nasm"
-        },
-        {
-            "Info": "",
-            "Version": "1.9.18",
-            "Updated": "2025-01-06T18:13:14.7935638+08:00",
-            "Source": "extras",
-            "Name": "nilesoft-shell"
-        },
-        {
-            "Info": "",
-            "Version": "23.6.0",
-            "Updated": "2025-01-09T14:14:06.8396491+08:00",
-            "Source": "main",
-            "Name": "nodejs"
-        },
-        {
-            "Info": "",
-            "Version": "3.10",
-            "Updated": "2024-09-04T13:45:48.2651333+08:00",
-            "Source": "extras",
-            "Name": "nsis"
-        },
-        {
-            "Info": "",
-            "Version": "10.0.0",
-            "Updated": "2025-01-09T14:14:50.4195423+08:00",
-            "Source": "main",
-            "Name": "pnpm"
-        },
-        {
-            "Info": "",
-            "Version": "3.13.1",
-            "Updated": "2024-12-10T13:39:58.9302212+08:00",
-            "Source": "main",
-            "Name": "python"
-        },
-        {
-            "Info": "",
-            "Version": "1.27.1",
-            "Updated": "2024-08-27T11:19:04.902057+08:00",
-            "Source": "main",
-            "Name": "rustup"
-        },
-        {
-            "Info": "",
-            "Version": "0.1.20240202",
-            "Updated": "2024-06-19T16:40:57.5374805+08:00",
-            "Source": "https://raw.githubusercontent.com/plicit/scoop-search-multisource/master/scoop-search-multisource.json",
-            "Name": "scoop-search-multisource"
-        },
-        {
-            "Info": "",
-            "Version": "3.13.1",
-            "Updated": "2024-10-23T13:37:19.1534183+08:00",
-            "Source": "extras",
-            "Name": "sqlitebrowser"
-        },
-        {
-            "Info": "",
-            "Version": "3.5.2",
-            "Updated": "2024-06-19T16:41:03.9996528+08:00",
-            "Source": "extras",
-            "Name": "sumatrapdf"
-        },
-        {
-            "Info": "",
-            "Version": "5.10.3",
-            "Updated": "2025-01-13T09:40:50.3460821+08:00",
-            "Source": "extras",
-            "Name": "telegram"
-        },
-        {
-            "Info": "",
-            "Version": "1.11.1",
-            "Updated": "2025-01-13T09:40:56.44992+08:00",
-            "Source": "extras",
-            "Name": "tiled"
-        },
-        {
-            "Info": "",
-            "Version": "9.1.0",
-            "Updated": "2024-12-18T12:06:16.1121789+08:00",
-            "Source": "main",
-            "Name": "vim"
-        },
-        {
-            "Info": "Held package",
-            "Version": "20250112",
-            "Updated": "2025-01-13T09:44:07.4900572+08:00",
-            "Source": "versions",
-            "Name": "zed-nightly"
+            "Updated": "2025-02-10T14:27:19+08:00",
+            "Manifests": 1366
         }
     ]
 }

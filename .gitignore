@@ -1,2 +1,3 @@
 /.vscode
 /supervisors/data
+**/__pycache__

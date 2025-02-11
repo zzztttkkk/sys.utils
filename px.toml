@@ -1,3 +1,8 @@
 [cmds.i]
 prog = "python3"
-args = ["./dev/install.py"]
+args = ["./scripts/install.py"]
+
+[cmds.pkgsave]
+shell = "pwsh"
+prog = "scoop"
+args = ["backup", "./windows"]
