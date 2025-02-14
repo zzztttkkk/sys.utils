@@ -24,7 +24,7 @@ def ahk():
     if sys.platform != "win32":
         return
 
-    for name in [".ahk", "_jxon.ahk", "Notify.ahk"]:
+    for name in [".ahk"]:
         dist = f"{os.path.expanduser('~')}/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/{name}"
         if os.path.exists(dist):
             os.remove(dist)
@@ -34,8 +34,11 @@ def ahk():
         )
 
 
+def dots(): ...
+
+
 pwsh()
 ahk()
-
+dots()
 
 print("Installation complete.")
