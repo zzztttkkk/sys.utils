@@ -5,3 +5,9 @@
     } catch {
     }
 }
+
+^Space::
+{
+    Send "# {Space}"
+    Send "{Backspace}"
+}
