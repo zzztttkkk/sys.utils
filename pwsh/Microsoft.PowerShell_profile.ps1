@@ -86,6 +86,10 @@ if ($IsWindows) {
 	. $PSScriptRoot/windows.ps1
 }
 
+if ($IsLinux) {
+	. $PSScriptRoot/linux.ps1
+}
+
 $local = "$PSScriptRoot/local.ps1"
 if (Test-Path -Path $local) {
 	. $local
