@@ -6,11 +6,15 @@ $global:proxy = "";
 function useproxy() {
 	$env:http_proxy = $global:proxy
 	$env:https_proxy = $global:proxy
+	$env:HTTP_PROXY = $global:proxy
+	$env:HTTPS_PROXY = $global:proxy
 }
 
 function unsetproxy() {
-	$env:http_proxy = ""
-	$env:https_proxy = ""
+	$env:http_proxy = $null
+	$env:https_proxy = $null
+	$env:HTTP_PROXY = $null
+	$env:HTTPS_PROXY = $null
 }
 
 function loop() {
