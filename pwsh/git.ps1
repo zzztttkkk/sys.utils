@@ -17,10 +17,6 @@ function automygitsettings() {
         mygitsettings
         return
     }
-    if ($url -match ".*git.zzztttkkk.uk/.*") {
-        mygitsettings
-        return
-    }
 }
 
 function gs() {
@@ -68,7 +64,7 @@ function cz() {
         $allctypes[$i] = $tmp
     }
     $ctype = gum choose $allctypes --selected=$defaultctype
-    if ($ctype -eq $null) {
+    if ($null -eq $ctype) {
         return 
     }
     $ctype = ($ctype -split ": ")[1]
@@ -196,7 +192,7 @@ function mktag() {
         $tag = (gum input --placeholder="tag name").Trim()
     }
     if ($tag -eq "") {
-        echo "empty tag name"
+        Write-Output "empty tag name"
         return
     }
 

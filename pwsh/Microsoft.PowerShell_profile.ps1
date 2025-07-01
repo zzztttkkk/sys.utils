@@ -46,14 +46,14 @@ function hash() {
 		$algs = $tmp -split " "
 		$algname = &gum choose --selected="md5" $algs
 	}
-	if($algname -eq $null) {
+	if ($null -eq $algname) {
 		return;
 	}
 
 	if ($outputtype -eq "") {
 		$outputtype = &gum choose --selected="hex" "base64" "bin" "hex" 
 	}
-	if($outputtype -eq $null) {
+	if ($null -eq $outputtype) {
 		return;
 	}
 
@@ -88,5 +88,7 @@ if ($IsWindows) {
 
 $local = "$PSScriptRoot/local.ps1"
 if (Test-Path -Path $local) {
-    . $local
+	. $local
 }
+
+oh-my-posh init pwsh | Invoke-Expression
