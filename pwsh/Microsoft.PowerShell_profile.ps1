@@ -99,7 +99,7 @@ if (Test-Path -Path $local) {
 	. $local
 }
 
-$rc = "$HOME/.pwshrc"
+$rc = "$HOME/.pwshrc.ps1"
 if (Test-Path -Path $rc) {
 	. $rc
 }
