@@ -99,4 +99,9 @@ if (Test-Path -Path $local) {
 	. $local
 }
 
+$rc = "$HOME/.pwshrc"
+if (Test-Path -Path $rc) {
+	. $rc
+}
+
 oh-my-posh init pwsh | Invoke-Expression
