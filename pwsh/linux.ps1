@@ -1,6 +1,6 @@
 $ENV:PATH = "$HOME/.local/bin:$HOME/bin:" + $ENV:PATH 
 
-Set-Alias ls = Get-ChildItem
+Set-Alias -Name ls -Value Get-ChildItem
 function ll {
     Get-ChildItem -Force    
 }
