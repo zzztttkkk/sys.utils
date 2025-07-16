@@ -6,14 +6,14 @@ function dbop {
 
     if ($dbkind -eq "") {
         $dbkind = $(gum choose mssql oracle clickhouse mongo postgres mysql redis all)
-        if ($dbkind -eq "") {
+        if ($null -eq $dbkind) {
             return;
         }
     }
 
     if ($opkind -eq "") {
         $opkind = $(gum choose start stop exec)
-        if ($opkind -eq "") {
+        if ($null -eq $opkind) {
             return;
         }
     }
