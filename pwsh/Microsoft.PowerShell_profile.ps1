@@ -104,4 +104,6 @@ if (Test-Path -Path $rc) {
 	. $rc
 }
 
-oh-my-posh init pwsh | Invoke-Expression
+if(Get-Command oh-my-posh -ErrorAction SilentlyContinue){
+	oh-my-posh init pwsh | Invoke-Expression
+}
