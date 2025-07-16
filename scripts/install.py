@@ -9,7 +9,7 @@ def pwsh():
     match sys.platform:
         case "win32":
             dp = os.path.join(pathlib.Path.home(), "Documents/PowerShell")
-        case "linux":
+        case "linux" | "darwin":
             dp = os.path.join(pathlib.Path.home(), ".config/powershell")
         case _:
             return
