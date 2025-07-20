@@ -5,7 +5,7 @@ function dbop {
     )
 
     if ($dbkind -eq "") {
-        $dbkind = $(gum choose mssql oracle clickhouse mongo postgres mysql redis all)
+        $dbkind = $(gum choose mssql oracle clickhouse mongo postgres mysql redis es all)
         if ($null -eq $dbkind) {
             return;
         }
@@ -67,7 +67,14 @@ function dbop {
             Set-Location /mnt/d/dev/containers/clickhouse
             docker compose $opkind
 
+            Set-Location /mnt/d/dev/containers/es
+            docker compose $opkind
+
             Set-Location /mnt/d/dev/containers/normal
+            docker compose $opkind
+        }
+        "es" {
+            Set-Location /mnt/d/dev/containers/$dbkind
             docker compose $opkind
         }
         "mssql" {
