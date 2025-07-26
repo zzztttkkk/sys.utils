@@ -5,7 +5,7 @@ function dbop {
     )
 
     if ($dbkind -eq "") {
-        $dbkind = $(gum choose mssql oracle clickhouse mongo postgres mysql redis es all)
+        $dbkind = $(gum choose mssql oracle ibmdb2 clickhouse mongo postgres mysql redis es all)
         if ($null -eq $dbkind) {
             return;
         }
@@ -48,6 +48,10 @@ function dbop {
                 docker exec -it clickhouse clickhouse-client --user=default --password=123456
                 return
             }
+            "ibmdb2" {
+                docker exec -it -u db2inst1 ibmdb2 bash
+                return
+            }
             Default {}
         }
 
@@ -74,6 +78,10 @@ function dbop {
             docker compose $opkind
         }
         "es" {
+            Set-Location /mnt/d/dev/containers/$dbkind
+            docker compose $opkind
+        }
+        "ibmdb2" {
             Set-Location /mnt/d/dev/containers/$dbkind
             docker compose $opkind
         }
