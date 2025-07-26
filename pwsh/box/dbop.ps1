@@ -74,6 +74,9 @@ function dbop {
             Set-Location /mnt/d/dev/containers/es
             docker compose $opkind
 
+            Set-Location /mnt/d/dev/containers/ibmdb2
+            docker compose $opkind
+
             Set-Location /mnt/d/dev/containers/normal
             docker compose $opkind
         }
