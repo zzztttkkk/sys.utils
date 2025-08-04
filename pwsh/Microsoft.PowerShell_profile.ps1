@@ -104,6 +104,12 @@ if (Test-Path -Path $rc) {
 	. $rc
 }
 
-if(Get-Command oh-my-posh -ErrorAction SilentlyContinue){
+if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
 	oh-my-posh init pwsh | Invoke-Expression
+}
+
+if (Get-Command carapace -ErrorAction SilentlyContinue) {
+	Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
+	Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
+	carapace _carapace | Out-String | Invoke-Expression
 }
