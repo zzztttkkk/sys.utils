@@ -19,13 +19,13 @@ function unsetproxy() {
 
 function loop() {
 	param (
+		[string] $cmd,
 		[Int] $times,
 		[Int] $sleep = 1
 	)
 
 	for ($i = 1; $i -le $times; $i++) {
-		&$args[0] ($args | select-object -skip 1)
-
+		Invoke-Expression $cmd
 		if ($sleep -gt 0) {
 			Start-Sleep -Seconds $sleep
 		}
