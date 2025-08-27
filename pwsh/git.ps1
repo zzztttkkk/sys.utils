@@ -1,41 +1,34 @@
-function mygitsettings {
-    git config user.name "zzztttkkk"
-    git config user.email "ztkisalreadytaken@gmail.com"
+$global:gitauth = @{}
+
+function updategitsettings() {
+    $name = gum choose $global:gitauth.Keys
+    if ([string]::IsNullOrEmpty($name)) {
+        return
+    }
+    $email = $global:gitauth[$name]
+    if ([string]::IsNullOrEmpty($email)) {
+        return
+    }
+
+    git config user.name $name
+    git config user.email $email
     git config http.proxy $global:proxy
-    git config https.proxy $global:proxy
-    Write-Output "REST GIT SETTINGS"
-}
-
-function automygitsettings() {
-    $name = git config --get user.name
-    if ($name -eq "zzztttkkk") {
-        return
-    }
-
-    $url = git config --get remote.origin.url
-    if ($url -match ".*github.com/zzztttkkk/.*") {
-        mygitsettings
-        return
-    }
+    git config https.proxy $global:proxy    
 }
 
 function gs() {
-    automygitsettings
-
     git status
     git submodule foreach --recursive "git status"
 }
 
 function cz() {
-    automygitsettings
-
     function timediff() {
-        if($IsWindows){
+        if ($IsWindows) {
             $difftxt = (&w32tm /stripchart /computer:ntp.aliyun.com /dataonly /samples:1)[-1].trim("s").split(", ")[-1];
             return [math]::abs([float]$difftxt)
         }
 
-        if($IsLinux) {
+        if ($IsLinux) {
             $ntptimestring = ((ntpdate -q ntp.aliyun.com) -split ' ')[0..2] | join-string -Separator ' '
             $ntptimestamp = [int]$(date --date $ntptimestring +%s)
             $hosttimestamp = [int]$(date --date "now" +%s)
@@ -56,7 +49,7 @@ function cz() {
         "📚 Doc", "🧪 Test", "🎉 Release",
         "🚧 WIP", "⚡️ Perf", "🗑 Reverts"
     )
-    for($i=0; $i -lt $allctypes.count; $i++){
+    for ($i = 0; $i -lt $allctypes.count; $i++) {
         $tmp = "{0}: {1}" -f $i, $allctypes[$i]
         if ($allctypes[$i] -eq $defaultctype) {
             $defaultctype = $tmp
