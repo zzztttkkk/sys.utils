@@ -70,23 +70,17 @@ function cacheclean() {
     Write-Output ">>>>>>>>>>>> pnpm <<<<<<<<<<<<<<<"
     pnpm cache delete
     pnpm store prune
-    try {
-        Write-Output ">>>>>>>>>>>> nodegyp <<<<<<<<<<<<<<<"
-        Remove-Item -r -fo ~/AppData/Local/node-gyp
-    }
-    catch {
-        ""
+    $nodegyp = "$HOME/AppData/Local/node-gyp"
+    if (Test-Path $nodegyp) {
+        Remove-Item -Recurse -Force $nodegyp
     }
 
     # go
     Write-Output ">>>>>>>>>>>> go <<<<<<<<<<<<<<<"
     go clean -cache
-    try {
-        Write-Output ">>>>>>>>>>>> gopls <<<<<<<<<<<<<<<"
-        Remove-Item -r -fo ~/AppData/Local/gopls
-    }
-    catch {
-        ""
+    $gopls = "$HOME/AppData/Local/gopls"
+    if (Test-Path $gopls) {
+        Remove-Item -r -fo $gopls
     }
 
     # rust

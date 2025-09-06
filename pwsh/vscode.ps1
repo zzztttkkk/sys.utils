@@ -9,7 +9,7 @@ function __vscodechoose() {
         $items = $items | where-object { $_ -like "*$search*" }
     }
     if ($items.Count -eq 0) {
-        exit
+        return
     }
 
     if ($items.Count -eq 1) {
@@ -20,11 +20,10 @@ function __vscodechoose() {
     }
 
     if ( [string]::IsNullOrEmpty($name) ) {
-        exit 1
+        return
     }
 
     Start-Process -FilePath code -ArgumentList $root/$name -WindowStyle Hidden
-    exit
 }
 
 $global:__code_projects_dir = ""

@@ -12,8 +12,11 @@ function updategitsettings() {
 
     git config user.name $name
     git config user.email $email
-    git config http.proxy $global:proxy
-    git config https.proxy $global:proxy    
+
+    if (gum confirm "Use proxy?") {
+        git config http.proxy $global:proxy
+        git config https.proxy $global:proxy    
+    }
 }
 
 function gs() {
@@ -93,7 +96,7 @@ function cz() {
 
     $content = $content.trim();
 
-    git add *
+    git add -A
     if (!$scope) {
         $scope = "/"
     }
@@ -114,17 +117,13 @@ function grh() {
     git reset --hard
 }
 
-function gl() {
-    git log -1
-}
-
 function pulla() {    
     $branch = &git rev-parse --abbrev-ref HEAD
     git pull origin $branch --allow-unrelated-histories
     git submodule foreach --recursive "pwsh -Command pulla"
 }
 
-function fetcha() {    
+function gfa() {    
     git fetch --all
     git submodule foreach --recursive "git fetch --all"
 }
@@ -140,7 +139,7 @@ function mergefrom() {
         [string]$target
     )
     if ($target -eq "") {
-        exit
+        return
     }
 
     Write-Output "----------------merge from $target----------------"
@@ -161,7 +160,7 @@ function mergefrom() {
 # git last commit hash
 function glch() {
     param (
-        [bool] $long
+        [switch] $long
     )
     if ( $long ) {
         git rev-parse HEAD
@@ -204,5 +203,5 @@ function mktag() {
     } while ( !$summary )
 
     git tag -a $tag -m $summary
-    git push --tag
+    git push origin $tag
 }
