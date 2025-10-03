@@ -5,7 +5,7 @@ function dbop {
     )
 
     if ($dbkind -eq "") {
-        $dbkind = $(gum choose mssql oracle ibmdb2 clickhouse mongo postgres mysql redis es all)
+        $dbkind = $(gum choose mssql oracle ibmdb2 clickhouse mongo mongotx postgres mysql redis es all)
         if ($null -eq $dbkind) {
             return;
         }
@@ -26,6 +26,10 @@ function dbop {
             }
             "mongo" {
                 docker exec -it mongo mongosh -u root -p 123456
+                return
+            }
+            "mongotx" {
+                docker exec -it mongotx mongosh -u root -p 123456
                 return
             }
             "postgres" {
@@ -105,6 +109,10 @@ function dbop {
             docker compose $opkind $dbkind
         }
         "mongo" {
+            Set-Location /mnt/d/dev/containers/normal
+            docker compose $opkind $dbkind
+        }
+        "mongotx" {
             Set-Location /mnt/d/dev/containers/normal
             docker compose $opkind $dbkind
         }
