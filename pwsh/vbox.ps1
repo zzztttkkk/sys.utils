@@ -1,13 +1,13 @@
 Set-Alias vbox "C:\Program Files\Oracle\VirtualBox\VBoxManage.exe"
 
-function vboxctrl(){
+function vboxctrl() {
     param (
-		[String] $vmname,
+        [String] $vmname,
         [String] $op
-	)
+    )
 
     if ( $vmname -eq "" ) {
-        $tmp = gum choose (vbox list vms)
+        $tmp = gum filter (vbox list vms)
         if ( $tmp -eq $null ) {
             return
         }
@@ -15,7 +15,7 @@ function vboxctrl(){
     }
 
     if ( $op -eq "" ) {
-        $op = gum choose "pause" "resume" "poweroff" "reboot" "shutdown" "start"
+        $op = gum filter "pause" "resume" "poweroff" "reboot" "shutdown" "start"
         if ( $op -eq $null ) {
             return
         }

@@ -5,14 +5,14 @@ function dbop {
     )
 
     if ($dbkind -eq "") {
-        $dbkind = $(gum choose mssql oracle ibmdb2 clickhouse mongo mongotx postgres mysql redis es all)
+        $dbkind = $(gum filter mssql oracle ibmdb2 clickhouse mongo mongotx postgres mysql redis es all)
         if ($null -eq $dbkind) {
             return;
         }
     }
 
     if ($opkind -eq "") {
-        $opkind = $(gum choose start stop exec)
+        $opkind = $(gum filter start stop exec)
         if ($null -eq $opkind) {
             return;
         }

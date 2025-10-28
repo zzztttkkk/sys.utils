@@ -53,14 +53,14 @@ function hash() {
 	if ($algname -eq "") {
 		$tmp = &python -c 'print(" ".join(sorted(list(__import__("hashlib").algorithms_available))))'
 		$algs = $tmp -split " "
-		$algname = &gum choose --selected="md5" $algs
+		$algname = &gum filter --selected="md5" $algs
 	}
 	if ($null -eq $algname) {
 		return;
 	}
 
 	if ($outputtype -eq "") {
-		$outputtype = &gum choose --selected="hex" "base64" "bin" "hex" 
+		$outputtype = &gum filter --selected="hex" "base64" "bin" "hex" 
 	}
 	if ($null -eq $outputtype) {
 		return;

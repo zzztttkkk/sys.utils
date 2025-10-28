@@ -1,7 +1,7 @@
 $global:gitauth = @{}
 
 function updategitsettings() {
-    $name = gum choose $global:gitauth.Keys
+    $name = gum filter $global:gitauth.Keys
     if ([string]::IsNullOrEmpty($name)) {
         return
     }
@@ -59,7 +59,7 @@ function cz() {
         }
         $allctypes[$i] = $tmp
     }
-    $ctype = gum choose $allctypes --selected=$defaultctype
+    $ctype = gum filter $allctypes --selected=$defaultctype
     if ($null -eq $ctype) {
         return 
     }
