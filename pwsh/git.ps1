@@ -13,9 +13,15 @@ function updategitsettings() {
     git config user.name $name
     git config user.email $email
 
-    if (gum confirm "Use proxy?") {
+    $useproxy = $false;
+    gum confirm "Use proxy?" && ($useproxy = $true);
+    if ($useproxy) {
         git config http.proxy $global:proxy
         git config https.proxy $global:proxy    
+    }
+    else {
+        git config --unset http.proxy
+        git config --unset https.proxy
     }
 }
 
