@@ -51,7 +51,6 @@ function cz() {
         return;
     }
 
-    $defaultctype = "🧹 Chore"
     [string[]] $allctypes = @(
         "♿ Aiiy", "✨ Feat", "🎨 Style",
         "🐛 Bugfix", "🧹 Chore", "🛠 Refactor",
@@ -65,7 +64,7 @@ function cz() {
         }
         $allctypes[$i] = $tmp
     }
-    $ctype = gum filter $allctypes --selected=$defaultctype
+    $ctype = gum filter $allctypes
     if ($null -eq $ctype) {
         return 
     }
