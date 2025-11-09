@@ -41,24 +41,24 @@ function netreset() {
 function fkill() {
     param (
         [String] $val = "",
-        [String] $prop = "ProcessName",
         [String] $op = "eq"
     )
     if ($val -eq "" ) {
         return
     }
     $op = "-${op}"
-    $operators = @('-eq', '-ne', '-gt', '-lt', '-ge', '-le', '-like', '-notlike', '-match', '-notmatch', '-in', '-notin', '-and', '-or', '-not', '-is', '-isnot', '-ceq', '-cne', '-cgt', '-clt', '-cge', '-cle', '-clike', '-cnotlike', '-cmatch', '-cnotmatch')
+    $operators = @('-eq', '-ne', '-like', '-notlike', '-match', '-notmatch', '-in', '-notin')
     if ($operators -notcontains $op) {
         throw "bad operator: $op"
     }
-    $ids = Invoke-Expression "ps | where -Property $prop -Value $val $op | select -ExpandProperty Id"
-    foreach ( $tmpid in $ids ) {
+    $procs = Invoke-Expression "ps | where -Property ProcessName -Value $val $op"
+    foreach ( $proc in $procs ) {
         try {
-            stop-process -id $tmpid
+            Write-Host "kill process: $($proc.Name) $($proc.Id)"
+            stop-process -id $proc.Id
         }
         catch {
-            Write-Warning "Failed to terminate process: $tmpid"
+            Write-Warning "Failed to terminate process: $($proc.Id)"
         }
     }
 }
