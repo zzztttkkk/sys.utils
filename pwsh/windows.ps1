@@ -13,6 +13,16 @@ function fexp {
     explorer.exe $path
 }
 
+function rdps {
+    $names = Get-ChildItem -Path ~/Documents/ -Filter "*.rdp" | Select-Object -ExpandProperty Name
+    $name = gum choose $names
+    if ([string]::IsNullOrEmpty($name)) {
+        return
+    }
+    $path = resolve-path ~/Documents/$name
+    mstsc.exe $path
+}
+
 function fexprestar() {
     taskkill /f /im explorer.exe
     Start-Process explorer.exe

@@ -13,9 +13,7 @@ function updategitsettings() {
     git config user.name $name
     git config user.email $email
 
-    $useproxy = $false;
-    gum confirm "Use proxy?" && ($useproxy = $true);
-    if ($useproxy) {
+    if (confirm "Use proxy?") {
         git config http.proxy $global:proxy
         git config https.proxy $global:proxy    
     }
@@ -31,6 +29,10 @@ function gs() {
 }
 
 function cz() {
+    param (
+        [bool]$nonet = $false
+    )
+
     function timediff() {
         if ($IsWindows) {
             $difftxt = (&w32tm /stripchart /computer:ntp.aliyun.com /dataonly /samples:1)[-1].trim("s").split(", ")[-1];
@@ -45,10 +47,12 @@ function cz() {
         }
     }
 
-    $tdiff = timediff
-    if ($tdiff -ge 60) {
-        Write-Output "System Time Diff With Intnet"
-        return;
+    if (-not $nonet) {
+        $tdiff = timediff
+        if ($tdiff -ge 60) {
+            Write-Output "System Time Diff With Intnet"
+            return;
+        }
     }
 
     [string[]] $allctypes = @(

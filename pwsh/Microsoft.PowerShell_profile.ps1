@@ -80,6 +80,17 @@ function hash() {
 	
 }
 
+function confirm() {
+	param (
+		[string] $msg = "Are you sure?"
+	)
+	gum confirm $msg 
+	if ($LASTEXITCODE -eq 0) {
+		return $true
+	}
+	return $false
+}
+
 function hex() {
 	param (
 		[int] $num = 0
