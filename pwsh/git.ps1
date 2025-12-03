@@ -55,11 +55,13 @@ function cz() {
         }
     }
 
+    $defaultctype = "🚧 WIP"
     [string[]] $allctypes = @(
-        "♿ Aiiy", "✨ Feat", "🎨 Style",
-        "🐛 Bugfix", "🧹 Chore", "🛠 Refactor",
-        "📚 Doc", "🧪 Test", "🎉 Release",
-        "🚧 WIP", "⚡️ Perf", "🗑 Reverts"
+        $defaultctype, "♿ Aiiy", "✨ Feat", "🎨 Style",
+        "🐛 Bugfix", "🛠 Refactor",
+        "📚 Doc", "🧪 Test", "🎉 Release", "🌐 I18n"
+        "⚡️ Perf", "🗑 Reverts", "🧹 Chore", "⚙️ Ci",
+        "🚚 Vendor"
     )
     for ($i = 0; $i -lt $allctypes.count; $i++) {
         $tmp = "{0}: {1}" -f $i, $allctypes[$i]
@@ -68,7 +70,7 @@ function cz() {
         }
         $allctypes[$i] = $tmp
     }
-    $ctype = gum filter $allctypes
+    $ctype = gum filter $allctypes --selected=$defaultctype
     if ($null -eq $ctype) {
         return 
     }

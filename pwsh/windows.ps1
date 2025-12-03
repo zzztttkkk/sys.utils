@@ -1,5 +1,3 @@
-& $HOME/.pyenv/Scripts/activate.ps1
-
 Set-Alias which Get-Command
 Set-Alias grep Select-String
 Set-Alias ll ls
@@ -98,6 +96,3 @@ function cacheclean() {
     cargo cache -a
 }
 
-if (Test-Path -Path "C:\Program Files\Oracle\VirtualBox\VBoxManage.exe") {
-    . $PSScriptRoot/vbox.ps1
-}

@@ -2,6 +2,7 @@ $OutputEncoding = [System.Console]::OutputEncoding = [System.Console]::InputEnco
 $PSDefaultParameterValues['*:Encoding'] = 'utf8'
 
 $global:proxy = "";
+$global:pyenv = $null;
 
 function useproxy() {
 	$env:http_proxy = $global:proxy
@@ -110,22 +111,27 @@ if ($IsLinux) {
 	. $PSScriptRoot/linux.ps1
 }
 
-$local = "$PSScriptRoot/local.ps1"
-if (Test-Path -Path $local) {
-	. $local
+function reloadrc {
+	$rc = "$HOME/.pwshrc.ps1"
+	if (Test-Path -Path $rc) {
+		. $rc
+	}
+
+	if (Get-Command carapace -ErrorAction SilentlyContinue) {
+		Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
+		Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
+		carapace _carapace | Out-String | Invoke-Expression
+	}
+
+	if (Get-Command scoop -ErrorAction SilentlyContinue) {
+		if (Get-Command scoop-search -ErrorAction SilentlyContinue) {
+			. ([ScriptBlock]::Create((& scoop-search --hook | Out-String)))
+		}
+	}
+
+	if (($null -ne $global:pyenv) -and (Test-Path -Path $global:pyenv)) {
+		& $global:pyenv\Scripts\activate.ps1
+	}
 }
 
-$rc = "$HOME/.pwshrc.ps1"
-if (Test-Path -Path $rc) {
-	. $rc
-}
-
-if (Get-Command oh-my-posh -ErrorAction SilentlyContinue) {
-	oh-my-posh init pwsh | Invoke-Expression
-}
-
-if (Get-Command carapace -ErrorAction SilentlyContinue) {
-	Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
-	Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
-	carapace _carapace | Out-String | Invoke-Expression
-}
+reloadrc
