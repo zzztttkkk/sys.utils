@@ -55,27 +55,16 @@ function cz() {
         }
     }
 
-    $defaultctype = "🚧 WIP"
     [string[]] $allctypes = @(
-        $defaultctype, "♿ Aiiy", "✨ Feat", "🎨 Style",
+        "🚧 WIP", "♿ Aiiy", "✨ Feat", "🎨 Style",
         "🐛 Bugfix", "🛠 Refactor",
         "📚 Doc", "🧪 Test", "🎉 Release", "🌐 I18n"
-        "⚡️ Perf", "🗑 Reverts", "🧹 Chore", "⚙️ Ci",
-        "🚚 Vendor"
+        "⚡️ Perf", "🗑 Reverts", "🧹 Chore", "⚙️ Ci"
     )
-    for ($i = 0; $i -lt $allctypes.count; $i++) {
-        $tmp = "{0}: {1}" -f $i, $allctypes[$i]
-        if ($allctypes[$i] -eq $defaultctype) {
-            $defaultctype = $tmp
-        }
-        $allctypes[$i] = $tmp
-    }
-    $ctype = gum filter $allctypes --selected=$defaultctype
+    $ctype = gum filter $allctypes
     if ($null -eq $ctype) {
         return 
     }
-    $ctype = ($ctype -split ": ")[1]
-
     $scope = read-host -Prompt "Scope"
     $summary = ""
     do {
