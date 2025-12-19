@@ -17,8 +17,8 @@ function LoadEnvFile {
                 continue
             }
             $name = $line.Substring(0, $idx).Trim()
-            if (-not $name -match '^[a-zA-Z_][a-zA-Z0-9_]*$') {
-                Write-Error "Invalid name: $name, in file $Path"
+            if (-not ($name -match '^[a-zA-Z_][a-zA-Z0-9_]*$')) {
+                Write-Error "Invalid env name: $name, in file $Path"
                 continue
             }
             $value = $line.Substring($idx + 1).Trim()
