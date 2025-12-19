@@ -1,3 +1,4 @@
 /.vscode
 /supervisors/data
 **/__pycache__
+*.env

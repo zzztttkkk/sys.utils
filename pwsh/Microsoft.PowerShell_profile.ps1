@@ -111,6 +111,8 @@ if ($IsLinux) {
 	. $PSScriptRoot/linux.ps1
 }
 
+. $PSScriptRoot/env.ps1
+
 function reloadrc {
 	$rc = "$HOME/.pwshrc.ps1"
 	if (Test-Path -Path $rc) {
