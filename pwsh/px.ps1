@@ -57,6 +57,23 @@ function script:list_all_commands {
     }
 }
 
+function script:args_to_string {
+    param (
+        [object[]]$argvs
+    )
+    $tmp = $argvs | ForEach-Object {
+        $str = "$_"
+        if ($str -match " ") {
+            $str = $str -replace "`"", "`"`""
+            return "`"$str`""
+        }
+        else {
+            return $str
+        }
+    }
+    return $tmp -join " "
+}
+
 function script:run_command {
     param (
         [string]$px_dir,
@@ -66,8 +83,10 @@ function script:run_command {
 
     Push-Location (Split-Path -Path $px_dir -Parent)
     try {
+        $argvs = args_to_string $remain
+        $expr = "& ""$px_dir/$name.ps1"" $argvs"
         $begin = [DateTime]::Now
-        & "$px_dir/$name.ps1" @remain
+        Invoke-Expression $expr
         $end = [DateTime]::Now
         $elapsed = $end - $begin
         Write-Output "px exec elapsed: $elapsed"
