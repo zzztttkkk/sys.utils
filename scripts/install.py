@@ -34,11 +34,7 @@ def ahk():
         )
 
 
-def dots(): ...
-
-
 pwsh()
 ahk()
-dots()
 
 print("Installation complete.")
