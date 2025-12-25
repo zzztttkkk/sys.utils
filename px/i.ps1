@@ -11,7 +11,7 @@ function script:install_pwsh {
     if (!(Test-Path $target)) {
         New-Item -ItemType Directory $target
     }
-    Copy-Item -Recurse -Path ./pwsh -Destination $target
+    Copy-Item -Recurse -Path ./pwsh/* -Destination $target
 }
 
 function script:install_ahk {
