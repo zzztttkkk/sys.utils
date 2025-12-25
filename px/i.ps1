@@ -7,7 +7,7 @@ function script:install_pwsh {
         $target = "$HOME/.config/powershell"
     }
 
-    Remove-Item -Recurse -Force $target
+    Remove-Item -Recurse -Force $target -ErrorAction SilentlyContinue
     if (!(Test-Path $target)) {
         New-Item -ItemType Directory $target
     }
