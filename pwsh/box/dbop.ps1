@@ -1,4 +1,4 @@
-function dbop {
+function global:dbop {
     param (
         [String] $dbkind = "",
         [String] $opkind = ""
