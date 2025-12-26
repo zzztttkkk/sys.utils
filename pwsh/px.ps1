@@ -1,4 +1,4 @@
-function px {
+function global:px {
     param(
         [string]$name,
         [switch]$help,

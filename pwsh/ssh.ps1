@@ -2,7 +2,7 @@ $global:__sshcAuthMap = @{};
 $global:__sshcPortMap = @{};
 
 # ssh connect
-function sshc {
+function global:sshc {
 	param (
 		[String] $name
 	)
@@ -22,7 +22,7 @@ function sshc {
 }
 
 # ssh upload
-function sshup([String] $name, [String] $local, [String] $remote) {
+function global:sshup([String] $name, [String] $local, [String] $remote) {
 	$temp = $global:__sshcAuthMap[$name]
 	if (!$temp) {
 		Write-Output "empty auth for $name"
@@ -47,7 +47,7 @@ function sshup([String] $name, [String] $local, [String] $remote) {
 }
 
 # ssh download
-function sshdown([String] $name, [String] $remote, [String] $local) {
+function global:sshdown([String] $name, [String] $remote, [String] $local) {
 	$temp = $global:__sshcAuthMap[$name]
 	if (!$temp) {
 		Write-Output "empty auth for $name"

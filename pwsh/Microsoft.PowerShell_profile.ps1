@@ -40,45 +40,12 @@ function urandom() {
 	python -c "print(__import__('base64').b64encode(__import__('os').urandom($length)).decode()[:$length])"
 }
 
-function hash() {
+function uuid() {
 	param (
-		[String] $txt = "",
-		[String] $algname = "",
-		[String] $outputtype = ""
+		[switch] $random
 	)
-
-	if ($txt -eq "") {
-		$txt = &gum input --placeholder="input some text in utf8"
-	}
-
-	if ($algname -eq "") {
-		$tmp = &python -c 'print(" ".join(sorted(list(__import__("hashlib").algorithms_available))))'
-		$algs = $tmp -split " "
-		$algname = &gum filter --selected="md5" $algs
-	}
-	if ($null -eq $algname) {
-		return;
-	}
-
-	if ($outputtype -eq "") {
-		$outputtype = &gum filter --selected="hex" "base64" "bin" "hex" 
-	}
-	if ($null -eq $outputtype) {
-		return;
-	}
-
-	switch ($outputtype) {
-		"hex" {
-			python -c "print(__import__('hashlib').$algname('''$outputtype'''.encode('utf8')).hexdigest())"
-		}
-		"bin" {
-			python -c "print(__import__('hashlib').$algname('''$outputtype'''.encode('utf8')).digest())"
-		}
-		"base64" {
-			python -c "print(__import__('base64').b64encode(__import__('hashlib').$algname('''$outputtype'''.encode('utf8')).digest()).decode())"
-		}
-	}
-	
+	$version = if ($random) { 4 } else { 7 }
+	python -c "print(__import__('uuid').uuid$version())"
 }
 
 function confirm() {
@@ -94,25 +61,42 @@ function confirm() {
 
 function hex() {
 	param (
-		[int] $num = 0
+		$val
 	)
-	$val = "{0:X}" -f $num
-	Write-Output $val
+	$tmp = "$val"
+	if (-not($tmp -match "^\d+$")) {
+		throw "input must be a unsigned int"
+	}
+	$val = [Convert]::ToInt64($tmp);
+	return "0x$($val.ToString("X"))"
 }
 
+function unhex {
+	param (
+		[string]$val
+	)
+	$tmp = $val.ToLower()
+	if (-not($tmp.StartsWith("0x"))) {
+		$tmp = "0x$tmp"
+	}
+	$val = [Convert]::ToInt64($tmp, 16)
+	return $val
+}
+
+. $PSScriptRoot/px.ps1
+. $PSScriptRoot/env.ps1
 . $PSScriptRoot/git.ps1
 . $PSScriptRoot/ssh.ps1
 . $PSScriptRoot/vscode.ps1
 if ($IsWindows) {
 	. $PSScriptRoot/windows.ps1
 }
-
 if ($IsLinux) {
 	. $PSScriptRoot/linux.ps1
 }
-
-. $PSScriptRoot/px.ps1
-. $PSScriptRoot/env.ps1
+if (Get-Command docker -ErrorAction SilentlyContinue) {
+	. $PSScriptRoot/docker.ps1
+}
 
 function reloadrc {
 	$rc = "$HOME/.pwshrc.ps1"
@@ -126,15 +110,28 @@ function reloadrc {
 		carapace _carapace | Out-String | Invoke-Expression
 	}
 
-	if (Get-Command scoop -ErrorAction SilentlyContinue) {
-		if (Get-Command scoop-search -ErrorAction SilentlyContinue) {
-			. ([ScriptBlock]::Create((& scoop-search --hook | Out-String)))
-		}
-	}
-
 	if (($null -ne $global:pyenv) -and (Test-Path -Path $global:pyenv)) {
 		& $global:pyenv\Scripts\activate.ps1
 	}
+}
+
+function editrc {
+	$rc = "$HOME/.pwshrc.ps1"
+
+	$editors = @("hx", "vim", "vi", "nano")
+	$editor = $null
+	foreach ($e in $editors) {
+		if (Get-Command $e -ErrorAction SilentlyContinue) {
+			$editor = $e
+			break
+		}
+	}
+	if ($null -ne $editor) {
+		& $editor $rc
+		reloadrc
+		return
+	}		
+	Write-Output "no editor found"
 }
 
 reloadrc

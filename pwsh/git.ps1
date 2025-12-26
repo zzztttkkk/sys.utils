@@ -123,9 +123,10 @@ function pulla() {
     git submodule foreach --recursive "pwsh -Command pulla"
 }
 
-function gfa() {    
+function fa() {    
     git fetch --all
-    git submodule foreach --recursive "git fetch --all"
+    git submodule sync --recursive
+    git fetch --all --prune --recurse-submodules
 }
 
 function pushc() {
@@ -142,19 +143,21 @@ function mergefrom() {
         return
     }
 
-    Write-Output "----------------merge from $target----------------"
-
-    pulla
-
     $branch = &git rev-parse --abbrev-ref HEAD
-
     if ($target -eq $branch) {
         Write-Output "----------------same branch----------------"
-        exit
+        return
     }
 
-    git fetch origin $target
-    git merge origin/$target 
+    if (!(worktreeclean)) {
+        Write-Output "Working tree is not clean, please commit or stash your changes."
+        return
+    }
+
+    if (confirm ">>>>>>>>>>>>>>>>> Merge from $target to $branch ? <<<<<<<<<<<<<<<<<<<<") {
+        git fetch origin $target
+        git merge origin/$target 
+    }
 }
 
 # git last commit hash
@@ -168,6 +171,11 @@ function glch() {
     else {
         git rev-parse --short HEAD
     }
+}
+
+function script:worktreeclean() {
+    $status = git status --porcelain
+    return [string]::IsNullOrWhiteSpace($status)
 }
 
 function mktag() {
@@ -188,10 +196,7 @@ function mktag() {
         return
     }
 
-    function worktreeclean() {
-        $status = git status
-        return $status -match ".*nothing to commit, working tree clean$"
-    }
+
 	
     if ( !(worktreeclean) ) {
         gum confirm "Working tree is not clean, should make a commit?" --default="no" && cz
