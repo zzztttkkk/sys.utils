@@ -1,7 +1,7 @@
 $global:gitauth = @{}
 
 function updategitsettings() {
-    if ($global:gitauth.Count -lt 0) {
+    if ($global:gitauth.Count -gt 0) {
         $name = gum filter $global:gitauth.Keys
         if ([string]::IsNullOrEmpty($name)) {
             return
