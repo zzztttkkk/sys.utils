@@ -1,18 +1,19 @@
 $global:gitauth = @{}
 
 function updategitsettings() {
-    $name = gum filter $global:gitauth.Keys
-    if ([string]::IsNullOrEmpty($name)) {
-        return
-    }
-    $email = $global:gitauth[$name]
-    if ([string]::IsNullOrEmpty($email)) {
-        return
-    }
+    if ($global:gitauth.Count -lt 0) {
+        $name = gum filter $global:gitauth.Keys
+        if ([string]::IsNullOrEmpty($name)) {
+            return
+        }
+        $email = $global:gitauth[$name]
+        if ([string]::IsNullOrEmpty($email)) {
+            return
+        }
 
-    git config user.name $name
-    git config user.email $email
-
+        git config user.name $name
+        git config user.email $email
+    }
     if (confirm "Use proxy?") {
         git config http.proxy $global:proxy
         git config https.proxy $global:proxy    
