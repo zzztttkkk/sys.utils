@@ -183,30 +183,45 @@ function mktag() {
         [string] $tag
     )
 
-    if ( ! (Test-Path "./.git") ) {
-        Write-Output "Not a git repository"
-        return
-    }
-
-    if ($tag -eq "") {
+    if ([string]::IsNullOrWhiteSpace($tag)) {
         $tag = (gum input --placeholder="tag name").Trim()
     }
-    if ($tag -eq "") {
-        Write-Output "empty tag name"
+    if ([string]::IsNullOrWhiteSpace($tag)) {
+        Write-Output "empty tag name, canceled"
         return
     }
-
-
 	
     if ( !(worktreeclean) ) {
         gum confirm "Working tree is not clean, should make a commit?" --default="no" && cz
     }
+    if ( !(worktreeclean) ) {
+        Write-Output "working tree is not clean, canceled"
+        return
+    }
 	
-    do {
-        $summary = gum input --placeholder="tag summary"
-        $summary = $summary.trim()
-    } while ( !$summary )
+    $summary = gum input --placeholder="tag summary"
+    $summary = $summary.trim()
+    if ([string]::IsNullOrWhiteSpace($summary)) {
+        Write-Output "empty tag summary, canceled"
+        return
+    }
 
     git tag -a $tag -m $summary
     git push origin $tag
+}
+
+
+function deltag() {
+    param (
+        [string] $tag
+    )
+    if ($tag -eq "") {
+        $tag = git tag -l | gum filter
+    }
+    if ([string]::IsNullOrWhiteSpace($tag)) {
+        Write-Output "empty tag name, canceled"
+        return
+    }
+    git tag -d $tag
+    git push origin --delete $tag
 }
