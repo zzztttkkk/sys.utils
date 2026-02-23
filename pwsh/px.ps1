@@ -27,12 +27,35 @@ function global:px {
     }
 }
 
+function global:chars() {
+    param(
+        [int]$num,
+        [int]$count = 1
+    )
+
+    if ($count -le 0) {
+        throw "count must be greater than 0"
+    }
+    $tmp = ""
+    for ($i = 0; $i -lt $count; $i++) {
+        $tmp += [char]($num)
+    }
+    return $tmp
+}
+
+$Global:px_dir = $null
+
 function script:find_px_dir {
     param(
         [string]$dir
     )
 
-    $target = "$dir/px"
+    $_px_dir = $Global:px_dir
+    if ([string]::IsNullOrWhiteSpace($_px_dir)) {
+        $_px_dir = "px"
+    }
+
+    $target = "$dir/$_px_dir"
     if (Test-Path -Path $target -PathType Container) {
         return $target
     }
@@ -43,7 +66,6 @@ function script:find_px_dir {
     }
     return (find_px_dir -dir $parent)
 }
-
 
 function script:list_all_commands {
     param (

@@ -1,6 +1,6 @@
 $global:gitauth = @{}
 
-function gcfg() {
+function updategitsettings() {
     if ($global:gitauth.Count -gt 0) {
         $name = gum filter $global:gitauth.Keys
         if ([string]::IsNullOrEmpty($name)) {
@@ -59,7 +59,7 @@ function cz() {
     [string[]] $allctypes = @(
         "🚧 WIP", "♿ Aiiy", "✨ Feat", "🎨 Style",
         "🐛 Bugfix", "🛠 Refactor",
-        "📚 Doc", "🧪 Test", "🎉 Release", "🌐 I18n"
+        "📚 Doc", "🧪 Test", "🎉 Release", "🌐 I18n",
         "⚡️ Perf", "🗑 Reverts", "🧹 Chore", "⚙️ Ci"
     )
     $ctype = gum filter $allctypes

@@ -94,6 +94,10 @@ if ($IsWindows) {
 if ($IsLinux) {
 	. $PSScriptRoot/linux.ps1
 }
+if ($IsMacOS) {
+	. $PSScriptRoot/mac.ps1
+}
+
 if (Get-Command docker -ErrorAction SilentlyContinue) {
 	. $PSScriptRoot/docker.ps1
 }

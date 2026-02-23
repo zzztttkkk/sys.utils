@@ -13,7 +13,16 @@ function fexp {
 
 function rdps {
     $names = Get-ChildItem -Path ~/Documents/ -Filter "*.rdp" | Select-Object -ExpandProperty Name
-    $name = gum choose $names
+    if ($names.Count -eq 0) {
+        Write-Output "no rdp files found"
+        return
+    }
+    if ($names.Count -eq 1) {
+        $name = "$names"
+    }
+    else {
+        $name = gum choose $names
+    }
     if ([string]::IsNullOrEmpty($name)) {
         return
     }
