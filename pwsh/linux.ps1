@@ -8,7 +8,7 @@ function ll {
 
 $global:__os_update_days = 7
 
-function scrript:dnf_upos() {
+function script:dnf_upos() {
     $lastinfo = dnf history list | grep -i -E 'upgrade|update' | head -n 1
     if (-not [string]::IsNullOrEmpty($lastinfo)) {
         $lastat = $lastinfo | awk '{print $4, $5}'

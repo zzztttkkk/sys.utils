@@ -44,7 +44,7 @@ function nc() {
     Test-NetConnection -ComputerName $_host -Port $_port
 }
 
-function listeningports() {
+function tcpports() {
     netstat -ano -p TCP | grep LISTENING
 }
 
