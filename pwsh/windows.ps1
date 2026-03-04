@@ -41,7 +41,7 @@ function nc() {
         [int] $_port
     )
 
-    Test-NetConnection -ComputerName $_host -Port $_port
+    Test-NetConnection -ComputerName $_host -Port $_port -InformationLevel Quiet
 }
 
 function tcpports() {

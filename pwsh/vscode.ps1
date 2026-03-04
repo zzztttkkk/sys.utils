@@ -5,6 +5,11 @@ function vsc() {
         [String] $search = ""
     )
 
+    if ([string]::IsNullOrEmpty($global:__code_projects_dir)) {
+        Write-Error "empty `$global:__code_projects_dir"
+        return
+    }
+
     function __vscodechoose() {
         param (
             [String] $search,

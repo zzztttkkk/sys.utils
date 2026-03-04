@@ -1,6 +1,10 @@
 $OutputEncoding = [System.Console]::OutputEncoding = [System.Console]::InputEncoding = [System.Text.Encoding]::UTF8
 $PSDefaultParameterValues['*:Encoding'] = 'utf8'
 
+if (-not (Get-Command cls -ErrorAction SilentlyContinue)) {
+	Set-Alias cls Clear-Host
+}
+
 $global:proxy = "";
 $global:pyenv = $null;
 
@@ -83,6 +87,22 @@ function unhex {
 	return $val
 }
 
+function ptop {
+	$current = (Get-Location).Path
+	while (1) {
+		$test = "$current/.ptop"
+		if (Test-Path -Path $test) {
+			Set-Location $current
+			break
+		}
+		$tmp = $current
+		$current = Split-Path -Path $current -Parent
+		if ($tmp -eq $current) {
+			break
+		}
+	}
+}
+
 . $PSScriptRoot/px.ps1
 . $PSScriptRoot/env.ps1
 . $PSScriptRoot/git.ps1
@@ -102,7 +122,7 @@ if (Get-Command docker -ErrorAction SilentlyContinue) {
 	. $PSScriptRoot/docker.ps1
 }
 
-function reloadrc {
+function script:reloadrc {
 	$rc = "$HOME/.pwshrc.ps1"
 	if (Test-Path -Path $rc) {
 		. $rc
@@ -132,10 +152,10 @@ function editrc {
 	}
 	if ($null -ne $editor) {
 		& $editor $rc
-		reloadrc
+		$script:reloadrc
 		return
 	}		
 	Write-Output "no editor found"
 }
 
-reloadrc
+$script:reloadrc
