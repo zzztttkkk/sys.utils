@@ -3,15 +3,16 @@ function dps {
         [Alias("a")]
         [switch] $all = $false
     )
+    $fmt = "table {{.Id}}\t{{.Names}}\t{{.Image}}\t{{.ContainerID}}\t{{.Status}}\t{{.Ports}}"
     if ($all) {
-        docker ps -a
+        docker ps -a --format $fmt
     }
     else {
-        docker ps
+        docker ps --format $fmt
     }
 }
 
-function doclog {
+function dlog {
     param (
         [string] $container,
         [Alias("n")]
@@ -20,12 +21,13 @@ function doclog {
         [switch] $follow = $false
     )
 
+    $psargs = @()
     if ([string]::IsNullOrEmpty($container)) {
-        $showall = "-a"
-        if ($follow) {
-            $showall = ""
+        if (-not($follow)) {
+            $psargs += "-a"
         }
-        $container = docker ps $showall --format "{{.Names}}" | gum filter --placeholder "Select a container..."
+        $psargs += "--format {{.Names}}"
+        $container = docker ps $psargs | gum filter --placeholder "Select a container..."
     }
     if ([string]::IsNullOrEmpty($container)) {
         return
