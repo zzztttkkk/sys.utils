@@ -26,7 +26,7 @@ function dlog {
         if (-not($follow)) {
             $psargs += "-a"
         }
-        $psargs += "--format {{.Names}}"
+        $psargs += "--format ""{{.Names}}"""
         $container = docker ps $psargs | gum filter --placeholder "Select a container..."
     }
     if ([string]::IsNullOrEmpty($container)) {
