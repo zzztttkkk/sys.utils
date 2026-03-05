@@ -152,10 +152,10 @@ function editrc {
 	}
 	if ($null -ne $editor) {
 		& $editor $rc
-		$script:reloadrc
+		reloadrc
 		return
 	}		
 	Write-Output "no editor found"
 }
 
-$script:reloadrc
+reloadrc
