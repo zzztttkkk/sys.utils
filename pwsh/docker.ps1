@@ -3,7 +3,7 @@ function dps {
         [Alias("a")]
         [switch] $all = $false
     )
-    $fmt = "table {{.Id}}\t{{.Names}}\t{{.Image}}\t{{.ContainerID}}\t{{.Status}}\t{{.Ports}}"
+    $fmt = "table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}"
     if ($all) {
         docker ps -a --format $fmt
     }
