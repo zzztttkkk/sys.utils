@@ -31,24 +31,44 @@ function gs() {
 
 function cz() {
     param (
-        [bool]$nonet = $false
+        [bool]$offline = $false
     )
 
-    function timediff() {
-        if ($IsWindows) {
-            $difftxt = (&w32tm /stripchart /computer:ntp.aliyun.com /dataonly /samples:1)[-1].trim("s").split(", ")[-1];
-            return [math]::abs([float]$difftxt)
-        }
+    function timediff {
+        param (
+            $NtpServer = "ntp.aliyun.com"
+        )
 
-        if ($IsLinux) {
-            $ntptimestring = ((ntpdate -q ntp.aliyun.com) -split ' ')[0..2] | join-string -Separator ' '
-            $ntptimestamp = [int]$(date --date $ntptimestring +%s)
-            $hosttimestamp = [int]$(date --date "now" +%s)
-            return [math]::abs($hosttimestamp - $ntptimestamp)
+        try {
+            $ntpData = New-Object byte[] 48
+            $ntpData[0] = 0x1B
+
+            $udpClient = New-Object System.Net.Sockets.UdpClient($NtpServer, 123)
+            $udpClient.Client.ReceiveTimeout = 2000 
+        
+            $startTime = Get-Date 
+            $null = $udpClient.Send($ntpData, $ntpData.Length)
+
+            $remoteIpEndPoint = New-Object System.Net.IPEndPoint([System.Net.IPAddress]::Any, 0)
+            $receiveData = $udpClient.Receive([ref]$remoteIpEndPoint)
+            $endTime = Get-Date 
+            $udpClient.Close()
+
+            $intPart = [bitconverter]::ToUInt32($receiveData[43..40], 0)
+            $ntpDateTime = (New-Object DateTime(1900, 1, 1, 0, 0, 0, [DateTimeKind]::Utc)).AddSeconds($intPart)
+
+            $localTimeUtc = $startTime.ToUniversalTime().AddTicks(($endTime.Ticks - $startTime.Ticks) / 2)
+            $diff = ($ntpDateTime - $localTimeUtc).TotalSeconds
+
+            return [math]::Abs([math]::Round($diff, 4))
+        }
+        catch {
+            Write-Warning "NTP fetch failed: $($_.Exception.Message)"
+            return 0
         }
     }
 
-    if (-not $nonet) {
+    if (-not $offline) {
         $tdiff = timediff
         if ($tdiff -ge 60) {
             Write-Output "System Time Diff With Intnet"
@@ -210,7 +230,6 @@ function mktag() {
     git tag -a $tag -m $summary
     git push origin $tag
 }
-
 
 function deltag() {
     param (
