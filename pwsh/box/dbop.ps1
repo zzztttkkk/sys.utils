@@ -5,7 +5,7 @@ function global:dbop {
     )
 
     if ($dbkind -eq "") {
-        $dbkind = $(gum filter mssql oracle ibmdb2 clickhouse mongo mongotx postgres mysql redis es all)
+        $dbkind = $(gum filter mssql oracle ibmdb2 clickhouse mongo mongotx postgres mysql redis valkey es all)
         if ($null -eq $dbkind) {
             return;
         }
