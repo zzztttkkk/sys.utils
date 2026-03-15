@@ -1,6 +1,6 @@
 $global:envfilekeys = @()
 
-function LoadEnvFile {
+function loadenv {
     param (
         [string]$Path = ".env"
     )
@@ -32,8 +32,7 @@ function LoadEnvFile {
     }
 }
 
-
-function ClearEnvFileKeys {
+function clearenv {
     foreach ($key in $global:envfilekeys) {
         [Environment]::SetEnvironmentVariable($key, $null)
     }

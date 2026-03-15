@@ -7,6 +7,21 @@ if (-not (Get-Command cls -ErrorAction SilentlyContinue)) {
 
 $global:proxy = "";
 $global:pyenv = $null;
+$global:editor = "vi"
+
+function script:_detect_editor {
+	$editors = @("hx", "vim", "vi", "nano")
+	$editor = $null
+	foreach ($e in $editors) {
+		if (Get-Command $e -ErrorAction SilentlyContinue) {
+			$editor = $e
+			break
+		}
+	}
+	$global:editor = $editor
+}
+
+_detect_editor
 
 function useproxy() {
 	$env:http_proxy = $global:proxy
@@ -41,7 +56,11 @@ function urandom() {
 	param (
 		[Int] $length = 16
 	)
-	python -c "print(__import__('base64').b64encode(__import__('os').urandom($length)).decode()[:$length])"
+	pip show based58 | Out-Null
+	if ($LASTEXITCODE -ne 0) {
+		pip install based58
+	}
+	python -c "print(__import__('based58').b58encode(__import__('os').urandom($length)).decode()[:$length])"
 }
 
 function uuid() {
@@ -61,30 +80,6 @@ function confirm() {
 		return $true
 	}
 	return $false
-}
-
-function hex() {
-	param (
-		$val
-	)
-	$tmp = "$val"
-	if (-not($tmp -match "^\d+$")) {
-		throw "input must be a unsigned int"
-	}
-	$val = [Convert]::ToInt64($tmp);
-	return "0x$($val.ToString("X"))"
-}
-
-function unhex {
-	param (
-		[string]$val
-	)
-	$tmp = $val.ToLower()
-	if (-not($tmp.StartsWith("0x"))) {
-		$tmp = "0x$tmp"
-	}
-	$val = [Convert]::ToInt64($tmp, 16)
-	return $val
 }
 
 function ptop {
@@ -108,6 +103,7 @@ function ptop {
 . $PSScriptRoot/git.ps1
 . $PSScriptRoot/ssh.ps1
 . $PSScriptRoot/vscode.ps1
+. $PSScriptRoot/hosts.ps1
 if ($IsWindows) {
 	. $PSScriptRoot/windows.ps1
 }
@@ -141,21 +137,8 @@ function script:reloadrc {
 
 function editrc {
 	$rc = "$HOME/.pwshrc.ps1"
-
-	$editors = @("hx", "vim", "vi", "nano")
-	$editor = $null
-	foreach ($e in $editors) {
-		if (Get-Command $e -ErrorAction SilentlyContinue) {
-			$editor = $e
-			break
-		}
-	}
-	if ($null -ne $editor) {
-		& $editor $rc
-		reloadrc
-		return
-	}		
-	Write-Output "no editor found"
+	& $global:editor $rc
+	reloadrc
 }
 
 reloadrc

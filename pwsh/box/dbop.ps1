@@ -40,6 +40,10 @@ function global:dbop {
                 docker exec -it redis redis-cli
                 return
             }
+            "valkey" {
+                docker exec -it valkey valkey-cli
+                return
+            }
             "oracle" {
                 docker exec -it oracle sqlplus "C##DATA/Ora_123456@localhost/FREE"
                 return
@@ -84,49 +88,13 @@ function global:dbop {
             Set-Location /mnt/d/dev/containers/normal
             docker compose $opkind
         }
-        "es" {
-            Set-Location /mnt/d/dev/containers/$dbkind
-            docker compose $opkind
-        }
-        "ibmdb2" {
-            Set-Location /mnt/d/dev/containers/$dbkind
-            docker compose $opkind
-        }
-        "mssql" {
-            Set-Location /mnt/d/dev/containers/$dbkind
-            docker compose $opkind
-        }
-        "oracle" {
-            Set-Location /mnt/d/dev/containers/$dbkind
-            docker compose $opkind
-        }
-        "clickhouse" {
-            Set-Location /mnt/d/dev/containers/$dbkind
-            docker compose $opkind
-        }
-        "mysql" {
-            Set-Location /mnt/d/dev/containers/normal
-            docker compose $opkind $dbkind
-        }
-        "mongo" {
-            Set-Location /mnt/d/dev/containers/normal
-            docker compose $opkind $dbkind
-        }
-        "mongotx" {
-            Set-Location /mnt/d/dev/containers/normal
-            docker compose $opkind $dbkind
-        }
-        "redis" {
-            Set-Location /mnt/d/dev/containers/normal
-            docker compose $opkind $dbkind
-        }
-        "postgres" {
+        { ("postgres", "redis", "valkey", "mysql", "mongo", "mongotx") -contains $dbkind } {
             Set-Location /mnt/d/dev/containers/normal
             docker compose $opkind $dbkind
         }
         Default {
-            Write-Output "Unexpected DBKind: $dbkind"
-            return
+            Set-Location /mnt/d/dev/containers/$dbkind
+            docker compose $opkind
         }
     }
 
