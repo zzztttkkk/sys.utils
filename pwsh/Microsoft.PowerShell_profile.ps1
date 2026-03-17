@@ -83,16 +83,23 @@ function confirm() {
 }
 
 function ptop {
+	param (
+		[Alias("t")]
+		[string] $test = ".ptop"
+	)
+
 	$current = (Get-Location).Path
 	while (1) {
-		$test = "$current/.ptop"
-		if (Test-Path -Path $test) {
+		if (Test-Path -Path "$current/$test") {
 			Set-Location $current
 			break
 		}
 		$tmp = $current
 		$current = Split-Path -Path $current -Parent
 		if ($tmp -eq $current) {
+			break
+		}
+		if ([string]::IsNullOrEmpty($current)) {
 			break
 		}
 	}
