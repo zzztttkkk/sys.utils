@@ -7,15 +7,14 @@ function script:install_pwsh {
         $target = "$HOME/.config/powershell"
     }
 
-    Remove-Item -Recurse -Force $target -ErrorAction SilentlyContinue
-    if (!(Test-Path $target)) {
-        New-Item -ItemType Directory $target
-    }
-    Copy-Item -Recurse -Path ./pwsh/* -Destination $target
+    Remove-Item -Force $target/*.ps1 -ErrorAction SilentlyContinue
+    Remove-Item -Recurse -Force $target/box -ErrorAction SilentlyContinue
+
+    Copy-Item -Recurse  -Path ./pwsh/* -Destination $target
 }
 
 function script:install_ahk {
-    if(!$IsWindows){
+    if (!$IsWindows) {
         return;
     }
     $target = "$HOME//AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/"

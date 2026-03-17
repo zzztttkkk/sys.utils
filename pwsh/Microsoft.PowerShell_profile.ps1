@@ -104,6 +104,7 @@ function ptop {
 . $PSScriptRoot/ssh.ps1
 . $PSScriptRoot/vscode.ps1
 . $PSScriptRoot/hosts.ps1
+. $PSScriptRoot/modules.ps1
 if ($IsWindows) {
 	. $PSScriptRoot/windows.ps1
 }

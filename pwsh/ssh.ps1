@@ -41,17 +41,19 @@ function global:sshup([String] $name, [String] $local, [String] $remote) {
 	}
 	$temp = $temp + ":" + $remote
 	scp -P $port $local $temp
+	if ($LASTEXITCODE -ne 0) {
+		throw "scp failed"
+	}
 	if ($print_remote) {
 		Write-Output "Remote: $remote"
 	}
 }
 
 # ssh download
-function global:sshdown([String] $name, [String] $remote, [String] $local) {
+function script:_sshdown([String] $name, [String] $remote, [String] $local) {
 	$temp = $global:__sshcAuthMap[$name]
 	if (!$temp) {
-		Write-Output "empty auth for $name"
-		return
+		throw "empty auth for $name"
 	}
 
 	$port = $global:__sshcPortMap[$name]
@@ -59,15 +61,34 @@ function global:sshdown([String] $name, [String] $remote, [String] $local) {
 		$port = 22 
 	}
 
-	$print_local = $false;
 	if ([string]::IsNullOrEmpty($local)) {
 		$local = $env:USERPROFILE + "/Downloads/" + [guid]::NewGuid().ToString();
-		$print_local = $true;
 	}
 
 	$temp = $temp + ":" + $remote
 	scp -P $port $temp $local
-	if ($print_local) {
-		Write-Output "Local: $local"
+	return $local
+}
+
+function global:sshdown {
+	param (
+		[String] $name,
+		[String] $remote,
+		[String] $local
+	)
+	$local = _sshdown $name $remote $local
+	if ($LASTEXITCODE -ne 0) {
+		throw "scp failed"
 	}
+	Write-Output "Local: $local"
+}
+
+function global:sshcat {
+	param (
+		[String] $name,
+		[String] $remote
+	)
+	$local = script:_sshdown $name $remote $local
+	Write-Output (Get-Content $local)
+	Remove-Item $local
 }
