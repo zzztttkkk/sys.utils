@@ -9,17 +9,17 @@ function loadenv {
         Get-Content $Path | ForEach-Object {
             $line = $_.Trim()
             if ([string]::IsNullOrEmpty($line) -or $line.StartsWith("#")) {
-                continue
+                return
             }
 
             $idx = $line.IndexOf("=")
             if ($idx -lt 0) {
-                continue
+                return
             }
             $name = $line.Substring(0, $idx).Trim()
             if (-not ($name -match '^[a-zA-Z_][a-zA-Z0-9_]*$')) {
                 Write-Error "Invalid env name: $name, in file $Path"
-                continue
+                return
             }
             $value = $line.Substring($idx + 1).Trim()
             [Environment]::SetEnvironmentVariable($name, $value)

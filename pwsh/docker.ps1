@@ -28,13 +28,13 @@ function dlog {
         }
         $psargs += "--format"
         $psargs += "{{.Names}}"
-        $container = docker ps $psargs | gum filter --placeholder "Select a container..."
+        $container = docker ps @psargs | gum filter --placeholder "Select a container..."
     }
     if ([string]::IsNullOrEmpty($container)) {
         return
     }
     if ($follow) {
-        docker logs -f $container
+        docker logs -f $container --tail $tail
     }
     else {
         docker logs $container --tail $tail

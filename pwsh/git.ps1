@@ -4,15 +4,20 @@ function updategitsettings() {
     if ($global:gitauth.Count -gt 0) {
         $name = gum filter $global:gitauth.Keys
         if ([string]::IsNullOrEmpty($name)) {
+            Write-Warning "no name selected"
             return
         }
         $email = $global:gitauth[$name]
         if ([string]::IsNullOrEmpty($email)) {
+            Write-Warning "no email selected"
             return
         }
 
         git config user.name $name
         git config user.email $email
+    }
+    else {
+        Write-Warning "no auth info found"
     }
     if (confirm "Use proxy?") {
         git config http.proxy $global:proxy
@@ -120,9 +125,6 @@ function cz() {
     git add -A
     if (!$scope) {
         $scope = "/"
-    }
-    if (!$summary) {
-        $summary = "-"
     }
     $m1 = "[" + $ctype + "] (" + $scope + "): " + $summary
 

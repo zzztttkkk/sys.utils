@@ -4,7 +4,9 @@ $global:__sshcPortMap = @{};
 # ssh connect
 function global:sshc {
 	param (
-		[String] $name
+		[String] $name,
+		[Parameter(ValueFromRemainingArguments = $true)]
+		[string[]] $remains = @()
 	)
 
 	$port = $global:__sshcPortMap[$name]
@@ -18,7 +20,7 @@ function global:sshc {
 		return
 	}
 
-	ssh $auth -p $port $args
+	ssh $auth -p $port $remains
 }
 
 # ssh upload
@@ -88,7 +90,10 @@ function global:sshcat {
 		[String] $name,
 		[String] $remote
 	)
-	$local = script:_sshdown $name $remote $local
+	$local = _sshdown $name $remote $local
+	if ($LASTEXITCODE -ne 0) {
+		throw "scp failed"
+	}
 	Write-Output (Get-Content $local)
 	Remove-Item $local
 }

@@ -32,15 +32,7 @@ function global:chars() {
         [int]$num,
         [int]$count = 1
     )
-
-    if ($count -le 0) {
-        throw "count must be greater than 0"
-    }
-    $tmp = ""
-    for ($i = 0; $i -lt $count; $i++) {
-        $tmp += [char]($num)
-    }
-    return $tmp
+    return "$([char]$num)" * $count
 }
 
 $Global:px_dir = $null
@@ -60,7 +52,7 @@ function script:find_px_dir {
         return $target
     }
 
-    $parent = Split-Path -Path $dir -Parent
+    $parent = Split-Path -Path $dir -Parent -ErrorAction SilentlyContinue
     if (([string]::IsNullOrWhiteSpace($parent)) -or ($parent -eq $dir)) {
         throw "no px dir found"
     }

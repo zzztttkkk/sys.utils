@@ -35,7 +35,7 @@ function vsc() {
             return
         }
 
-        Start-Process -FilePath code -ArgumentList $root/$name -WindowStyle Hidden
+        Start-Process -FilePath code -ArgumentList "$root/$name" -WindowStyle Hidden
     }
 
     __vscodechoose $search $global:__code_projects_dir

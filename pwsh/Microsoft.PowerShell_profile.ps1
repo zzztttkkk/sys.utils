@@ -85,17 +85,29 @@ function confirm() {
 function ptop {
 	param (
 		[Alias("t")]
-		[string] $test = ".ptop"
+		[string] $test = ".ptop",
+
+		[Alias("g")]
+		[switch] $git
 	)
+
+	if (($test -eq ".ptop") -and $git) {
+		$root = $(git rev-parse --show-toplevel)
+		if ($LASTEXITCODE -ne 0) {
+			return
+		}
+		Set-Location $root
+		return
+	}
 
 	$current = (Get-Location).Path
 	while (1) {
 		if (Test-Path -Path "$current/$test") {
 			Set-Location $current
-			break
+			return
 		}
 		$tmp = $current
-		$current = Split-Path -Path $current -Parent
+		$current = Split-Path -Path $current -Parent -ErrorAction SilentlyContinue
 		if ($tmp -eq $current) {
 			break
 		}
@@ -103,6 +115,9 @@ function ptop {
 			break
 		}
 	}
+
+	Write-Output "ptop failed"
+	return
 }
 
 . $PSScriptRoot/px.ps1
