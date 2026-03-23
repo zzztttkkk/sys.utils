@@ -64,7 +64,7 @@ function script:_sshdown([String] $name, [String] $remote, [String] $local) {
 	}
 
 	if ([string]::IsNullOrEmpty($local)) {
-		$local = $env:USERPROFILE + "/Downloads/" + [guid]::NewGuid().ToString();
+		$local = $HOME + "/Downloads/" + [guid]::NewGuid().ToString();
 	}
 
 	$temp = $temp + ":" + $remote
