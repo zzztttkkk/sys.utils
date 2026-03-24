@@ -1,5 +1,5 @@
-$global:__sshcAuthMap = @{};
-$global:__sshcPortMap = @{};
+$global:__sshcAuthMap = @{}
+$global:__sshcPortMap = @{}
 
 # ssh connect
 function global:sshc {
@@ -68,7 +68,7 @@ function script:_sshdown([String] $name, [String] $remote, [String] $local) {
 	}
 
 	$temp = $temp + ":" + $remote
-	scp -P $port $temp $local
+	scp -q -P $port $temp $local
 	return $local
 }
 
@@ -96,4 +96,33 @@ function global:sshcat {
 	}
 	Write-Output (Get-Content $local)
 	Remove-Item $local
+}
+
+function global:scw {
+	param (
+		[String] $name,
+		[Alias("w")]
+		[switch] $write
+	)
+
+	$content = ""
+	if ($write) {
+		$content = gum write
+	}
+	else {
+		$content = Get-Clipboard -Raw
+	}
+
+	$content = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($content))
+	sshc $name "echo '$content' > ~/.sshclipboard"
+}
+
+function global:scr {
+	param (
+		[String] $name
+	)
+	$content = sshc $name "cat ~/.sshclipboard"
+	$content = [Convert]::FromBase64String($content)
+	$content = [System.Text.Encoding]::UTF8.GetString($content)
+	Set-Clipboard $content
 }
