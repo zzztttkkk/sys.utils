@@ -128,7 +128,7 @@ function z {
 		[switch] $git,
 
 		[Alias("t")]
-		[switch] $test
+		[string] $test
 	)
 
 	switch ($dest) {
