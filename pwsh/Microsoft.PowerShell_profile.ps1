@@ -82,7 +82,7 @@ function confirm() {
 	return $false
 }
 
-function ptop {
+function script:ptop {
 	param (
 		[Alias("t")]
 		[string] $test = ".ptop",
@@ -120,6 +120,44 @@ function ptop {
 	return
 }
 
+function z {
+	param (
+		[string] $dest,
+
+		[Alias("g")]
+		[switch] $git,
+
+		[Alias("t")]
+		[switch] $test
+	)
+
+	switch ($dest) {
+		"g" { 
+			$git = $true
+			$dest = $null
+		}
+		Default {}
+	}
+	
+	if (-not [string]::IsNullOrEmpty($dest)) {
+		Set-Location $dest
+		return
+	}
+
+	if ($git) {
+		ptop -g
+		return
+	}
+
+	if ($test) {
+		ptop -t $test
+		return
+	}
+
+	ptop
+}
+
+. $PSScriptRoot/py.ps1
 . $PSScriptRoot/px.ps1
 . $PSScriptRoot/env.ps1
 . $PSScriptRoot/git.ps1
