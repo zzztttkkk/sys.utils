@@ -91,7 +91,7 @@ function script:ptop {
 		[switch] $git
 	)
 
-	if (($test -eq ".ptop") -and $git) {
+	if ($git) {
 		$root = $(git rev-parse --show-toplevel)
 		if ($LASTEXITCODE -ne 0) {
 			return
@@ -155,6 +155,27 @@ function z {
 	}
 
 	ptop
+}
+
+$script:fzfok = Get-Command fzf -ErrorAction SilentlyContinue
+
+function x {
+	$historyFile = (Get-PSReadLineOption).HistorySavePath
+	if (Test-Path $historyFile) {
+		$history = Get-Content $historyFile -Tail 1000 | Select-Object -Unique
+		[array]::Reverse($history)
+		$command = ""
+		if ($fzfok) {
+			$command = $history | fzf
+		}
+		else {
+			$command = gum filter --height 15 $history
+		}
+		if ([string]::IsNullOrEmpty($command)) {
+			return
+		}
+		Invoke-Expression $command
+	}
 }
 
 . $PSScriptRoot/py.ps1
