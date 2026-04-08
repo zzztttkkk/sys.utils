@@ -1,11 +1,14 @@
-function global:dbop {
+function script:_dbop {
     param (
         [String] $dbkind = "",
         [String] $opkind = ""
     )
 
+    $allkinds = Get-ChildItem -Attributes Directory | Select-Object -ExpandProperty Name
+    $allkinds += "all"
+
     if ($dbkind -eq "") {
-        $dbkind = $(gum filter mssql oracle ibmdb2 clickhouse mongo mongotx postgres mysql redis valkey es all)
+        $dbkind = $(gum filter $allkinds)
         if ($null -eq $dbkind) {
             return;
         }
@@ -62,41 +65,34 @@ function global:dbop {
             }
             Default {}
         }
-
         return;
     }
 
-    $orgcwd = $PWD
-
     switch ($dbkind) {
         "all" { 
-            Set-Location /mnt/d/dev/containers/mssql
-            docker compose $opkind
-
-            Set-Location /mnt/d/dev/containers/oracle
-            docker compose $opkind
-
-            Set-Location /mnt/d/dev/containers/clickhouse
-            docker compose $opkind
-
-            Set-Location /mnt/d/dev/containers/es
-            docker compose $opkind
-
-            Set-Location /mnt/d/dev/containers/ibmdb2
-            docker compose $opkind
-
-            Set-Location /mnt/d/dev/containers/normal
-            docker compose $opkind
-        }
-        { ("postgres", "redis", "valkey", "mysql", "mongo", "mongotx") -contains $dbkind } {
-            Set-Location /mnt/d/dev/containers/normal
-            docker compose $opkind $dbkind
+            foreach ($kind in $allkinds) {
+                if ($kind -ne "all") {
+                    Push-Location /mnt/d/dev/containers/$kind
+                    docker compose $opkind
+                    Pop-Location
+                }
+            }
         }
         Default {
-            Set-Location /mnt/d/dev/containers/$dbkind
+            Push-Location /mnt/d/dev/containers/$dbkind
             docker compose $opkind
+            Pop-Location
         }
     }
+}
 
-    Set-Location $orgcwd
+function global:dbop {
+    param (
+        [String] $dbkind = "",
+        [String] $opkind = ""
+    )
+
+    Push-Location /mnt/d/dev/containers
+    _dbop $dbkind $opkind
+    Pop-Location
 }
