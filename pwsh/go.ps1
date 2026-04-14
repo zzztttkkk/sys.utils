@@ -1,7 +1,9 @@
 function global:gouv() {
     param(
         [string]$root = $PWD,
-        [int]$depth = 3
+        [int]$depth = 3,
+        [Alias("s")]
+        [switch]$sync = $false
     )
 
     $version = $(go env GOVERSION).Substring(2).Trim()
@@ -12,19 +14,44 @@ function global:gouv() {
         return
     }
 
+    $works = @()
+
     Write-Output "gouv version: $version"
     foreach ($file in $items) {
+        if ($file.FullName -match "[/\\]vendor[/\\]") {
+            continue
+        }
         $dir = Split-Path -Path $file.FullName -Parent
         Push-Location $dir
-        if ($file.Name -eq "go.mod") {
-            go mod edit -go $version
-            Write-Output "    update mod: $dir"
+        try {
+            if ($file.Name -eq "go.mod") {
+  
+                go mod edit -go $version
+                Write-Output "update mod: $dir"
+                if ($sync) {
+                    go mod tidy
+                    Write-Output "tidy mod: $dir"
+                }
+            }
+            else {
+                $works += $dir
+                go work edit -go $version
+                Write-Output "update work: $dir"
+            }
         }
-        else {
-            go work edit -go $version
-            Write-Output "    update work: $dir"
+        finally {
+            Pop-Location
         }
-        Pop-Location
     }
+
+    if ($sync) {
+        foreach ($work in $works) {
+            Write-Output "sync work: $work"
+            Push-Location $work
+            go work sync
+            Pop-Location
+        }
+    }
+
     Write-Output "done"
 }
