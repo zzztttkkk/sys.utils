@@ -196,9 +196,11 @@ if ($IsLinux) {
 if ($IsMacOS) {
 	. $PSScriptRoot/mac.ps1
 }
-
 if (Get-Command docker -ErrorAction SilentlyContinue) {
 	. $PSScriptRoot/docker.ps1
+}
+if (Get-Command llama-server -ErrorAction SilentlyContinue) {
+	. $PSScriptRoot/llm.ps1
 }
 
 function script:reloadrc {
