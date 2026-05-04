@@ -116,6 +116,9 @@ function cz() {
                 break;
             }
         }
+        else {
+            $_el = 0;
+        }
         $content = $content + $line + "`n"
         $_cl = $_cl + 1
     }
@@ -168,7 +171,7 @@ function mergefrom() {
 
     $branch = &git rev-parse --abbrev-ref HEAD
     if ($target -eq $branch) {
-        Write-Output "----------------same branch----------------"
+        Write-Output "----------------same branch----------------" -ForegroundColor Yellow
         return
     }
 

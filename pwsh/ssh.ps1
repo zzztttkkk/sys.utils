@@ -42,7 +42,8 @@ function global:sshup([String] $name, [String] $local, [String] $remote) {
 		$print_remote = $true;
 	}
 	$temp = $temp + ":" + $remote
-	scp -P $port $local $temp
+	$scpargs = @("-P", $port, $local, $temp)
+	scp $scpargs
 	if ($LASTEXITCODE -ne 0) {
 		throw "scp failed"
 	}
@@ -68,7 +69,8 @@ function script:_sshdown([String] $name, [String] $remote, [String] $local) {
 	}
 
 	$temp = $temp + ":" + $remote
-	scp -q -P $port $temp $local
+	$scpargs = @("-q", "-P", $port, $temp, $local)
+	scp $scpargs
 	return $local
 }
 
@@ -90,7 +92,7 @@ function global:sshcat {
 		[String] $name,
 		[String] $remote
 	)
-	$local = _sshdown $name $remote $local
+	$local = _sshdown $name $remote ""
 	if ($LASTEXITCODE -ne 0) {
 		throw "scp failed"
 	}

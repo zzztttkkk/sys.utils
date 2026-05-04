@@ -92,7 +92,7 @@ function script:ptop {
 	)
 
 	if ($git) {
-		$root = $(git rev-parse --show-toplevel)
+		$root = $(git rev-parse --show-toplevel 2>$null)
 		if ($LASTEXITCODE -ne 0) {
 			return
 		}
