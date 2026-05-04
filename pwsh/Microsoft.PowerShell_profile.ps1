@@ -159,25 +159,6 @@ function z {
 
 $script:fzfok = Get-Command fzf -ErrorAction SilentlyContinue
 
-function x {
-	$historyFile = (Get-PSReadLineOption).HistorySavePath
-	if (Test-Path $historyFile) {
-		$history = Get-Content $historyFile -Tail 1000 | Select-Object -Unique
-		[array]::Reverse($history)
-		$command = ""
-		if ($fzfok) {
-			$command = $history | fzf
-		}
-		else {
-			$command = gum filter --height 15 $history
-		}
-		if ([string]::IsNullOrEmpty($command)) {
-			return
-		}
-		Invoke-Expression $command
-	}
-}
-
 . $PSScriptRoot/py.ps1
 . $PSScriptRoot/px.ps1
 . $PSScriptRoot/env.ps1
@@ -203,16 +184,20 @@ if (Get-Command llama-server -ErrorAction SilentlyContinue) {
 	. $PSScriptRoot/llm.ps1
 }
 
+ensuremodule "PSReadLine"
+ensuremodule "CompletionPredictor"
+Import-Module PSReadLine
+Import-Module CompletionPredictor
+Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
+Set-PSReadLineOption -PredictionSource HistoryAndPlugin
+Set-PSReadLineOption -PredictionViewStyle ListView
+Remove-PSReadLineKeyHandler -Key F2
+Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
+
 function script:reloadrc {
 	$rc = "$HOME/.pwshrc.ps1"
 	if (Test-Path -Path $rc) {
 		. $rc
-	}
-
-	if (Get-Command carapace -ErrorAction SilentlyContinue) {
-		Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
-		Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
-		carapace _carapace | Out-String | Invoke-Expression
 	}
 
 	if (($null -ne $global:pyenv) -and (Test-Path -Path $global:pyenv)) {

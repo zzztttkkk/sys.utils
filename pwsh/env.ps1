@@ -22,8 +22,10 @@ function loadenv {
                 return
             }
             $value = $line.Substring($idx + 1).Trim()
+            if ($value.StartsWith("`"") -and $value.EndsWith("`"")) {
+                $value = $value.Substring(1, $value.Length - 2)
+            }
             [Environment]::SetEnvironmentVariable($name, $value)
-
             $global:envfilekeys += $name
         }
     }
