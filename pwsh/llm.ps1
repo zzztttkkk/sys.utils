@@ -25,6 +25,8 @@ function global:llmctx {
     if ($LASTEXITCODE -ne 0) {
         $ingit = $false;
     }
+
+    $root = (Resolve-Path $root).Path
     $gcargs = @{
         Path    = $root
         File    = $true
@@ -48,9 +50,10 @@ function global:llmctx {
         if ($code.EndsWith("_string.go")) {
             continue;
         }
-        "--- $code"
         $rc = Get-Content -Path $code -Encoding UTF8 -Raw
         $count += $rc.Length
+        $code = $code.Substring($root.Length)
+        "--- $code"
         $rc
         ""
         if (!$quiet) {
