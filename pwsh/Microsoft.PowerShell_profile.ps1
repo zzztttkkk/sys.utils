@@ -185,8 +185,7 @@ if (Get-Command docker -ErrorAction SilentlyContinue) {
 }
 
 
-ensuremodule "PSReadLine"
-ensuremodule "CompletionPredictor"
+ensuremodule "readline"
 Import-Module PSReadLine
 Import-Module CompletionPredictor
 Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
