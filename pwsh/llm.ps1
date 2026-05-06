@@ -16,15 +16,22 @@ function global:llmctx {
         [string] $root = ".",
         [string] $glob = "*.*",
         [alias("q")]
-        [switch] $quiet = $false
+        [switch] $quiet = $false,
+        [alias("r")]
+        [switch] $recursive = $false
     )
     $ingit = $true;
     git rev-parse --is-inside-work-tree 2>&1 | Out-Null
     if ($LASTEXITCODE -ne 0) {
         $ingit = $false;
     }
-
-    $codes = @(Get-ChildItem -Path $root -File -Recurse -Filter $glob | Select-Object -ExpandProperty FullName)
+    $gcargs = @{
+        Path    = $root
+        File    = $true
+        Filter  = $glob
+        Recurse = $recursive
+    }
+    $codes = @(Get-ChildItem @gcargs | Select-Object -ExpandProperty FullName)
     if ($codes.Count -eq 0) {
         Write-Host "empty codes: $glob" -ForegroundColor Yellow
         return
@@ -37,6 +44,9 @@ function global:llmctx {
             if ($LASTEXITCODE -eq 0) {
                 continue;
             }
+        }
+        if ($code.EndsWith("_string.go")) {
+            continue;
         }
         "--- $code"
         $rc = Get-Content -Path $code -Encoding UTF8 -Raw

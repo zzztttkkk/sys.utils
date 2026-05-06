@@ -170,6 +170,9 @@ $script:fzfok = Get-Command fzf -ErrorAction SilentlyContinue
 . $PSScriptRoot/go.ps1
 if ($IsWindows) {
 	. $PSScriptRoot/windows.ps1
+	if (Get-Command llama-server -ErrorAction SilentlyContinue) {
+		. $PSScriptRoot/llm.ps1
+	}
 }
 if ($IsLinux) {
 	. $PSScriptRoot/linux.ps1
@@ -180,9 +183,7 @@ if ($IsMacOS) {
 if (Get-Command docker -ErrorAction SilentlyContinue) {
 	. $PSScriptRoot/docker.ps1
 }
-if (Get-Command llama-server -ErrorAction SilentlyContinue) {
-	. $PSScriptRoot/llm.ps1
-}
+
 
 ensuremodule "PSReadLine"
 ensuremodule "CompletionPredictor"
