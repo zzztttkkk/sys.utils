@@ -27,3 +27,5 @@ function global:ensuremodule {
         }
     }
 }
+
+Export-ModuleMember -Function ensuremodule

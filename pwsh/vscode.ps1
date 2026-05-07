@@ -1,12 +1,10 @@
-$global:__code_projects_dir = ""
-
 function vsc() {
     param (
         [String] $search = ""
     )
 
-    if ([string]::IsNullOrEmpty($global:__code_projects_dir)) {
-        Write-Error "empty `$global:__code_projects_dir"
+    if ([string]::IsNullOrEmpty($global:ProfileConfig.vscroot)) {
+        Write-Error "empty VscRoot"
         return
     }
 
@@ -38,5 +36,5 @@ function vsc() {
         Start-Process -FilePath code -ArgumentList "$root/$name" -WindowStyle Hidden
     }
 
-    __vscodechoose $search $global:__code_projects_dir
+    __vscodechoose $search $global:ProfileConfig.vscroot
 }

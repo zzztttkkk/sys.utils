@@ -1,5 +1,4 @@
-$global:__sshcAuthMap = @{}
-$global:__sshcPortMap = @{}
+Import-Module "$PSScriptRoot/config.psm1"
 
 # ssh connect
 function global:sshc {
@@ -9,12 +8,12 @@ function global:sshc {
 		[string[]] $remains = @()
 	)
 
-	$port = $global:__sshcPortMap[$name]
+	$port = $global:ProfileConfig.sshports[$name]
 	if (!$port) {
 		$port = 22 
 	}
 
-	$auth = $global:__sshcAuthMap[$name]
+	$auth = $global:ProfileConfig.sshauths[$name]
 	if (!$auth) {
 		Write-Output "empty auth for $name"
 		return
@@ -25,13 +24,13 @@ function global:sshc {
 
 # ssh upload
 function global:sshup([String] $name, [String] $local, [String] $remote) {
-	$temp = $global:__sshcAuthMap[$name]
+	$temp = $global:ProfileConfig.sshauths[$name]
 	if (!$temp) {
 		Write-Output "empty auth for $name"
 		return
 	}
 
-	$port = $global:__sshcPortMap[$name]
+	$port = $global:ProfileConfig.sshports[$name]
 	if ( !$port ) {
 		$port = 22 
 	}
@@ -54,12 +53,12 @@ function global:sshup([String] $name, [String] $local, [String] $remote) {
 
 # ssh download
 function script:_sshdown([String] $name, [String] $remote, [String] $local) {
-	$temp = $global:__sshcAuthMap[$name]
+	$temp = $global:ProfileConfig.sshauths[$name]
 	if (!$temp) {
 		throw "empty auth for $name"
 	}
 
-	$port = $global:__sshcPortMap[$name]
+	$port = $global:ProfileConfig.sshports[$name]
 	if ( !$port ) {
 		$port = 22 
 	}

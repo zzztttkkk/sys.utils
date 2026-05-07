@@ -1,4 +1,4 @@
-$global:envfilekeys = [System.Collections.Generic.HashSet[string]]::new()
+$script:envfilekeys = [System.Collections.Generic.HashSet[string]]::new()
 
 function loadenv {
     param (
@@ -26,7 +26,7 @@ function loadenv {
                 $value = $value.Substring(1, $value.Length - 2)
             }
             [Environment]::SetEnvironmentVariable($name, $value)
-            $global:envfilekeys.Add($name) | Out-Null
+            $envfilekeys.Add($name) | Out-Null
             Write-Output "Set env $name = $value"
         }
     }
@@ -35,9 +35,9 @@ function loadenv {
     }
 }
 
-function clearenv {
-    foreach ($key in $global:envfilekeys) {
+function clrenv {
+    foreach ($key in $envfilekeys) {
         [Environment]::SetEnvironmentVariable($key, $null)
     }
-    $global:envfilekeys.Clear()
+    $envfilekeys.Clear()
 }

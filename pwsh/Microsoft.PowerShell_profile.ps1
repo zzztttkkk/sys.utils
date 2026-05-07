@@ -1,3 +1,15 @@
+Import-Module "$PSScriptRoot/modules.psm1"
+
+ensuremodule "toml"
+
+Import-Module "$PSScriptRoot/config.psm1"
+
+function reloadcfg {
+	$Global:ProfileConfig.load()	
+}
+
+reloadcfg
+
 $OutputEncoding = [System.Console]::OutputEncoding = [System.Console]::InputEncoding = [System.Text.Encoding]::UTF8
 $PSDefaultParameterValues['*:Encoding'] = 'utf8'
 
@@ -5,29 +17,12 @@ if (-not (Get-Command cls -ErrorAction SilentlyContinue)) {
 	Set-Alias cls Clear-Host
 }
 
-$global:proxy = "";
-$global:pyenv = $null;
-$global:editor = "vi"
-
-function script:_detect_editor {
-	$editors = @("hx", "vim", "vi", "nano")
-	$editor = $null
-	foreach ($e in $editors) {
-		if (Get-Command $e -ErrorAction SilentlyContinue) {
-			$editor = $e
-			break
-		}
-	}
-	$global:editor = $editor
-}
-
-_detect_editor
-
 function useproxy() {
-	$env:http_proxy = $global:proxy
-	$env:https_proxy = $global:proxy
-	$env:HTTP_PROXY = $global:proxy
-	$env:HTTPS_PROXY = $global:proxy
+	$proxy = $Global:ProfileConfig.proxy
+	$env:http_proxy = $proxy
+	$env:https_proxy = $proxy
+	$env:HTTP_PROXY = $proxy
+	$env:HTTPS_PROXY = $proxy
 }
 
 function unsetproxy() {
@@ -80,6 +75,39 @@ function confirm() {
 		return $true
 	}
 	return $false
+}
+
+function fexp {
+	param (
+		[string]$target = ".",
+		[alias("q")]
+		[switch]$quick = $false
+	)
+	if ($target -eq ".") {
+		if ($quick) {
+			$bookmarkets = $Global:ProfileConfig.fexpbookmarkets
+			$key = gum filter $bookmarkets.Keys
+			if ([string]::IsNullOrEmpty($key)) {
+				return;
+			}
+			$target = $bookmarkets[$key];
+		}
+	}
+	if ([string]::IsNullOrEmpty($target)) {
+		return;
+	}
+	$path = Resolve-Path $target
+	$exe = ""
+	if ($IsWindows) {
+		$exe = "explorer.exe"
+	}
+	if ($IsLinux) {
+		$exe = "xdg-open"
+	}
+	if ($IsMacOS) {
+		$exe = "open"
+	}
+	& $exe $path
 }
 
 function script:ptop {
@@ -157,16 +185,12 @@ function z {
 	ptop
 }
 
-$script:fzfok = Get-Command fzf -ErrorAction SilentlyContinue
-
-. $PSScriptRoot/py.ps1
 . $PSScriptRoot/px.ps1
 . $PSScriptRoot/env.ps1
 . $PSScriptRoot/git.ps1
 . $PSScriptRoot/ssh.ps1
 . $PSScriptRoot/vscode.ps1
 . $PSScriptRoot/hosts.ps1
-. $PSScriptRoot/modules.ps1
 . $PSScriptRoot/go.ps1
 if ($IsWindows) {
 	. $PSScriptRoot/windows.ps1
@@ -184,10 +208,7 @@ if (Get-Command docker -ErrorAction SilentlyContinue) {
 	. $PSScriptRoot/docker.ps1
 }
 
-
 ensuremodule "readline"
-Import-Module PSReadLine
-Import-Module CompletionPredictor
 Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
 Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 Set-PSReadLineOption -PredictionViewStyle ListView
@@ -199,15 +220,11 @@ function script:reloadrc {
 	if (Test-Path -Path $rc) {
 		. $rc
 	}
-
-	if (($null -ne $global:pyenv) -and (Test-Path -Path $global:pyenv)) {
-		& $global:pyenv\Scripts\activate.ps1
-	}
 }
 
 function editrc {
 	$rc = "$HOME/.pwshrc.ps1"
-	& $global:editor $rc
+	& $global:ProfileConfig.editor $rc
 	reloadrc
 }
 

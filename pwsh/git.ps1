@@ -1,7 +1,8 @@
-$global:gitauth = @{}
+Import-Module "$PSScriptRoot/config.psm1"
 
 function gitswitchauth() {
-    if ($global:gitauth.Count -gt 0) {
+    $auths = $Global:ProfileConfig.gitauths;
+    if ($auths.Count -gt 0) {
         $name = gum filter $global:gitauth.Keys
         if ([string]::IsNullOrEmpty($name)) {
             Write-Warning "no name selected"

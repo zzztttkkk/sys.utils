@@ -2,15 +2,6 @@ Set-Alias which Get-Command
 Set-Alias grep Select-String
 Set-Alias ll ls
 
-# explorer.exe
-function fexp {
-    param (
-        [string]$target = "."
-    )
-    $path = resolve-path $target
-    explorer.exe $path
-}
-
 function rdps {
     $names = Get-ChildItem -Path ~/Documents/ -Filter "*.rdp" | Select-Object -ExpandProperty Name
     if ($names.Count -eq 0) {
@@ -27,12 +18,7 @@ function rdps {
         return
     }
     $path = resolve-path ~/Documents/$name
-    mstsc.exe $path
-}
-
-function fexprestar() {
-    taskkill /f /im explorer.exe
-    Start-Process explorer.exe
+    mstsc.exe $path /w:1920 /h:1080
 }
 
 function nc() {
@@ -55,6 +41,7 @@ function netreset() {
     ipconfig /renew
     netsh winsock reset
 }
+
 function fkill() {
     param (
         [String] $val = "",
@@ -104,4 +91,3 @@ function cacheclean() {
     Write-Output ">>>>>>>>>>>> rust <<<<<<<<<<<<<<<"
     cargo cache -a
 }
-
