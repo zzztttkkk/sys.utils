@@ -1,5 +1,16 @@
 Import-Module "$PSScriptRoot/config.psm1"
 
+function script:pickname() {
+	param (
+		[String] $name
+	)
+	if ([string]::IsNullOrEmpty($name)) {
+		$keys = $global:ProfileConfig.sshauths.Keys
+		$name = gum filter $keys
+	}
+	return $name
+}
+
 # ssh connect
 function global:sshc {
 	param (
@@ -7,6 +18,8 @@ function global:sshc {
 		[Parameter(ValueFromRemainingArguments = $true)]
 		[string[]] $remains = @()
 	)
+	$name = pickname $name
+	if ([string]::IsNullOrEmpty($name)) { return; }
 
 	$port = $global:ProfileConfig.sshports[$name]
 	if (!$port) {
@@ -24,6 +37,9 @@ function global:sshc {
 
 # ssh upload
 function global:sshup([String] $name, [String] $local, [String] $remote) {
+	$name = pickname $name
+	if ([string]::IsNullOrEmpty($name)) { return; }
+
 	$temp = $global:ProfileConfig.sshauths[$name]
 	if (!$temp) {
 		Write-Output "empty auth for $name"
@@ -99,30 +115,24 @@ function global:sshcat {
 	Remove-Item $local
 }
 
-function global:scw {
-	param (
-		[String] $name,
-		[Alias("w")]
-		[switch] $write
-	)
-
-	$content = ""
-	if ($write) {
-		$content = gum write
-	}
-	else {
-		$content = Get-Clipboard -Raw
-	}
-
-	$content = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($content))
-	sshc $name "echo '$content' > ~/.sshclipboard"
-}
-
-function global:scr {
+function global:sclipw {
 	param (
 		[String] $name
 	)
-	$content = sshc $name "cat ~/.sshclipboard"
+	$name = pickname $name
+	$content = Get-Clipboard -Raw
+	$content = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($content))
+	sshc $name "echo '$content' > ~/.sshclipboard.temp"
+}
+
+function global:sclipr {
+	param (
+		[String] $name
+	)
+	$name = pickname $name
+	if ([string]::IsNullOrEmpty($name)) { return; }
+
+	$content = sshc $name "cat ~/.sshclipboard.temp"
 	$content = [Convert]::FromBase64String($content)
 	$content = [System.Text.Encoding]::UTF8.GetString($content)
 	Set-Clipboard $content

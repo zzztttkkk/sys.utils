@@ -38,6 +38,7 @@ class _ProfileConfig {
 
             if ($null -ne $raw.proxy) { $this.proxy = $raw.proxy }
             if ($null -ne $raw.editor) { $this.editor = $raw.editor }
+            if ($null -ne $raw.vscroot) { $this.vscroot = $raw.vscroot }
 
             if ($null -ne $raw.git.auths) {
                 $this.gitauths = $raw.git.auths

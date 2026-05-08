@@ -192,6 +192,7 @@ function z {
 . $PSScriptRoot/vscode.ps1
 . $PSScriptRoot/hosts.ps1
 . $PSScriptRoot/go.ps1
+. $PSScriptRoot/py.ps1
 if ($IsWindows) {
 	. $PSScriptRoot/windows.ps1
 	if (Get-Command llama-server -ErrorAction SilentlyContinue) {
