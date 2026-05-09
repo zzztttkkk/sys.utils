@@ -1,4 +1,4 @@
-$ENV:PATH = "$HOME/.local/bin:$HOME/bin:" + $ENV:PATH 
+$ENV:PATH += ":$HOME/.local/bin:$HOME/bin"
 
 Set-Alias -Name ls -Value Get-ChildItem
 

@@ -185,8 +185,6 @@ function z {
 	ptop
 }
 
-Write-Host $Global:__EXEC_GUARDS
-
 if ($Global:__EXEC_GUARDS) {
 }
 else {
