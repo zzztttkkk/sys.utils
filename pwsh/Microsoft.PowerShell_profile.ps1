@@ -185,30 +185,37 @@ function z {
 	ptop
 }
 
-. $PSScriptRoot/px.ps1
-. $PSScriptRoot/env.ps1
-. $PSScriptRoot/git.ps1
-. $PSScriptRoot/ssh.ps1
-. $PSScriptRoot/vscode.ps1
-. $PSScriptRoot/hosts.ps1
-. $PSScriptRoot/go.ps1
-. $PSScriptRoot/py.ps1
-if ($IsWindows) {
-	. $PSScriptRoot/windows.ps1
-	if (Get-Command llama-server -ErrorAction SilentlyContinue) {
-		. $PSScriptRoot/llm.ps1
+Write-Host $Global:__EXEC_GUARDS
+
+if ($Global:__EXEC_GUARDS) {
+}
+else {
+	$Global:__EXEC_GUARDS = $true
+
+	. $PSScriptRoot/px.ps1
+	. $PSScriptRoot/env.ps1
+	. $PSScriptRoot/git.ps1
+	. $PSScriptRoot/ssh.ps1
+	. $PSScriptRoot/vscode.ps1
+	. $PSScriptRoot/hosts.ps1
+	. $PSScriptRoot/go.ps1
+	. $PSScriptRoot/py.ps1
+	if ($IsWindows) {
+		. $PSScriptRoot/windows.ps1
+		if (Get-Command llama-server -ErrorAction SilentlyContinue) {
+			. $PSScriptRoot/llm.ps1
+		}
+	}
+	if ($IsLinux) {
+		. $PSScriptRoot/linux.ps1
+	}
+	if ($IsMacOS) {
+		. $PSScriptRoot/mac.ps1
+	}
+	if (Get-Command docker -ErrorAction SilentlyContinue) {
+		. $PSScriptRoot/docker.ps1
 	}
 }
-if ($IsLinux) {
-	. $PSScriptRoot/linux.ps1
-}
-if ($IsMacOS) {
-	. $PSScriptRoot/mac.ps1
-}
-if (Get-Command docker -ErrorAction SilentlyContinue) {
-	. $PSScriptRoot/docker.ps1
-}
-
 
 if (($Host.UI.RawUI.WindowSize.Width -gt 50) -or ($Host.UI.RawUI.WindowSize.Height -lt 5)) {
 }
