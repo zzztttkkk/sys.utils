@@ -209,17 +209,17 @@ if (Get-Command docker -ErrorAction SilentlyContinue) {
 	. $PSScriptRoot/docker.ps1
 }
 
-ensuremodule "readline"
-Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
-Set-PSReadLineOption -PredictionSource HistoryAndPlugin
+
 if (($Host.UI.RawUI.WindowSize.Width -gt 50) -or ($Host.UI.RawUI.WindowSize.Height -lt 5)) {
 }
 else {
+	ensuremodule "readline"
+	Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
+	Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 	Set-PSReadLineOption -PredictionViewStyle ListView
+	Remove-PSReadLineKeyHandler -Key F2
+	Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 }
-Remove-PSReadLineKeyHandler -Key F2
-Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
-
 
 function script:reloadrc {
 	$rc = "$HOME/.pwshrc.ps1"
