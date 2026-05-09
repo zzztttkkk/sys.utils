@@ -27,14 +27,6 @@ function global:px {
     }
 }
 
-function global:chars() {
-    param(
-        [int]$num,
-        [int]$count = 1
-    )
-    return "$([char]$num)" * $count
-}
-
 $Global:px_dir = $null
 
 function script:find_px_dir {

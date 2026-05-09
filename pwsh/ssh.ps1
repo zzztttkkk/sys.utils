@@ -115,12 +115,44 @@ function global:sshcat {
 	Remove-Item $local
 }
 
+function script:clipr {
+	$content = ""
+	if ($IsWindows) {
+		$content = Get-Clipboard -Raw
+	}
+	elseif ($IsLinux) {
+		$content = wl-paste 2>$null
+	}
+	elseif ($IsMacOS) {
+		$content = pbpaste 2>$null
+	}
+	return $content
+}
+
+function script:clipw($content) {
+	if ($IsWindows) {
+		Set-Clipboard $content
+		return
+	}
+	if ($IsLinux) {
+		$content | wl-copy
+		return
+	}
+	if ($IsMacOS) {
+		$content | pbcopy
+		return
+	}
+}
+
 function global:sclipw {
 	param (
 		[String] $name
 	)
 	$name = pickname $name
-	$content = Get-Clipboard -Raw
+	$content = clipr
+	if ([string]::IsNullOrEmpty($content)) {
+		Write-Warning "failed to read clipboard"
+	}
 	$content = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($content))
 	sshc $name "echo '$content' > ~/.sshclipboard.temp"
 }
@@ -135,5 +167,5 @@ function global:sclipr {
 	$content = sshc $name "cat ~/.sshclipboard.temp"
 	$content = [Convert]::FromBase64String($content)
 	$content = [System.Text.Encoding]::UTF8.GetString($content)
-	Set-Clipboard $content
+	clipw $content
 }
