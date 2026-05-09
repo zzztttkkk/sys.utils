@@ -5,6 +5,9 @@ function script:pickname() {
 		[String] $name
 	)
 	if ([string]::IsNullOrEmpty($name)) {
+		if ($global:ProfileConfig.sshdefault -ne "") {
+			return $global:ProfileConfig.sshdefault
+		}
 		$keys = $global:ProfileConfig.sshauths.Keys
 		$name = gum filter $keys
 	}

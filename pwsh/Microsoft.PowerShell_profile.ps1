@@ -4,11 +4,7 @@ ensuremodule "toml"
 
 Import-Module "$PSScriptRoot/config.psm1"
 
-function reloadcfg {
-	$Global:ProfileConfig.load()	
-}
-
-reloadcfg
+$Global:ProfileConfig.load()	
 
 $OutputEncoding = [System.Console]::OutputEncoding = [System.Console]::InputEncoding = [System.Text.Encoding]::UTF8
 $PSDefaultParameterValues['*:Encoding'] = 'utf8'

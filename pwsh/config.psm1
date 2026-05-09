@@ -2,6 +2,7 @@ class _ProfileConfig {
     [string]$proxy;
     [string]$editor;
     [string]$vscroot;
+    [string]$sshdefault;
 
     [hashtable]$fexpbookmarkets; # string -> string
     [hashtable]$gitauths; # string -> string
@@ -12,6 +13,7 @@ class _ProfileConfig {
         $this.proxy = "";
         $this.editor = "";
         $this.vscroot = "";
+        $this.sshdefault = "";
 
         $this.fexpbookmarkets = @{};
         $this.gitauths = @{};
@@ -39,6 +41,7 @@ class _ProfileConfig {
             if ($null -ne $raw.proxy) { $this.proxy = $raw.proxy }
             if ($null -ne $raw.editor) { $this.editor = $raw.editor }
             if ($null -ne $raw.vscroot) { $this.vscroot = $raw.vscroot }
+            if ($null -ne $raw.sshdefault) { $this.sshdefault = $raw.sshdefault }
 
             if ($null -ne $raw.git.auths) {
                 $this.gitauths = $raw.git.auths
