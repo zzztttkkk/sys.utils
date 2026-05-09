@@ -210,7 +210,7 @@ if (Get-Command docker -ErrorAction SilentlyContinue) {
 }
 
 
-if (($Host.UI.RawUI.WindowSize.Width -gt 50) -and ($Host.UI.RawUI.WindowSize.Height -lt 5)) {
+if (($Host.UI.RawUI.WindowSize.Width -gt 50) -or ($Host.UI.RawUI.WindowSize.Height -lt 5)) {
 }
 else {
 	ensuremodule "readline"
