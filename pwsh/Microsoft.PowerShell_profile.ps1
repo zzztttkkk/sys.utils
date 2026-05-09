@@ -212,7 +212,12 @@ if (Get-Command docker -ErrorAction SilentlyContinue) {
 ensuremodule "readline"
 Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
 Set-PSReadLineOption -PredictionSource HistoryAndPlugin
-Set-PSReadLineOption -PredictionViewStyle ListView
+if (($Host.UI.RawUI.WindowSize.Width -gt 50) -and ($Host.UI.RawUI.WindowSize.Height -lt 5)) {
+	Set-PSReadLineOption -PredictionViewStyle InlineView
+}
+else {
+	Set-PSReadLineOption -PredictionViewStyle ListView
+}
 Remove-PSReadLineKeyHandler -Key F2
 Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 
