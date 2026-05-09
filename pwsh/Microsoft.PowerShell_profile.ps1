@@ -213,7 +213,6 @@ ensuremodule "readline"
 Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
 Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 Set-PSReadLineOption -PredictionViewStyle ListView
-Set-PSReadLineOption -DisableWindowSizeWarning $true
 Remove-PSReadLineKeyHandler -Key F2
 Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 
