@@ -3,12 +3,12 @@ Import-Module "$PSScriptRoot/config.psm1"
 function gitswitchauth() {
     $auths = $Global:ProfileConfig.gitauths;
     if ($auths.Count -gt 0) {
-        $name = gum filter $global:gitauth.Keys
+        $name = gum filter $auths.Keys
         if ([string]::IsNullOrEmpty($name)) {
             Write-Warning "no name selected"
             return
         }
-        $email = $global:gitauth[$name]
+        $email = $auths[$name]
         if ([string]::IsNullOrEmpty($email)) {
             Write-Warning "no email selected"
             return
@@ -21,8 +21,8 @@ function gitswitchauth() {
         Write-Warning "no auth info found"
     }
     if (confirm "Use proxy?") {
-        git config http.proxy $global:proxy
-        git config https.proxy $global:proxy    
+        git config http.proxy $Global:ProfileConfig.proxy
+        git config https.proxy $Global:ProfileConfig.proxy    
     }
     else {
         git config --unset http.proxy
