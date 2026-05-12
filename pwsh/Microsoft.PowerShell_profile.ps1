@@ -46,7 +46,6 @@ else {
 
 function script:enablereadline {
 	if ($env:SSH_CLIENT -and (-not $env:SSH_TTY)) { return; }
-	if ([Console]::IsInputRedirected) { return; }
 	if (-not $Host.UI.RawUI) { return; }
 	if ($Host.UI.RawUI.WindowSize.Width -lt 50) { return; }
 	if ($Host.UI.RawUI.WindowSize.Height -lt 5) { return; }
