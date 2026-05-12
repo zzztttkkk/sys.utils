@@ -1,7 +1,8 @@
 function global:px {
     param(
-        [string]$name,
-        [switch]$help,
+        [string]$_px_cmd_name,
+        [Alias("h")]
+        [switch]$_px_help,
 
         [Parameter(ValueFromRemainingArguments = $true)]
         [object[]]$remain
@@ -9,25 +10,23 @@ function global:px {
 
     $px_dir = (find_px_dir -dir $PWD)
     
-    if ([string]::IsNullOrWhiteSpace($name)) {
+    if ([string]::IsNullOrWhiteSpace($_px_cmd_name)) {
         Write-Output "no command name specified"
         return
     }
     
-    $target = "$px_dir/$name.ps1"
+    $target = "$px_dir/$_px_cmd_name.ps1"
     if (Test-Path -Path $target -PathType Leaf) {
-        if ($help) {
+        if ($_px_help) {
             help $target
             return
         }
-        run_command -px_dir $px_dir -name $name -remain $remain
+        run_command -px_dir $px_dir -file $target -remain $remain
     }
     else {
-        throw "no such command: $name"
+        throw "no such command: $_px_cmd_name"
     }
 }
-
-$Global:px_dir = $null
 
 function script:find_px_dir {
     param(
@@ -67,35 +66,42 @@ function script:args_to_string {
     param (
         [object[]]$argvs
     )
-    $tmp = $argvs | ForEach-Object {
-        $str = "$_"
-        if ($str -match " ") {
-            $str = $str -replace "`"", "`"`""
-            return "`"$str`""
+
+    if (($null -eq $argvs) -or ($argvs.Count -eq 0)) { return "" }
+
+    $result = foreach ($arg in $argvs) {
+        $str = [string]$arg
+        if ($str.Length -eq 0) { "''"; continue }
+        if ($str -match '[\s''"`$@;()\[\]{}]') {
+            "'{0}'" -f ($str -replace "'", "''")
         }
         else {
-            return $str
+            $str
         }
     }
-    return $tmp -join " "
+    return $result -join " "
 }
 
 function script:run_command {
     param (
         [string]$px_dir,
-        [string]$name,
+        [string]$file,
         [object[]]$remain
     )
 
     Push-Location (Split-Path -Path $px_dir -Parent)
     try {
         $argvs = args_to_string $remain
-        $expr = "& ""$px_dir/$name.ps1"" $argvs"
+        $expr = [scriptblock]::create("& `"$file`" $argvs")
         $begin = [DateTime]::Now
-        Invoke-Expression $expr
+        & $expr
         $end = [DateTime]::Now
         $elapsed = $end - $begin
-        Write-Output "px exec elapsed: $elapsed"
+        Write-Host ">>>>>>>>>>" -ForegroundColor Green -NoNewline
+        Write-Host " px exec ``" -NoNewline
+        Write-Host "$([System.IO.Path]::GetFileNameWithoutExtension($file))" -ForegroundColor Cyan -NoNewline
+        Write-Host "``, elapsed: " -NoNewline
+        Write-Host "$elapsed" -ForegroundColor Cyan
     }
     catch {
         throw $_
@@ -105,7 +111,7 @@ function script:run_command {
     }
 }
 
-Register-ArgumentCompleter -CommandName px -ParameterName name -ScriptBlock {
+Register-ArgumentCompleter -CommandName px -ParameterName _px_cmd_name -ScriptBlock {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
     
     try {

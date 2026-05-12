@@ -1,7 +1,9 @@
 function global:edithosts {
+    $editor = $global:ProfileConfig.editor
     if ($IsWindows) {
-        & $global:editor $env:windir\System32\drivers\etc\hosts
+        $cmd = "$editor $env:windir\System32\drivers\etc\hosts" 
+        sudo pwsh -c $cmd
         return
     }
-    & sudo $global:editor /etc/hosts
+    & sudo $editor /etc/hosts
 }

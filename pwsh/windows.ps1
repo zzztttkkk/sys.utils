@@ -35,39 +35,23 @@ function tcpports() {
 }
 
 function netreset() {
-    ipconfig /flushdns
-    ipconfig /registerdns
-    ipconfig /release
-    ipconfig /renew
-    netsh winsock reset
+    $tasks = {
+        ipconfig /flushdns
+        ipconfig /registerdns
+        ipconfig /release
+        ipconfig /renew
+        netsh winsock reset
+    }
+    sudo pwsh $tasks
 }
 
-function fkill() {
-    param (
-        [String] $val = "",
-        [String] $op = "eq"
-    )
-    if ($val -eq "" ) {
-        return
-    }
-    $op = "-${op}"
-    $operators = @('-eq', '-ne', '-like', '-notlike', '-match', '-notmatch', '-in', '-notin')
-    if ($operators -notcontains $op) {
-        throw "bad operator: $op"
-    }
-    $procs = Invoke-Expression "ps | where -Property ProcessName -Value $val $op"
-    foreach ( $proc in $procs ) {
-        try {
-            Write-Host "kill process: $($proc.Name) $($proc.Id)"
-            stop-process -id $proc.Id
-        }
-        catch {
-            Write-Warning "Failed to terminate process: $($proc.Id)"
-        }
-    }
-}
 
-function cacheclean() {
+
+function cclr() {
+    # python
+    Write-Output ">>>>>>>>>>>> pip <<<<<<<<<<<<<<<"
+    pip cache purge
+
     # node
     Write-Output ">>>>>>>>>>>> npm <<<<<<<<<<<<<<<"
     npm cache clean --force
@@ -90,4 +74,12 @@ function cacheclean() {
     # rust
     Write-Output ">>>>>>>>>>>> rust <<<<<<<<<<<<<<<"
     cargo cache -a
+
+    # system
+    Write-Output ">>>>>>>>>>>> system <<<<<<<<<<<<<<<"
+    Remove-Item -Recurse -Force "$env:TEMP/*" -ErrorAction SilentlyContinue
+
+    # scoop
+    Write-Output ">>>>>>>>>>>> scoop <<<<<<<<<<<<<<<"
+    scoop cache rm *
 }
