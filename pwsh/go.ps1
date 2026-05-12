@@ -1,12 +1,17 @@
 function global:gouv() {
     param(
         [string]$root = $PWD,
+        [Alias("v")]
+        [string]$version = "",
+        [Alias("d")]
         [int]$depth = 3,
         [Alias("s")]
         [switch]$sync = $false
     )
 
-    $version = $(go env GOVERSION).Substring(2).Trim()
+    if ([string]::IsNullOrWhiteSpace($version)) {
+        $version = $(go env GOVERSION).Substring(2).Trim()
+    }
 
     $items = Get-ChildItem -Path $root -Recurse -File  -Include @("go.mod", "go.work") -Depth $depth
     if ($items.Count -eq 0) {
