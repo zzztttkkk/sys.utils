@@ -44,9 +44,10 @@ else {
 	}
 }
 
-if (($Host.UI.RawUI.WindowSize.Width -lt 50) -or ($Host.UI.RawUI.WindowSize.Height -lt 5)) {
-}
-else {
+function script:enablereadline {
+	if ($Host.UI.RawUI.WindowSize.Width -lt 50) { return; }
+	if ($Host.UI.RawUI.WindowSize.Height -lt 5) { return; }
+	if ($env:SSH_CLIENT -and (-not $env:SSH_TTY)) { return; }
 	ensuremodule "readline"
 	Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
 	Set-PSReadLineOption -PredictionSource HistoryAndPlugin
@@ -54,6 +55,8 @@ else {
 	Remove-PSReadLineKeyHandler -Key F2
 	Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 }
+
+enablereadline
 
 function script:reloadrc {
 	$rc = "$HOME/.pwshrc.ps1"
