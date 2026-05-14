@@ -83,7 +83,8 @@ function script:_sshdown([String] $name, [String] $remote, [String] $local) {
 	}
 
 	if ([string]::IsNullOrEmpty($local)) {
-		$local = $HOME + "/Downloads/" + [guid]::NewGuid().ToString();
+		$leaf = Split-Path $remote -Leaf
+		$local = "$HOME/Downloads/$leaf"
 	}
 
 	$temp = $temp + ":" + $remote
