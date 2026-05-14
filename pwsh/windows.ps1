@@ -45,8 +45,6 @@ function netreset() {
     sudo pwsh $tasks
 }
 
-
-
 function cclr() {
     # python
     Write-Output ">>>>>>>>>>>> pip <<<<<<<<<<<<<<<"
@@ -82,4 +80,26 @@ function cclr() {
     # scoop
     Write-Output ">>>>>>>>>>>> scoop <<<<<<<<<<<<<<<"
     scoop cache rm *
+}
+
+function hvrun {
+    param (
+        [Alias("c")]
+        [switch] $connect
+    )
+
+    sudo pwsh -NoProfile -c {
+        $c = $args[0]["c"]
+
+        $items = @(Get-VM | Where-Object { $_.State -eq "Off" } | Select-Object -ExpandProperty Name)
+        if ($items.Count -lt 1) { return; }
+        
+        $name = gum filter $items
+        if ([string]::IsNullOrEmpty($name)) { return; }
+
+        Start-VM -Name $name
+        if ($c) {
+            Start-Process vmconnect -ArgumentList "localhost", $name
+        }
+    } -args @{ c = $connect }
 }
