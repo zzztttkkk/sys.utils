@@ -1,0 +1,9 @@
+# <DEST:WIN>: $env:APPDATA/helix/config.toml
+# <DEST:LINUX>: ~/.config/helix/config.toml
+
+theme = "cyan_light"
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "bar"
+select = "bar"

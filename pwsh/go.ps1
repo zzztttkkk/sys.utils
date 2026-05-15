@@ -9,6 +9,8 @@ function global:gouv() {
         [switch]$sync = $false
     )
 
+    go env -w "GOPROXY=https://goproxy.cn,direct"
+
     if ([string]::IsNullOrWhiteSpace($version)) {
         $version = $(go env GOVERSION).Substring(2).Trim()
     }

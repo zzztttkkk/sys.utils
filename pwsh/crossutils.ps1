@@ -212,3 +212,10 @@ function fq() {
         Stop-Process -id $proc.Id -ErrorAction SilentlyContinue
     }
 }
+
+function iselevated {
+    if ($IsWindows) {
+        return [Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator);
+    }
+    return (id -u) -eq 0
+}

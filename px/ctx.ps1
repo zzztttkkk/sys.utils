@@ -1,0 +1,1 @@
+llmctx -e *.md, tests, .gitignore , LICENSE  -r

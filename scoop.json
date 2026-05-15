@@ -1,0 +1,233 @@
+{
+    "buckets": [
+        {
+            "Name": "main",
+            "Source": "https://github.com/ScoopInstaller/Main",
+            "Updated": "2026-05-12T17:17:27+08:00",
+            "Manifests": 1531
+        },
+        {
+            "Name": "extras",
+            "Source": "https://github.com/ScoopInstaller/Extras",
+            "Updated": "2026-05-12T17:17:31+08:00",
+            "Manifests": 2306
+        },
+        {
+            "Name": "versions",
+            "Source": "https://github.com/ScoopInstaller/Versions",
+            "Updated": "2026-05-13T23:16:50+08:00",
+            "Manifests": 580
+        },
+        {
+            "Name": "nerd-fonts",
+            "Source": "https://github.com/matthewjberger/scoop-nerd-fonts",
+            "Updated": "2026-05-05T02:19:14+08:00",
+            "Manifests": 367
+        }
+    ],
+    "apps": [
+        {
+            "Version": "26.01",
+            "Info": "",
+            "Source": "main",
+            "Name": "7zip",
+            "Updated": "2026-05-01T19:08:08.8571006+08:00"
+        },
+        {
+            "Version": "5.40.2716",
+            "Info": "",
+            "Source": "extras",
+            "Name": "aimp",
+            "Updated": "2026-04-25T00:34:13.6877936+08:00"
+        },
+        {
+            "Version": "1.37.0-1",
+            "Info": "",
+            "Source": "main",
+            "Name": "aria2",
+            "Updated": "2026-05-12T19:27:09.846969+08:00"
+        },
+        {
+            "Version": "2.0.26",
+            "Info": "",
+            "Source": "extras",
+            "Name": "autohotkey",
+            "Updated": "2026-05-07T17:16:52.7974946+08:00"
+        },
+        {
+            "Version": "0.17.0",
+            "Info": "",
+            "Source": "main",
+            "Name": "charm-gum",
+            "Updated": "2025-12-03T15:03:50.4228268+08:00"
+        },
+        {
+            "Version": "148.0.7778.97-r1610480",
+            "Info": "",
+            "Source": "extras",
+            "Name": "chromium",
+            "Updated": "2026-05-12T15:09:52.483021+08:00"
+        },
+        {
+            "Version": "3.14.1",
+            "Info": "",
+            "Source": "main",
+            "Name": "dark",
+            "Updated": "2025-12-03T02:02:56.4695566+08:00"
+        },
+        {
+            "Version": "2.62.1",
+            "Info": "",
+            "Source": "main",
+            "Name": "fastfetch",
+            "Updated": "2026-04-25T00:32:16.4450017+08:00"
+        },
+        {
+            "Version": "8.1.1",
+            "Info": "Held package",
+            "Source": "main",
+            "Name": "ffmpeg",
+            "Updated": "2026-05-04T22:23:55.2631576+08:00"
+        },
+        {
+            "Version": "2.1.2",
+            "Info": "",
+            "Source": "extras",
+            "Name": "Flow-launcher",
+            "Updated": "2026-05-12T19:22:05.7079503+08:00"
+        },
+        {
+            "Version": "2.54.0",
+            "Info": "",
+            "Source": "main",
+            "Name": "git",
+            "Updated": "2026-04-25T00:32:41.0660422+08:00"
+        },
+        {
+            "Version": "1.26.3",
+            "Info": "",
+            "Source": "main",
+            "Name": "go",
+            "Updated": "2026-05-12T19:29:47.4271796+08:00"
+        },
+        {
+            "Version": "25.07.1",
+            "Info": "",
+            "Source": "main",
+            "Name": "helix",
+            "Updated": "2025-12-03T02:33:48.2939165+08:00"
+        },
+        {
+            "Version": "2.67.9",
+            "Info": "",
+            "Source": "main",
+            "Name": "innounp",
+            "Updated": "2026-05-01T19:44:48.1725865+08:00"
+        },
+        {
+            "Version": "0.9.6",
+            "Info": "",
+            "Source": "extras",
+            "Name": "librehardwaremonitor",
+            "Updated": "2026-03-27T15:11:58.7015879+08:00"
+        },
+        {
+            "Version": "26.2.3",
+            "Info": "",
+            "Source": "extras",
+            "Name": "libreoffice",
+            "Updated": "2026-05-01T19:47:07.5623146+08:00"
+        },
+        {
+            "Version": "b9114",
+            "Info": "",
+            "Source": "versions",
+            "Name": "llama.cpp-cu131",
+            "Updated": "2026-05-12T19:30:12.618433+08:00"
+        },
+        {
+            "Version": "b9114",
+            "Info": "",
+            "Source": "versions",
+            "Name": "llama.cpp-cu131-dll",
+            "Updated": "2026-05-12T19:30:42.1245447+08:00"
+        },
+        {
+            "Version": "16.1.0-rt_v14-rev0",
+            "Info": "",
+            "Source": "main",
+            "Name": "mingw",
+            "Updated": "2026-05-07T17:11:26.015856+08:00"
+        },
+        {
+            "Version": "26.1.0",
+            "Info": "",
+            "Source": "main",
+            "Name": "nodejs",
+            "Updated": "2026-05-12T19:31:00.3104546+08:00"
+        },
+        {
+            "Version": "0.3.21",
+            "Info": "",
+            "Source": "main",
+            "Name": "ntop",
+            "Updated": "2025-12-18T19:14:02.1358467+08:00"
+        },
+        {
+            "Version": "3.14.5",
+            "Info": "",
+            "Source": "main",
+            "Name": "python",
+            "Updated": "2026-05-12T19:31:51.2216207+08:00"
+        },
+        {
+            "Version": "2.1.0",
+            "Info": "",
+            "Source": "main",
+            "Name": "scoop-search",
+            "Updated": "2025-12-03T14:56:19.0544445+08:00"
+        },
+        {
+            "Version": "3.13.1",
+            "Info": "",
+            "Source": "extras",
+            "Name": "sqlitebrowser",
+            "Updated": "2025-12-03T02:31:50.171076+08:00"
+        },
+        {
+            "Version": "3.6.1",
+            "Info": "",
+            "Source": "extras",
+            "Name": "sumatrapdf",
+            "Updated": "2026-04-12T12:04:33.1569825+08:00"
+        },
+        {
+            "Version": "2.0.15",
+            "Info": "Held package",
+            "Source": "main",
+            "Name": "syncthing",
+            "Updated": "2026-04-04T00:44:47.0311968+08:00"
+        },
+        {
+            "Version": "6.8.1",
+            "Info": "",
+            "Source": "extras",
+            "Name": "telegram",
+            "Updated": "2026-05-12T19:33:24.7530051+08:00"
+        },
+        {
+            "Version": "14.50.35719.0",
+            "Info": "",
+            "Source": "extras",
+            "Name": "vcredist2022",
+            "Updated": "2025-12-22T19:59:40.5216939+08:00"
+        },
+        {
+            "Version": "4.29",
+            "Info": "Held package",
+            "Source": "extras",
+            "Name": "wiztree",
+            "Updated": "2026-03-07T18:45:54.0962691+08:00"
+        }
+    ]
+}
