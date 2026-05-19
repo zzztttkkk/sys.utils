@@ -1,12 +1,9 @@
-function global:pv {
+$env:UV_INDEX = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+
+function global:py {
     param (
         [Parameter(ValueFromRemainingArguments = $true)]
         [string[]] $remains = @()
     )
-
-    if (Test-Path "./.venv" -ErrorAction SilentlyContinue) {
-        . ./.venv/Scripts/Activate.ps1
-    }
-    if ($remains.Count -lt 1) { return; }
-    python $remains
+    uv run python @remains
 }

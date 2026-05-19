@@ -37,7 +37,7 @@ function gs() {
 
 function cz() {
     param (
-        [bool]$offline = $false
+        [switch]$offline = $false
     )
 
     function timediff {
@@ -93,13 +93,13 @@ function cz() {
         return 
     }
     $scope = read-host -Prompt "Scope"
+    $scope = $scope.trim()
+
     $summary = ""
     do {
         $summary = read-host -Prompt "Summary"
         $summary = $summary.trim()
-    } while ( !$summary )
-
-    $scope = $scope.trim()
+    } while ( $summary.Length -lt 5 )
 
     $_cl = 0;
     $content = "";

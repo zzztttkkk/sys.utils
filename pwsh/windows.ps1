@@ -45,43 +45,6 @@ function netreset() {
     sudo pwsh $tasks
 }
 
-function cclr() {
-    # python
-    Write-Output ">>>>>>>>>>>> pip <<<<<<<<<<<<<<<"
-    pip cache purge
-
-    # node
-    Write-Output ">>>>>>>>>>>> npm <<<<<<<<<<<<<<<"
-    npm cache clean --force
-    Write-Output ">>>>>>>>>>>> pnpm <<<<<<<<<<<<<<<"
-    pnpm cache delete
-    pnpm store prune
-    $nodegyp = "$HOME/AppData/Local/node-gyp"
-    if (Test-Path $nodegyp) {
-        Remove-Item -Recurse -Force $nodegyp
-    }
-
-    # go
-    Write-Output ">>>>>>>>>>>> go <<<<<<<<<<<<<<<"
-    go clean -cache
-    $gopls = "$HOME/AppData/Local/gopls"
-    if (Test-Path $gopls) {
-        Remove-Item -r -fo $gopls
-    }
-
-    # rust
-    Write-Output ">>>>>>>>>>>> rust <<<<<<<<<<<<<<<"
-    cargo cache -a
-
-    # system
-    Write-Output ">>>>>>>>>>>> system <<<<<<<<<<<<<<<"
-    Remove-Item -Recurse -Force "$env:TEMP/*" -ErrorAction SilentlyContinue
-
-    # scoop
-    Write-Output ">>>>>>>>>>>> scoop <<<<<<<<<<<<<<<"
-    scoop cache rm *
-}
-
 function hvrun {
     param (
         [Alias("c")]
@@ -102,4 +65,40 @@ function hvrun {
             Start-Process vmconnect -ArgumentList "localhost", $name
         }
     } -args @{ c = $connect }
+}
+
+function cclr() {
+    # python
+    Write-Output ">>>>>>>>>>>> pip <<<<<<<<<<<<<<<"
+    pip cache purge
+
+    # node
+    Write-Output ">>>>>>>>>>>> npm <<<<<<<<<<<<<<<"
+    npm cache clean --force
+    Write-Output ">>>>>>>>>>>> pnpm <<<<<<<<<<<<<<<"
+    pnpm cache delete
+    pnpm store prune
+
+    # go
+    Write-Output ">>>>>>>>>>>> go <<<<<<<<<<<<<<<"
+    go clean -cache
+    $gopls = "$HOME/AppData/Local/gopls"
+    if (Test-Path $gopls) {
+        Remove-Item -r -fo $gopls
+    }
+
+    # rust
+    Write-Output ">>>>>>>>>>>> rust <<<<<<<<<<<<<<<"
+    cargo cache -a
+
+    # system
+    Write-Output ">>>>>>>>>>>> system <<<<<<<<<<<<<<<"
+    Remove-Item -Recurse -Force "$env:TEMP/*" -ErrorAction SilentlyContinue
+
+    # scoop
+    Write-Output ">>>>>>>>>>>> scoop <<<<<<<<<<<<<<<"
+    scoop cache rm *
+
+    #python
+    uv cache clean
 }
