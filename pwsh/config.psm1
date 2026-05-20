@@ -4,7 +4,7 @@ class _ProfileConfig {
     [string]$vscroot;
     [string]$sshdefault;
 
-    [hashtable]$fexpbookmarkets; # string -> string
+    [hashtable]$fexpmarks; # string -> string
     [hashtable]$gitauths; # string -> string
     [hashtable]$sshauths; # string -> string
     [hashtable]$sshports; # string -> int
@@ -15,7 +15,7 @@ class _ProfileConfig {
         $this.vscroot = "";
         $this.sshdefault = "";
 
-        $this.fexpbookmarkets = @{};
+        $this.fexpmarks = @{};
         $this.gitauths = @{};
         $this.sshauths = @{};
         $this.sshports = @{};
@@ -52,8 +52,8 @@ class _ProfileConfig {
             if ($null -ne $raw.ssh.ports) {
                 $this.sshports = $raw.ssh.ports
             }
-            if ($null -ne $raw.fexp.bookmarkets) {
-                $this.fexpbookmarkets = $raw.fexp.bookmarkets
+            if ($null -ne $raw.fexp.marks) {
+                $this.fexpmarks = $raw.fexp.marks
             }
         }
         catch {

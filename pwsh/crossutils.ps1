@@ -35,11 +35,9 @@ function urandom() {
     )
 
     $alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
-    $alphabetLength = $alphabet.Length
-    
     $result = New-Object System.Text.StringBuilder
     for ($i = 0; $i -lt $length; $i++) {
-        $index = [System.Security.Cryptography.RandomNumberGenerator]::GetInt32($alphabetLength)
+        $index = [System.Security.Cryptography.RandomNumberGenerator]::GetInt32($alphabet.Length)
         [void]$result.Append($alphabet[$index])
     }
     return $result.ToString()
@@ -72,17 +70,20 @@ function fexp {
     )
     if ($target -eq ".") {
         if ($quick) {
-            $bookmarkets = $Global:ProfileConfig.fexpbookmarkets
-            $key = gum filter $bookmarkets.Keys
-            if ([string]::IsNullOrEmpty($key)) {
+            $marks = $Global:ProfileConfig.fexpmarks
+            if ($null -eq $marks) {
+                Write-Host "empty marks" -ForegroundColor Yellow
                 return;
             }
-            $target = $bookmarkets[$key];
+            $key = gum filter $marks.Keys
+            if ([string]::IsNullOrEmpty($key)) { return; }
+            $target = $marks[$key];
         }
     }
     if ([string]::IsNullOrEmpty($target)) {
         return;
     }
+    $target = $ExecutionContext.InvokeCommand.ExpandString($target)
     $path = Resolve-Path $target
     $exe = ""
     if ($IsWindows) {
@@ -94,82 +95,66 @@ function fexp {
     if ($IsMacOS) {
         $exe = "open"
     }
-    & $exe $path
+    Start-Process $exe -ArgumentList $path
 }
 
-function script:ptop {
+function global:z {
     param (
         [Alias("t")]
-        [string] $test = ".ptop",
+        [string] $test = ".z.toml",
 
         [Alias("g")]
-        [switch] $git
+        [switch] $git,
+        [Alias("q")]
+        [switch] $quick
     )
 
     if ($git) {
         $root = $(git rev-parse --show-toplevel 2>$null)
         if ($LASTEXITCODE -ne 0) {
+            Write-Host "not inside a git repo" -ForegroundColor Yellow
             return
         }
         Set-Location $root
         return
     }
 
-    $current = (Get-Location).Path
+    if ($quick) {
+        $quick = $test -eq ".z.toml"
+    }
+
+    [string]$current = (Get-Location).Path
     while (1) {
         if (Test-Path -Path "$current/$test") {
+            if ($quick) {
+                $fc = Get-Content "$current/$test" -Raw -Encoding utf8 | ConvertFrom-Toml -ErrorAction Stop
+                [hashtable]$marks = $fc.marks
+                if (($null -eq $marks) -or ($marks.Count -lt 1)) {
+                    Write-Host "empty marks" -ForegroundColor Yellow
+                    return;
+                }
+                [string]$key = gum filter $marks.Keys
+                if ([string]::IsNullOrEmpty($key)) { return; }
+
+                [string]$val = $marks[$key];
+                if ($val.StartsWith("./")) {
+                    $val = "$current$($val.Substring(1))"
+                }
+                Set-Location $val
+                return;
+            }
             Set-Location $current
             return
         }
         $tmp = $current
         $current = Split-Path -Path $current -Parent -ErrorAction SilentlyContinue
-        if ($tmp -eq $current) {
-            break
-        }
-        if ([string]::IsNullOrEmpty($current)) {
+        if (($tmp -eq $current) -or ([string]::IsNullOrEmpty($current))) {
             break
         }
     }
 
-    Write-Output "ptop failed"
+    Write-Host "jump failed" -ForegroundColor Yellow
     return
-}
-
-function z {
-    param (
-        [string] $dest,
-
-        [Alias("g")]
-        [switch] $git,
-
-        [Alias("t")]
-        [string] $test
-    )
-
-    switch ($dest) {
-        "g" { 
-            $git = $true
-            $dest = $null
-        }
-        Default {}
-    }
-	
-    if (-not [string]::IsNullOrEmpty($dest)) {
-        Set-Location $dest
-        return
-    }
-
-    if ($git) {
-        ptop -g
-        return
-    }
-
-    if ($test) {
-        ptop -t $test
-        return
-    }
-
-    ptop
 }
 
 # filter kill

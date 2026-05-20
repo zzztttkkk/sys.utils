@@ -73,4 +73,10 @@ function editrc {
 	reloadrc
 }
 
+function editmycfg {
+	$fp = "$HOME/.pwsh.profile.toml"
+	& $global:ProfileConfig.editor $fp
+	$Global:ProfileConfig.load()
+}
+
 reloadrc
