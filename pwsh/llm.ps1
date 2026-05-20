@@ -15,8 +15,6 @@ function global:llmctx {
     param (
         [string] $root = ".",
         [string] $glob = "*.*",
-        [alias("e")]
-        [string[]] $ex = @(),
         [alias("q")]
         [switch] $quiet = $false,
         [alias("r")]
@@ -34,7 +32,6 @@ function global:llmctx {
         File    = $true
         Filter  = $glob
         Recurse = $recursive
-        Exclude = $ex
     }
     $codes = @(Get-ChildItem @gcargs | Select-Object -ExpandProperty FullName)
     if ($codes.Count -eq 0) {
