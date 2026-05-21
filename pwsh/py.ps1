@@ -7,3 +7,9 @@ function global:py {
     )
     uv run python @remains
 }
+
+function global:pv {
+    if (Test-Path "./.venv/Scripts/activate.ps1" -ErrorAction SilentlyContinue) {
+        . "./.venv/Scripts/activate.ps1"
+    }
+}
