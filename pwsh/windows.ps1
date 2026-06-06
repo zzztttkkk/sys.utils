@@ -68,10 +68,6 @@ function hvrun {
 }
 
 function cclr() {
-    # python
-    Write-Output ">>>>>>>>>>>> pip <<<<<<<<<<<<<<<"
-    pip cache purge
-
     # node
     Write-Output ">>>>>>>>>>>> npm <<<<<<<<<<<<<<<"
     npm cache clean --force

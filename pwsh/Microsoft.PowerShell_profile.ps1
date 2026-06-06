@@ -67,15 +67,36 @@ function script:reloadrc {
 	}
 }
 
+function script:ep {
+	param (
+		[switch] $code = $false
+	)
+	$ep = $global:ProfileConfig.editor
+	if ($code) {
+		$ep = "code"
+	}
+	Write-Host $code
+	return $ep
+}
+
 function editrc {
-	$rc = "$HOME/.pwshrc.ps1"
-	& $global:ProfileConfig.editor $rc
+	param (
+		[switch] $code = $false
+	)
+	$epv = @{ code = $code }
+	& $(ep @epv) "$HOME/.pwshrc.ps1"
+	if ($code) { return; }
 	reloadrc
 }
 
 function editmycfg {
-	$fp = "$HOME/.pwsh.profile.toml"
-	& $global:ProfileConfig.editor $fp
+	param (
+		[switch] $code = $false
+	)
+	$epv = @{ code = $code }
+	Write-Host $epv
+	& $(ep @epv) "$HOME/.pwsh.profile.toml"
+	if ($code) { return; }
 	$Global:ProfileConfig.load()
 }
 

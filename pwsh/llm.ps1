@@ -1,20 +1,10 @@
-function global:llmd {
-    param (
-        [Int16] $port = 3600
-    )
-    $root = "$HOME/scoop/apps/llama.cpp-cu131/current/models"
-    $models = Get-ChildItem -Path $root -Filter *.gguf | Select-Object -ExpandProperty Name
-    $model = gum filter $models
-    if ([string]::IsNullOrEmpty($model)) {
-        return;
-    }
-    llama-server.exe --port $port -m $root/$model -c 8192 -ngl 99
-}
-
 function global:llmctx {
     param (
         [string] $root = ".",
+        [alias("g")]
         [string] $glob = "*.*",
+        [alias("e")]
+        [string[]] $exclude = @(),
         [alias("q")]
         [switch] $quiet = $false,
         [alias("r")]
@@ -25,6 +15,8 @@ function global:llmctx {
     if ($LASTEXITCODE -ne 0) {
         $ingit = $false;
     }
+
+    $exclude += "*_string.go"
 
     $root = (Resolve-Path $root).Path
     $gcargs = @{
@@ -41,15 +33,19 @@ function global:llmctx {
 
     $count = 0
     $tmp = foreach ($code in $codes) {
+        $exed = $exclude | Where-Object { 
+            $code -like $_ 
+        }
+        if ($exed) { continue; }
+
         if ($ingit) {
+            # TODO use `git ls-files --cached --others --exclude-standard` cache all git files in a hashset
             git check-ignore -q -- $code 2>&1 | Out-Null
             if ($LASTEXITCODE -eq 0) {
                 continue;
             }
         }
-        if ($code.EndsWith("_string.go")) {
-            continue;
-        }
+
         $rc = Get-Content -Path $code -Encoding UTF8 -Raw
         $count += $rc.Length
         $code = $code.Substring($root.Length)

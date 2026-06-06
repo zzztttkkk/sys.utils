@@ -3,6 +3,7 @@ class _ProfileConfig {
     [string]$editor;
     [string]$vscroot;
     [string]$sshdefault;
+    [byte[]]$cryptokey;
 
     [hashtable]$fexpmarks; # string -> string
     [hashtable]$gitauths; # string -> string
@@ -42,6 +43,9 @@ class _ProfileConfig {
             if ($null -ne $raw.editor) { $this.editor = $raw.editor }
             if ($null -ne $raw.vscroot) { $this.vscroot = $raw.vscroot }
             if ($null -ne $raw.sshdefault) { $this.sshdefault = $raw.sshdefault }
+            if ($null -ne $raw.crypto.key) { 
+                $this.cryptokey = [System.Text.Encoding]::UTF8.GetBytes($raw.crypto.key) 
+            }
 
             if ($null -ne $raw.git.auths) {
                 $this.gitauths = $raw.git.auths
