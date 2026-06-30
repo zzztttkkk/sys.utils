@@ -24,7 +24,6 @@ else {
 	. $PSScriptRoot/git.ps1
 	. $PSScriptRoot/ssh.ps1
 	. $PSScriptRoot/vscode.ps1
-	. $PSScriptRoot/hosts.ps1
 	. $PSScriptRoot/go.ps1
 	. $PSScriptRoot/py.ps1
 	if ($IsWindows) {

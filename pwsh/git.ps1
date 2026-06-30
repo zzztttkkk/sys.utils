@@ -99,7 +99,7 @@ function cz() {
     do {
         $summary = read-host -Prompt "Summary"
         $summary = $summary.trim()
-    } while ( $summary.Length -lt 5 )
+    } while ( $summary.Length -lt 2 )
 
     $_cl = 0;
     $content = "";

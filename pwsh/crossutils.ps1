@@ -163,9 +163,8 @@ function fq() {
         [String[]] $vals,
         [String] $op = "eq"
     )
-    if (($null -eq $vals) -or ($vals.Length -eq 0)) {
-        return
-    }
+    if (($null -eq $vals) -or ($vals.Length -eq 0)) { return }
+    
     $procs = Get-Process | Where-Object -FilterScript {
         $pn = $($_.ProcessName)
         foreach ($val in $vals) {
@@ -221,7 +220,6 @@ function aesencrypt {
     return [Convert]::ToBase64String($resultBytes)
 }
 
-
 function aesdecrypt {
     [CmdletBinding()]
     param (
@@ -237,4 +235,14 @@ function aesdecrypt {
     $cipherBytes = $fullBytes[$ivLength..($fullBytes.Length - 1)]
     $plainBytes = $decryptor.TransformFinalBlock($cipherBytes, 0, $cipherBytes.Length)
     return [System.Text.Encoding]::UTF8.GetString($plainBytes)
+}
+
+function global:edithosts {
+    $editor = $global:ProfileConfig.editor
+    if ($IsWindows) {
+        $cmd = "$editor $env:windir\System32\drivers\etc\hosts" 
+        sudo pwsh -c $cmd
+        return
+    }
+    & sudo $editor /etc/hosts
 }
