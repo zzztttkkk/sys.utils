@@ -45,7 +45,11 @@ function vsc() {
             return
         }
 
-        Start-Process -FilePath code -ArgumentList "$root/$name" -WindowStyle Hidden
+        $editor = "code"
+        if (Test-Path "$root/$name/.editor") {
+            $editor = (Get-Content "$root/$name/.editor").Trim()
+        }
+        Start-Process -FilePath $editor -ArgumentList "$root/$name" -WindowStyle Hidden
     }
 
     __vscodechoose $global:ProfileConfig.vscroot
