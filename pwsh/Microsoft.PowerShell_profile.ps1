@@ -26,11 +26,10 @@ else {
 	. $PSScriptRoot/vscode.ps1
 	. $PSScriptRoot/go.ps1
 	. $PSScriptRoot/py.ps1
+	. $PSScriptRoot/llm.ps1
+	
 	if ($IsWindows) {
 		. $PSScriptRoot/windows.ps1
-		if (Get-Command llama-server -ErrorAction SilentlyContinue) {
-			. $PSScriptRoot/llm.ps1
-		}
 	}
 	if ($IsLinux) {
 		. $PSScriptRoot/linux.ps1

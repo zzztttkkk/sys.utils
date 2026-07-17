@@ -47,7 +47,7 @@ function vsc() {
 
         $editor = "code"
         if (Test-Path "$root/$name/.editor") {
-            $editor = (Get-Content "$root/$name/.editor").Trim()
+            $editor = (Get-Content "$root/$name/.editor" -TotalCount 1).Trim()
         }
         Start-Process -FilePath $editor -ArgumentList "$root/$name" -WindowStyle Hidden
     }
