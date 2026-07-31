@@ -96,5 +96,16 @@ function cclr() {
     scoop cache rm *
 
     #python
+    Write-Output ">>>>>>>>>>>> uv <<<<<<<<<<<<<<<"
     uv cache clean
+    
+    #fnm
+    Write-Output ">>>>>>>>>>>> fnm <<<<<<<<<<<<<<<"
+    & {
+        $c = $env:FNM_MULTISHELL_PATH
+        if (Test-Path $c) {
+            $p = Split-Path -Path $c -Parent
+            Get-ChildItem -Path $p -Directory | Remove-Item -Recurse -Force
+        }
+    }
 }
