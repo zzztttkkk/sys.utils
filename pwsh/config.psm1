@@ -40,27 +40,18 @@ class _ProfileConfig {
         try {
             $raw = Get-Content $file -Raw -Encoding UTF8 | ConvertFrom-Toml -ErrorAction Stop
 
-            if ($null -ne $raw.proxy) { $this.proxy = $raw.proxy }
-            if ($null -ne $raw.editor) { $this.editor = $raw.editor }
-            if ($null -ne $raw.vscroot) { $this.vscroot = $raw.vscroot }
-            if ($null -ne $raw.vscwroot) { $this.vscwroot = $raw.vscwroot }
-            if ($null -ne $raw.sshdefault) { $this.sshdefault = $raw.sshdefault }
+            foreach ($prop in @('proxy', 'editor', 'vscroot', 'vscwroot', 'sshdefault')) {
+                if ($null -ne $raw.$prop) { $this.$prop = $raw.$prop }
+            }
+
             if ($null -ne $raw.crypto.key) { 
                 $this.cryptokey = [System.Text.Encoding]::UTF8.GetBytes($raw.crypto.key) 
             }
 
-            if ($null -ne $raw.git.auths) {
-                $this.gitauths = $raw.git.auths
-            }
-            if ($null -ne $raw.ssh.auths) {
-                $this.sshauths = $raw.ssh.auths
-            }
-            if ($null -ne $raw.ssh.ports) {
-                $this.sshports = $raw.ssh.ports
-            }
-            if ($null -ne $raw.fexp.marks) {
-                $this.fexpmarks = $raw.fexp.marks
-            }
+            if ($null -ne $raw.git.auths) { $this.gitauths = [hashtable]$raw.git.auths }
+            if ($null -ne $raw.ssh.auths) { $this.sshauths = [hashtable]$raw.ssh.auths }
+            if ($null -ne $raw.ssh.ports) { $this.sshports = [hashtable]$raw.ssh.ports }
+            if ($null -ne $raw.fexp.marks) { $this.fexpmarks = [hashtable]$raw.fexp.marks }
         }
         catch {
             Write-Warning "Load failed: $($_.Exception.Message)"
