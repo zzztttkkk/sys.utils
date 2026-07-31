@@ -1,8 +1,23 @@
 function vsc() {
-    if ([string]::IsNullOrEmpty($global:ProfileConfig.vscroot)) {
-        Write-Error "empty VscRoot"
+    param (
+        [alias("w")]
+        [switch] $work
+    )
+
+    $root = "";
+    if ($work) {
+        $root = $global:ProfileConfig.vscwroot;
+    }
+    else {
+        $root = $global:ProfileConfig.vscroot;
+    }
+
+    if ([string]::IsNullOrEmpty($root)) {
+        Write-Error "empty root"
         return
     }
+    $root = $ExecutionContext.InvokeCommand.ExpandString($root);
+    $root = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($root)
 
     function list {
         param (
@@ -52,5 +67,5 @@ function vsc() {
         Start-Process -FilePath $editor -ArgumentList "$root/$name" -WindowStyle Hidden
     }
 
-    __vscodechoose $global:ProfileConfig.vscroot
+    __vscodechoose $root
 }

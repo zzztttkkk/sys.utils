@@ -2,6 +2,7 @@ class _ProfileConfig {
     [string]$proxy;
     [string]$editor;
     [string]$vscroot;
+    [string]$vscwroot;
     [string]$sshdefault;
     [byte[]]$cryptokey;
 
@@ -42,6 +43,7 @@ class _ProfileConfig {
             if ($null -ne $raw.proxy) { $this.proxy = $raw.proxy }
             if ($null -ne $raw.editor) { $this.editor = $raw.editor }
             if ($null -ne $raw.vscroot) { $this.vscroot = $raw.vscroot }
+            if ($null -ne $raw.vscwroot) { $this.vscwroot = $raw.vscwroot }
             if ($null -ne $raw.sshdefault) { $this.sshdefault = $raw.sshdefault }
             if ($null -ne $raw.crypto.key) { 
                 $this.cryptokey = [System.Text.Encoding]::UTF8.GetBytes($raw.crypto.key) 

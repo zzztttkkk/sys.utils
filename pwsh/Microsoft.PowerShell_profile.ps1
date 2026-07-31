@@ -73,7 +73,6 @@ function script:ep {
 	if ($code) {
 		$ep = "code"
 	}
-	Write-Host $code
 	return $ep
 }
 
@@ -84,7 +83,7 @@ function editrc {
 	$epv = @{ code = $code }
 	& $(ep @epv) "$HOME/.pwshrc.ps1"
 	if ($code) { return; }
-	reloadrc
+	reloadrc;
 }
 
 function editmycfg {
@@ -92,10 +91,9 @@ function editmycfg {
 		[switch] $code = $false
 	)
 	$epv = @{ code = $code }
-	Write-Host $epv
 	& $(ep @epv) "$HOME/.pwsh.profile.toml"
 	if ($code) { return; }
-	$Global:ProfileConfig.load()
+	$Global:ProfileConfig.load();
 }
 
 reloadrc
