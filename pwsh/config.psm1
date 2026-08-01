@@ -11,26 +11,6 @@ class _ProfileConfig {
     [hashtable]$sshauths; # string -> string
     [hashtable]$sshports; # string -> int
 
-    _ProfileConfig() {
-        $this.proxy = "";
-        $this.editor = "";
-        $this.vscroot = "";
-        $this.sshdefault = "";
-
-        $this.fexpmarks = @{};
-        $this.gitauths = @{};
-        $this.sshauths = @{};
-        $this.sshports = @{};
-
-        $editors = @("hx", "vim", "vi", "nano")
-        foreach ($e in $editors) {
-            if (Get-Command $e -ErrorAction SilentlyContinue) {
-                $this.editor = $e
-                break
-            }
-        }
-    }
-
     [void]load() {
         $file = "$global:HOME/.pwsh.profile.toml";
         if (-not(Test-Path $file -ErrorAction SilentlyContinue)) {

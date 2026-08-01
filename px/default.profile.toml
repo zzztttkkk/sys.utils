@@ -1,0 +1,18 @@
+# proxy = ""
+# editor = ""
+# vscroot = ""
+# vscwroot = ""
+
+# [fexp.marks]
+
+# [crypto]
+# key = ""
+
+# [git.auths]
+
+# [ssh]
+# default = ""
+
+# [ssh.auths]
+
+# [ssh.ports]
