@@ -289,7 +289,7 @@ function unpackrepos {
     )
 
     $taskid = [guid]::NewGuid().ToString()
-    $tempDir = Join-Path $env:TEMP $taskid
+    $tempDir = Join-Path ~/Downloads $taskid
     New-Item -Path $tempDir -ItemType Directory -Force | Out-Null
 
     Expand-Archive -Path $ZipPath -DestinationPath $tempDir -Force
