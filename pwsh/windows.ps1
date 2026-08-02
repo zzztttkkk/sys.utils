@@ -54,7 +54,7 @@ function hvrun {
     sudo pwsh -NoProfile -c {
         $c = $args[0]["c"]
 
-        $items = @(Get-VM | Where-Object { $_.State -eq "Off" } | Select-Object -ExpandProperty Name)
+        $items = @(Get-VM | Select-Object -ExpandProperty Name)
         if ($items.Count -lt 1) { return; }
         
         $name = gum filter $items
