@@ -251,3 +251,64 @@ function deltag() {
     git tag -d $tag
     git push origin --delete $tag
 }
+
+function packrepos {
+    param (
+        [alias("c")]
+        [string] $cfgfp
+    )
+
+    $cfg = [hashtable](Get-Content $cfgfp -Raw -Encoding UTF8 | ConvertFrom-Toml -ErrorAction Stop)
+    $output = [string]$cfg.output
+    $repos = [hashtable]$cfg.repos
+
+    $taskid = [guid]::NewGuid().ToString()
+    New-Item -Path ~/Downloads/$taskid -ItemType Directory
+
+    $root = Split-Path $cfgfp -Parent
+    Push-Location $root
+    foreach ($repo in $repos.Keys) {
+        $path = $repos[$repo]
+        Push-Location $path
+        git archive -o ~/Downloads/$taskid/$repo.tar HEAD
+        Pop-Location
+    }
+    Pop-Location
+
+    Compress-Archive -Path ~/Downloads/$taskid/*.tar, $cfgfp -DestinationPath $output
+
+    Remove-Item -Path ~/Downloads/$taskid -Recurse -Force
+}
+
+function unpackrepos {
+    param (
+        [alias("r")]
+        [string] $Root,               
+        [alias("zip")]
+        [string] $ZipPath
+    )
+
+    $taskid = [guid]::NewGuid().ToString()
+    $tempDir = Join-Path $env:TEMP $taskid
+    New-Item -Path $tempDir -ItemType Directory -Force | Out-Null
+
+    Expand-Archive -Path $ZipPath -DestinationPath $tempDir -Force
+
+    $tomlFiles = Get-ChildItem -Path $tempDir -Filter *.toml -File
+    if ($tomlFiles.Count -eq 0) {
+        throw "No .toml file found in the zip package."
+    }
+    $cfgfp = $tomlFiles[0].FullName
+
+    $cfg = [hashtable](Get-Content $cfgfp -Raw -Encoding UTF8 | ConvertFrom-Toml -ErrorAction Stop)
+    $repos = [hashtable]$cfg.repos
+
+    foreach ($repo in $repos.Keys) {
+        $relativePath = $repos[$repo]
+        $destPath = Join-Path $Root $relativePath
+        New-Item -Path $destPath -ItemType Directory -Force | Out-Null
+
+        $tarFile = Join-Path $tempDir "$repo.tar"
+        tar -xf $tarFile -C $destPath
+    }
+}
