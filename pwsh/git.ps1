@@ -251,3 +251,8 @@ function deltag() {
     git tag -d $tag
     git push origin --delete $tag
 }
+
+function gitpack() {
+    $name = Split-Path -Path $PWD -Leaf
+    git archive --format=zip -o "$HOME/Downloads/$name.zip" HEAD
+}
