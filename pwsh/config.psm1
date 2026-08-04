@@ -10,6 +10,7 @@ class _ProfileConfig {
     [hashtable]$gitauths; # string -> string
     [hashtable]$sshauths; # string -> string
     [hashtable]$sshports; # string -> int
+    [hashtable]$s3; # string -> object
 
     [void]load() {
         $file = "$global:HOME/.pwsh.profile.toml";
@@ -28,10 +29,11 @@ class _ProfileConfig {
                 $this.cryptokey = [System.Text.Encoding]::UTF8.GetBytes($raw.crypto.key) 
             }
 
-            if ($null -ne $raw.git.auths) { $this.gitauths = [hashtable]$raw.git.auths }
-            if ($null -ne $raw.ssh.auths) { $this.sshauths = [hashtable]$raw.ssh.auths }
-            if ($null -ne $raw.ssh.ports) { $this.sshports = [hashtable]$raw.ssh.ports }
-            if ($null -ne $raw.fexp.marks) { $this.fexpmarks = [hashtable]$raw.fexp.marks }
+            $this.gitauths = [hashtable]$raw.git.auths; 
+            $this.sshauths = [hashtable]$raw.ssh.auths; 
+            $this.sshports = [hashtable]$raw.ssh.ports; 
+            $this.fexpmarks = [hashtable]$raw.fexp.marks; 
+            $this.s3 = [hashtable]$raw.s3;
         }
         catch {
             Write-Warning "Load failed: $($_.Exception.Message)"

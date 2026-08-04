@@ -253,6 +253,13 @@ function deltag() {
 }
 
 function gitpack() {
-    $name = Split-Path -Path $PWD -Leaf
-    git archive --format=zip -o "$HOME/Downloads/$name.zip" HEAD
+    param (
+        [alias("o")]
+        [string] $out = ""
+    )
+    if ([string]::IsNullOrWhiteSpace($out)) {
+        $name = Split-Path -Path $PWD -Leaf
+        $out = "$HOME/Downloads/$name.zip"
+    }
+    git archive --format=zip -o $out HEAD
 }

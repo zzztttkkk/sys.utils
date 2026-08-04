@@ -27,6 +27,7 @@ else {
 	. $PSScriptRoot/go.ps1
 	. $PSScriptRoot/py.ps1
 	. $PSScriptRoot/llm.ps1
+	. $PSScriptRoot/s3.ps1
 	
 	if ($IsWindows) {
 		. $PSScriptRoot/windows.ps1
