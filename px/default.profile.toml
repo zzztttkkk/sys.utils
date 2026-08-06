@@ -3,16 +3,18 @@
 # vscroot = ""
 # vscwroot = ""
 
-# [fexp.marks]
-
-# [crypto]
-# key = ""
-
 # [git.auths]
-
-# [ssh]
-# default = ""
+# <username> = "<email>"
 
 # [ssh.auths]
+# name = "<username>@<host>"
 
 # [ssh.ports]
+# name = <port>
+
+# [s3.<name>]
+# name = "<bucketname>"
+# ak = "<accesskey>"
+# sk = "<secretkey>"
+# region = "<region>"
+# endpoint = "<endpoint>"

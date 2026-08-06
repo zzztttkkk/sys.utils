@@ -4,7 +4,6 @@ class _ProfileConfig {
     [string]$vscroot;
     [string]$vscwroot;
     [string]$sshdefault;
-    [byte[]]$cryptokey;
 
     [hashtable]$fexpmarks; # string -> string
     [hashtable]$gitauths; # string -> string
@@ -23,10 +22,6 @@ class _ProfileConfig {
 
             foreach ($prop in @('proxy', 'editor', 'vscroot', 'vscwroot', 'sshdefault')) {
                 if ($null -ne $raw.$prop) { $this.$prop = $raw.$prop }
-            }
-
-            if ($null -ne $raw.crypto.key) { 
-                $this.cryptokey = [System.Text.Encoding]::UTF8.GetBytes($raw.crypto.key) 
             }
 
             $this.gitauths = [hashtable]$raw.git.auths; 

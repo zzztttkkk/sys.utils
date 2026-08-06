@@ -204,39 +204,6 @@ function iselevated {
     return (id -u) -eq 0
 }
 
-function aesencrypt {
-    [CmdletBinding()]
-    param (
-        [Parameter(ValueFromPipeline = $true, Mandatory = $true)]
-        [string] $plaintxt
-    )
-    $aes = [System.Security.Cryptography.Aes]::Create()
-    $aes.Key = $Global:ProfileConfig.cryptokey
-    $aes.GenerateIV()
-    $encryptor = $aes.CreateEncryptor()
-    $plainBytes = [System.Text.Encoding]::UTF8.GetBytes($plaintxt)
-    $cipherBytes = $encryptor.TransformFinalBlock($plainBytes, 0, $plainBytes.Length)
-    $resultBytes = $aes.IV + $cipherBytes
-    return [Convert]::ToBase64String($resultBytes)
-}
-
-function aesdecrypt {
-    [CmdletBinding()]
-    param (
-        [Parameter(ValueFromPipeline = $true, Mandatory = $true)]
-        [string] $ciphertxt
-    )
-    $fullBytes = [Convert]::FromBase64String($ciphertxt)
-    $aes = [System.Security.Cryptography.Aes]::Create()
-    $aes.Key = $Global:ProfileConfig.cryptokey
-    $ivLength = $aes.BlockSize / 8
-    $aes.IV = [byte[]]$fullBytes[0..($ivLength - 1)]
-    $decryptor = $aes.CreateDecryptor()
-    $cipherBytes = $fullBytes[$ivLength..($fullBytes.Length - 1)]
-    $plainBytes = $decryptor.TransformFinalBlock($cipherBytes, 0, $cipherBytes.Length)
-    return [System.Text.Encoding]::UTF8.GetString($plainBytes)
-}
-
 function global:edithosts {
     $editor = $global:ProfileConfig.editor
     if ($IsWindows) {
