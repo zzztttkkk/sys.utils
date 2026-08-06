@@ -140,7 +140,40 @@ function cz() {
     }
 }
 
+function script:difflines {
+    $out = git diff HEAD --numstat 2>$null
+    if ($LASTEXITCODE -ne 0) {
+        throw "git diff failed"
+    }
+    $out = $out.trim()
+    if ([string]::IsNullOrEmpty($out)) {
+        return 0
+    }
+    $tlc = 0
+    $out -split "`n" | ForEach-Object {
+        if ($_ -match '^(\d+)\s+(\d+)\s+') {
+            $tlc += [int]$Matches[1] + [int]$Matches[2]
+        }
+    }
+    return $tlc
+}
+
 function grh() {
+    param (
+        [switch]$dryrun,
+        [alias("l")]
+        [int]$threshold = 50
+    )
+    $tlc = difflines
+    if ($tlc -ge $threshold) {
+        Write-Host "⚠️  changed lines >= $threshold" -ForegroundColor Yellow
+        $c = Read-Host "ensure continue ? (n/y)"
+        if ($c -ne "y") { return }
+    }
+    if ($dryrun) {
+        Write-Host "dryrun, no action taken. lines: $tlc" -ForegroundColor Green
+        return;
+    }
     git reset --hard
 }
 
