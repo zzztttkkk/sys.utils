@@ -145,6 +145,9 @@ function script:difflines {
     if ($LASTEXITCODE -ne 0) {
         throw "git diff failed"
     }
+    if ([string]::IsNullOrEmpty($out)) {
+        return 0
+    }
     $out = $out.trim()
     if ([string]::IsNullOrEmpty($out)) {
         return 0
