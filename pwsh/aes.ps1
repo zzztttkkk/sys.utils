@@ -64,8 +64,6 @@ function decrypt {
     }
     $salttxt = $ciphertxt.Substring(0, $idx);
     $ctxt = $ciphertxt.Substring($idx + 2);
-
-    Write-Host "salttxt: $salttxt"
     $salt = [Convert]::FromBase64String($salttxt);
 
     $derive = [System.Security.Cryptography.Rfc2898DeriveBytes]::new(
