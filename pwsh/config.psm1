@@ -3,34 +3,28 @@ class _ProfileConfig {
     [string]$editor;
     [string]$vscroot;
     [string]$vscwroot;
-    [string]$sshdefault;
 
-    [hashtable]$fexpmarks; # string -> string
-    [hashtable]$gitauths; # string -> string
-    [hashtable]$sshauths; # string -> string
-    [hashtable]$sshports; # string -> int
-    [hashtable]$s3; # string -> object
-
-    [bool] $enable_readline;
+    $fexp; 
+    $git; 
+    $ssh;
+    $s3;
+    $feats;
 
     [void]load() {
-        $file = "$global:HOME/.pwsh.profile.toml";
+        $file = "$global:HOME/.pwsh.profile.json";
         if (-not(Test-Path $file -ErrorAction SilentlyContinue)) {
             return;
         }
 
         try {
-            $raw = Get-Content $file -Raw -Encoding UTF8 | ConvertFrom-Toml -ErrorAction Stop
+            $raw = Get-Content $file -Raw -Encoding UTF8 | ConvertFrom-Json -ErrorAction Stop
 
-            foreach ($prop in @('proxy', 'editor', 'vscroot', 'vscwroot', 'sshdefault', 'enable_readline')) {
+            foreach ($prop in @(
+                    'proxy', 'editor', 'vscroot', 'vscwroot',
+                    'fexp', 'git', 'ssh', 's3', 'feats'
+                )) {
                 if ($null -ne $raw.$prop) { $this.$prop = $raw.$prop }
             }
-
-            $this.gitauths = [hashtable]$raw.git.auths; 
-            $this.sshauths = [hashtable]$raw.ssh.auths; 
-            $this.sshports = [hashtable]$raw.ssh.ports; 
-            $this.fexpmarks = [hashtable]$raw.fexp.marks; 
-            $this.s3 = [hashtable]$raw.s3;
         }
         catch {
             Write-Warning "Load failed: $($_.Exception.Message)"

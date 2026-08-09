@@ -11,8 +11,8 @@ function script:choose() {
         [String] $root
     )
     $items = @(list $root)
-    if (Test-Path "$root/.vsc.toml") {
-        $raw = Get-Content "$root/.vsc.toml" -Raw -Encoding UTF8 | ConvertFrom-Toml -ErrorAction SilentlyContinue
+    if (Test-Path "$root/.vsc.json") {
+        $raw = Get-Content "$root/.vsc.json" -Raw -Encoding UTF8 | ConvertFrom-Json -ErrorAction SilentlyContinue
         if (($null -ne $raw) -and ($null -ne $raw.expands)) {
             @($raw.expands) | ForEach-Object {
                 if (-not (Test-Path "$root/$_")) { 

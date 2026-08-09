@@ -61,7 +61,3 @@ function script:install_files {
 
 install_pwsh
 install_files
-
-if (-not(Test-Path ~/.pwsh.profile.toml)) {
-    Copy-Item $PSScriptRoot/default.profile.toml ~/.pwsh.profile.toml
-}

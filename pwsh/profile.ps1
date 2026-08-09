@@ -1,7 +1,3 @@
-Import-Module "$PSScriptRoot/modules.psm1"
-
-ensuremodule "toml"
-
 Import-Module "$PSScriptRoot/config.psm1"
 
 $Global:ProfileConfig.load()	
@@ -39,17 +35,30 @@ if (Get-Command docker -ErrorAction SilentlyContinue) {
 }
 
 function script:enablereadline {
-    if (-not $Global:ProfileConfig.enable_readline) { return; }
+    if (-not $Global:ProfileConfig.feats.readline) { return; }
     if ($null -eq $Host.UI.RawUI) { return; }
     if ($Host.UI.RawUI.WindowSize.Width -lt 50) { return; }
     if ($Host.UI.RawUI.WindowSize.Height -lt 5) { return; }
 
-    ensuremodule "readline"
+    ensure "PSReadLine"
+    ensure "CompletionPredictor"
+
     Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
     Set-PSReadLineOption -PredictionSource HistoryAndPlugin
     Set-PSReadLineOption -PredictionViewStyle ListView
     Remove-PSReadLineKeyHandler -Key F2
     Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
+}
+
+function script:ensure {
+    param (
+        [String] $name
+    )
+    $info = Get-PSResource -Name $name -ErrorAction SilentlyContinue
+    if ( $null -eq $info ) {
+        Install-PSResource -Name $name -Scope CurrentUser
+    }
+    Import-Module -Name $name
 }
 
 enablereadline
@@ -86,7 +95,7 @@ function editmycfg {
         [switch] $code = $false
     )
     $epv = @{ code = $code }
-    & $(ep @epv) "$HOME/.pwsh.profile.toml"
+    & $(ep @epv) "$HOME/.pwsh.profile.json"
     if ($code) { return; }
     $Global:ProfileConfig.load();
 }

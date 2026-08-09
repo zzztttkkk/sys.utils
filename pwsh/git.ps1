@@ -1,7 +1,7 @@
 Import-Module "$PSScriptRoot/config.psm1"
 
 function gitswitchauth() {
-    $auths = $Global:ProfileConfig.gitauths;
+    $auths = $Global:ProfileConfig.git.auths;
     if ($auths.Count -gt 0) {
         $name = gum filter $auths.Keys
         if ([string]::IsNullOrEmpty($name)) {

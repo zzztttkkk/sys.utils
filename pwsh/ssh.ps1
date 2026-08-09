@@ -5,10 +5,7 @@ function script:pickname() {
 		[String] $name
 	)
 	if ([string]::IsNullOrEmpty($name)) {
-		if ($global:ProfileConfig.sshdefault -ne "") {
-			return $global:ProfileConfig.sshdefault
-		}
-		$keys = $global:ProfileConfig.sshauths.Keys
+		$keys = $global:ProfileConfig.ssh.auths.Keys
 		$name = gum filter $keys
 	}
 	return $name
@@ -24,12 +21,12 @@ function global:sshc {
 	$name = pickname $name
 	if ([string]::IsNullOrEmpty($name)) { return; }
 
-	$port = $global:ProfileConfig.sshports[$name]
+	$port = $global:ProfileConfig.ssh.ports[$name]
 	if (!$port) {
 		$port = 22 
 	}
 
-	$auth = $global:ProfileConfig.sshauths[$name]
+	$auth = $global:ProfileConfig.ssh.auths[$name]
 	if (!$auth) {
 		Write-Output "empty auth for $name"
 		return
@@ -43,13 +40,13 @@ function global:sshup([String] $name, [String] $local, [String] $remote) {
 	$name = pickname $name
 	if ([string]::IsNullOrEmpty($name)) { return; }
 
-	$temp = $global:ProfileConfig.sshauths[$name]
+	$temp = $global:ProfileConfig.ssh.auths[$name]
 	if (!$temp) {
 		Write-Output "empty auth for $name"
 		return
 	}
 
-	$port = $global:ProfileConfig.sshports[$name]
+	$port = $global:ProfileConfig.ssh.ports[$name]
 	if ( !$port ) {
 		$port = 22 
 	}
@@ -72,12 +69,12 @@ function global:sshup([String] $name, [String] $local, [String] $remote) {
 
 # ssh download
 function script:_sshdown([String] $name, [String] $remote, [String] $local) {
-	$temp = $global:ProfileConfig.sshauths[$name]
+	$temp = $global:ProfileConfig.ssh.auths[$name]
 	if (!$temp) {
 		throw "empty auth for $name"
 	}
 
-	$port = $global:ProfileConfig.sshports[$name]
+	$port = $global:ProfileConfig.ssh.ports[$name]
 	if ( !$port ) {
 		$port = 22 
 	}

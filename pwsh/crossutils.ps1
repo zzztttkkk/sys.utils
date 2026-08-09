@@ -70,7 +70,7 @@ function fexp {
     )
     if ($target -eq ".") {
         if ($quick) {
-            $marks = $Global:ProfileConfig.fexpmarks
+            $marks = $Global:ProfileConfig.fexp.marks
             if ($null -eq $marks) {
                 Write-Host "empty marks" -ForegroundColor Yellow
                 return;
@@ -101,7 +101,7 @@ function fexp {
 function global:z {
     param (
         [Alias("t")]
-        [string] $test = ".z.toml",
+        [string] $test = ".z.json",
 
         [Alias("g")]
         [switch] $git,
@@ -120,14 +120,14 @@ function global:z {
     }
 
     if ($quick) {
-        $quick = $test -eq ".z.toml"
+        $quick = $test -eq ".z.json"
     }
 
     [string]$current = (Get-Location).Path
     while (1) {
         if (Test-Path -Path "$current/$test") {
             if ($quick) {
-                $fc = Get-Content "$current/$test" -Raw -Encoding utf8 | ConvertFrom-Toml -ErrorAction Stop
+                $fc = Get-Content "$current/$test" -Raw -Encoding utf8 | ConvertFrom-Json -ErrorAction Stop
                 [hashtable]$marks = $fc.marks
                 if (($null -eq $marks) -or ($marks.Count -lt 1)) {
                     Write-Host "empty marks" -ForegroundColor Yellow
