@@ -43,11 +43,11 @@ function global:s3 {
     $schema = $endpoint.Substring(0, $idx + 3)
     $endpoint = $endpoint.Substring($idx + 3)
 
-    $env:MC_HOST_tmp = "$($schema)$($bktcfg.ak):$($bktcfg.sk)@$($endpoint)"
+    $env:MC_HOST_this = "$($schema)$($bktcfg.ak):$($bktcfg.sk)@$($endpoint)"
     try {
         switch ($action) {
             "list" {
-                mc ls /tmp/$($bktcfg.name)
+                mc ls /this/$($bktcfg.name)
                 return
             }
             "upload" {
@@ -56,7 +56,7 @@ function global:s3 {
                     return
                 }
                 $name = Split-Path $file -Leaf
-                mc cp $file /tmp/$($bktcfg.name)/$name
+                mc cp $file /this/$($bktcfg.name)/$name
                 return
             }
             "download" {
@@ -66,7 +66,7 @@ function global:s3 {
                 }
                 $name = Split-Path $file -Leaf
                 $target = Join-Path $HOME "Downloads/$name"
-                mc cp /tmp/$($bktcfg.name)/$file $target
+                mc cp /this/$($bktcfg.name)/$file $target
                 return
             }
             "share" {
@@ -74,7 +74,7 @@ function global:s3 {
                     Write-Host "No file selected" -ForegroundColor Yellow
                     return
                 }
-                mc share download --expire 30m /tmp/$($bktcfg.name)/$file
+                mc share download --expire 30m /this/$($bktcfg.name)/$file
                 return
             }
             default {
