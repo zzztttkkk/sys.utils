@@ -1,4 +1,4 @@
-$script:itertimes = 10240
+$script:itertimes = 320000
 
 function encrypt {
     param (
@@ -43,6 +43,7 @@ function encrypt {
 function decrypt {
     param (
         [string] $ciphertxt,
+        [string] $passwd = $null,
         [alias("f")]
         [switch] $isfilepath
     )
@@ -51,7 +52,9 @@ function decrypt {
         $ciphertxt = Get-Content $ciphertxt -Raw -Encoding utf8
     }
 
-    $passwd = Read-Host -Prompt "enter key" -MaskInput
+    if ([string]::IsNullOrEmpty($passwd)) {
+        $passwd = Read-Host -Prompt "enter key" -MaskInput
+    }
     if ([string]::IsNullOrEmpty($passwd)) {
         Write-Host "key is empty" -ForegroundColor Yellow
         return;

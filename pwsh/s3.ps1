@@ -34,17 +34,21 @@ function global:s3 {
         return
     }
 
-    $endpoint = $bktcfg.endpoint
-    $idx = $endpoint.IndexOf("://")
-    if ($idx -lt 0) {
-        Write-Host "Invalid endpoint: $endpoint" -ForegroundColor Yellow
+    $key = Read-Host -Prompt "enter key" -MaskInput
+    $ak = decrypt $bktcfg.ak -passwd $key
+    if ([string]::IsNullOrEmpty($ak)) {
+        Write-Host "No AK found" -ForegroundColor Yellow
         return
     }
-    $schema = $endpoint.Substring(0, $idx + 3)
-    $endpoint = $endpoint.Substring($idx + 3)
+    $sk = decrypt $bktcfg.sk -passwd $key
+    if ([string]::IsNullOrEmpty($sk)) {
+        Write-Host "No SK found" -ForegroundColor Yellow
+        return
+    }
 
-    $env:MC_HOST_this = "$($schema)$($bktcfg.ak):$($bktcfg.sk)@$($endpoint)"
     try {
+        mc alias set this $bktcfg.endpoint $ak $sk
+
         switch ($action) {
             "list" {
                 mc ls /this/$($bktcfg.name)
@@ -57,6 +61,7 @@ function global:s3 {
                 }
                 $name = Split-Path $file -Leaf
                 mc cp $file /this/$($bktcfg.name)/$name
+                mc share download --expire 30m /this/$($bktcfg.name)/$name
                 return
             }
             "download" {
@@ -84,6 +89,6 @@ function global:s3 {
         }
     }
     finally {
-        $env:MC_HOST_tmp = $null
+        mc alias rm this
     }
 }

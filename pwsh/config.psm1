@@ -29,6 +29,15 @@ class _ProfileConfig {
         catch {
             Write-Warning "Load failed: $($_.Exception.Message)"
         }
+
+        if ($null -ne $this.editor) {
+            foreach ($cmd in @("hx", "vim", "vi")) {
+                if (Get-Command $cmd -ErrorAction SilentlyContinue) {
+                    $this.editor = $cmd;
+                    break;
+                }
+            }
+        }
     }
 }
 
