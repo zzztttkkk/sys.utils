@@ -19,15 +19,14 @@ function global:s3 {
     if ([string]::IsNullOrEmpty($bucket)) {
         $bucket = (gum filter $alls3.Keys).Trim()
     }
-    if ([string]::IsNullOrEmpty($bucket)) {
-        Write-Host "No bucket selected" -ForegroundColor Yellow
+    $bktcfg = $alls3[$bucket]
+    if ($null -eq $bktcfg) {
+        Write-Host "No S3 config found for bucket: $bucket" -ForegroundColor Yellow
         return
     }
 
-    $bktcfg = @{} + $alls3[$bucket]
-
     if ([string]::IsNullOrEmpty($action)) {
-        $action = (gum filter list upload download).Trim()
+        $action = (gum filter list upload download share).Trim()
     }
 
     if ([string]::IsNullOrEmpty($action)) {
@@ -68,6 +67,14 @@ function global:s3 {
                 $name = Split-Path $file -Leaf
                 $target = Join-Path $HOME "Downloads/$name"
                 mc cp /tmp/$($bktcfg.name)/$file $target
+                return
+            }
+            "share" {
+                if ([string]::IsNullOrEmpty($file)) {
+                    Write-Host "No file selected" -ForegroundColor Yellow
+                    return
+                }
+                mc share download --expire 30m /tmp/$($bktcfg.name)/$file
                 return
             }
             default {

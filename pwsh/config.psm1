@@ -17,7 +17,7 @@ class _ProfileConfig {
         }
 
         try {
-            $raw = Get-Content $file -Raw -Encoding UTF8 | ConvertFrom-Json -ErrorAction Stop
+            $raw = Get-Content $file -Raw -Encoding UTF8 | ConvertFrom-Json -ErrorAction Stop -AsHashtable
 
             foreach ($prop in @(
                     'proxy', 'editor', 'vscroot', 'vscwroot',
