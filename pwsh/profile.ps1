@@ -39,6 +39,7 @@ if (Get-Command docker -ErrorAction SilentlyContinue) {
 }
 
 function script:enablereadline {
+    if (-not $Global:ProfileConfig.enable_readline) { return; }
     if ($null -eq $Host.UI.RawUI) { return; }
     if ($Host.UI.RawUI.WindowSize.Width -lt 50) { return; }
     if ($Host.UI.RawUI.WindowSize.Height -lt 5) { return; }

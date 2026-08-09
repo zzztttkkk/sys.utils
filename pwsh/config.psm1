@@ -11,6 +11,8 @@ class _ProfileConfig {
     [hashtable]$sshports; # string -> int
     [hashtable]$s3; # string -> object
 
+    [bool] $enable_readline;
+
     [void]load() {
         $file = "$global:HOME/.pwsh.profile.toml";
         if (-not(Test-Path $file -ErrorAction SilentlyContinue)) {
@@ -20,7 +22,7 @@ class _ProfileConfig {
         try {
             $raw = Get-Content $file -Raw -Encoding UTF8 | ConvertFrom-Toml -ErrorAction Stop
 
-            foreach ($prop in @('proxy', 'editor', 'vscroot', 'vscwroot', 'sshdefault')) {
+            foreach ($prop in @('proxy', 'editor', 'vscroot', 'vscwroot', 'sshdefault', 'enable_readline')) {
                 if ($null -ne $raw.$prop) { $this.$prop = $raw.$prop }
             }
 
