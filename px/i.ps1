@@ -11,6 +11,8 @@ function script:install_pwsh {
     Remove-Item -Force $target/*.psm1 -ErrorAction SilentlyContinue
     Remove-Item -Recurse -Force $target/box -ErrorAction SilentlyContinue
 
+    New-Item -ItemType Directory -Force $target -ErrorAction SilentlyContinue
+
     Copy-Item -Recurse  -Path ./pwsh/* -Destination $target -Force
 }
 
