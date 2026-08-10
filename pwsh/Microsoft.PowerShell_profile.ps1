@@ -1,10 +1,7 @@
 $script:notty = ($env:SSH_CLIENT -and (-not $env:SSH_TTY)) -or ($null -eq $Host.UI.RawUI);
 
-if ($notty) {  }
+if ($notty -or $global:__EXEC_GUARDS_354Dh6YNpCwa) {  }
 else {
-	if ($global:__EXEC_GUARDS_354Dh6YNpCwa) {
-		return
-	}
 	$global:__EXEC_GUARDS_354Dh6YNpCwa = $true
 	. $PSScriptRoot/profile.ps1
 }
