@@ -11,12 +11,11 @@ class _ProfileConfig {
     $feats;
 
     [void]load() {
-        $file = "$global:HOME/.pwsh.profile.json";
-        if (-not(Test-Path $file -ErrorAction SilentlyContinue)) {
-            return;
-        }
-
         try {
+            $file = "$global:HOME/.pwsh.profile.json";
+            if (-not(Test-Path $file -ErrorAction SilentlyContinue)) {
+                return;
+            }
             $raw = Get-Content $file -Raw -Encoding UTF8 | ConvertFrom-Json -ErrorAction Stop -AsHashtable
 
             foreach ($prop in @(
@@ -29,12 +28,13 @@ class _ProfileConfig {
         catch {
             Write-Warning "Load failed: $($_.Exception.Message)"
         }
-
-        if ($null -ne $this.editor) {
-            foreach ($cmd in @("hx", "vim", "vi")) {
-                if (Get-Command $cmd -ErrorAction SilentlyContinue) {
-                    $this.editor = $cmd;
-                    break;
+        finally {
+            if ([string]::IsNullOrEmpty($this.editor)) {
+                foreach ($cmd in @("hx", "vim", "vi")) {
+                    if (Get-Command $cmd -ErrorAction SilentlyContinue) {
+                        $this.editor = $cmd;
+                        break;
+                    }
                 }
             }
         }
