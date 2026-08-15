@@ -49,14 +49,14 @@ function Push-Env {
         $snapshot[$_.Name] = $_.Value
     }
 
-    $script:EnvStack.Push($snapshot)
+    $EnvStack.Push($snapshot)
     Read-Env -path $path
 }
 
 function Pop-Env {
-    if ($script:EnvStack.Count -eq 0) { return; }
+    if ($EnvStack.Count -eq 0) { return; }
     
-    $snapshot = $script:EnvStack.Pop()
+    $snapshot = $EnvStack.Pop()
 
     $currentKeys = (Get-ChildItem -Path env:).Name
     foreach ($key in $currentKeys) {
