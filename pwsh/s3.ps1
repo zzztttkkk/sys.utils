@@ -4,10 +4,7 @@ function global:s3 {
         [string]$bucket = "",
 
         [Alias("a")]
-        [string]$action = "",
-
-        [Alias("f")]
-        [string]$file = ""
+        [string]$action = ""
     )
 
     $alls3 = $Global:ProfileConfig.s3
@@ -55,6 +52,8 @@ function global:s3 {
                 return
             }
             "upload" {
+                $files = Get-ChildItem -File -Path $wd | Select-Object -ExpandProperty FullName
+                $file = gum filter $files
                 if ([string]::IsNullOrEmpty($file)) {
                     Write-Host "No file selected" -ForegroundColor Yellow
                     return
@@ -65,16 +64,17 @@ function global:s3 {
                 return
             }
             "download" {
+                $file = Read-Host "Remote FileName"
                 if ([string]::IsNullOrEmpty($file)) {
-                    Write-Host  "No file selected" -ForegroundColor Yellow
+                    Write-Host "No file selected" -ForegroundColor Yellow
                     return
                 }
-                $name = Split-Path $file -Leaf
-                $target = Join-Path $HOME "Downloads/$name"
+                $target = Join-Path $HOME "Downloads/$file"
                 mc cp /this/$($bktcfg.name)/$file $target
                 return
             }
             "share" {
+                $file = Read-Host "Remote FileName"
                 if ([string]::IsNullOrEmpty($file)) {
                     Write-Host "No file selected" -ForegroundColor Yellow
                     return

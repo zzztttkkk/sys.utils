@@ -1,4 +1,4 @@
-function useproxy() {
+function global:useproxy() {
     $proxy = $Global:ProfileConfig.proxy
     $env:http_proxy = $proxy
     $env:https_proxy = $proxy
@@ -6,14 +6,14 @@ function useproxy() {
     $env:HTTPS_PROXY = $proxy
 }
 
-function unsetproxy() {
+function global:unsetproxy() {
     $env:http_proxy = $null
     $env:https_proxy = $null
     $env:HTTP_PROXY = $null
     $env:HTTPS_PROXY = $null
 }
 
-function loop() {
+function global:loop() {
     param (
         [Parameter(Mandatory = $true)]
         [scriptblock] $cmd,
@@ -29,7 +29,7 @@ function loop() {
     }
 }
 
-function urandom() {
+function global:urandom() {
     param (
         [Int] $length = 16
     )
@@ -43,7 +43,7 @@ function urandom() {
     return $result.ToString()
 }
 
-function uuid() {
+function global:uuid() {
     param (
         [switch] $random
     )
@@ -51,7 +51,7 @@ function uuid() {
     return [guid]::CreateVersion7().ToString()
 }
 
-function confirm() {
+function global:confirm() {
     param (
         [string] $msg = "Are you sure?"
     )
@@ -62,7 +62,7 @@ function confirm() {
     return $false
 }
 
-function fexp {
+function global:fexp {
     param (
         [string]$target = ".",
         [alias("q")]
@@ -158,7 +158,7 @@ function global:z {
 }
 
 # filter kill
-function fq() {
+function global:fq() {
     param (
         [String[]] $vals,
         [String] $op = "eq"
@@ -197,7 +197,7 @@ function fq() {
     }
 }
 
-function iselevated {
+function global:iselevated {
     if ($IsWindows) {
         return [Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator);
     }
@@ -212,4 +212,18 @@ function global:edithosts {
         return
     }
     & sudo $editor /etc/hosts
+}
+
+function global:filehashs {
+    param (
+        [string] $wd = ".",
+        [string] $match = "*.*"
+    )
+
+    $files = Get-ChildItem -File -Path $wd -Filter $match | Select-Object -ExpandProperty FullName
+
+    $files | ForEach-Object {
+        $hash = Get-FileHash -Path $_ -Algorithm SHA256
+        Write-Host "$_`:`:$($hash.Hash)" -ForegroundColor Green
+    }
 }
