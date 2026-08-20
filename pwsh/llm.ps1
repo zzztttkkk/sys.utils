@@ -90,7 +90,6 @@ function global:llmctx {
         Write-Host "Total size: $count chars; Estimated tokens: $([math]::Round($count / 3.5))" -ForegroundColor Cyan
     }
 }
-
 function global:dsh {
     npx @deepseek-ai/dsh web
 }

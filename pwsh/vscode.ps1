@@ -11,8 +11,10 @@ function script:choose() {
         [String] $root
     )
     $items = @(list $root)
+    $exclude = $null
     if (Test-Path "$root/.vsc.json") {
         $raw = Get-Content "$root/.vsc.json" -Raw -Encoding UTF8 | ConvertFrom-Json -ErrorAction SilentlyContinue
+        $exclude = $raw.exclude
         if (($null -ne $raw) -and ($null -ne $raw.expands)) {
             @($raw.expands) | ForEach-Object {
                 if (-not (Test-Path "$root/$_")) { 
@@ -25,6 +27,12 @@ function script:choose() {
             }
         }
     }
+    if ($items.Count -eq 0) { return }
+
+    if ($null -ne $exclude) {
+        $items = $items | Where-Object { -not $_.StartsWith($exclude) }
+    }
+
     if ($items.Count -eq 0) { return }
 
     if ($items.Count -eq 1) {
