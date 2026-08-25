@@ -53,9 +53,10 @@ function global:uuid() {
 
 function global:confirm() {
     param (
-        [string] $msg = "Are you sure?"
+        [string] $msg = "Are you sure?",
+        [string] $default = "Yes"
     )
-    gum confirm $msg 
+    gum confirm $msg --default=$default
     if ($LASTEXITCODE -eq 0) {
         return $true
     }

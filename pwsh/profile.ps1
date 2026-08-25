@@ -20,6 +20,7 @@ if (-not (Get-Command cls -ErrorAction Ignore)) {
 . $PSScriptRoot/llm.ps1
 . $PSScriptRoot/s3.ps1
 . $PSScriptRoot/aes.ps1
+. $PSScriptRoot/http.ps1
 	
 if ($IsWindows) {
     . $PSScriptRoot/windows.ps1
