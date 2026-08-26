@@ -109,3 +109,13 @@ function cclr() {
         }
     }
 }
+
+function global:wtc {
+    param(
+        [string] $dir
+    )
+    if ([string]::IsNullOrEmpty($dir)) {
+        $dir = (Get-Location).Path
+    }
+    wt -d $dir
+}
