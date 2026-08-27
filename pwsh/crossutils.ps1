@@ -67,7 +67,9 @@ function global:fexp {
     param (
         [string]$target = ".",
         [alias("q")]
-        [switch]$quick = $false
+        [switch]$quick = $false,
+        [alias("t")]
+        [switch]$terminal = $false
     )
     if ($target -eq ".") {
         if ($quick) {
@@ -95,6 +97,13 @@ function global:fexp {
     }
     if ($IsMacOS) {
         $exe = "open"
+    }
+    if ($terminal) {
+        if ([System.IO.File]::Exists($path)) {
+            $path = Split-Path $path -Parent
+        }
+        Set-Location $path
+        return
     }
     Start-Process $exe -ArgumentList $path
 }
