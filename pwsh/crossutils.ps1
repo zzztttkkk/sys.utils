@@ -83,9 +83,8 @@ function global:fexp {
             $target = $marks[$key];
         }
     }
-    if ([string]::IsNullOrEmpty($target)) {
-        return;
-    }
+    if ([string]::IsNullOrEmpty($target)) { return; }
+
     $target = $ExecutionContext.InvokeCommand.ExpandString($target)
     $path = Resolve-Path $target
     $exe = ""

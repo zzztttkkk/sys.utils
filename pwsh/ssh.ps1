@@ -22,12 +22,12 @@ function global:sshc {
 	if ([string]::IsNullOrEmpty($name)) { return; }
 
 	$port = $global:ProfileConfig.ssh.ports[$name]
-	if (!$port) {
-		$port = 22 
+	if (-not $port) {
+		$port = 22
 	}
 
 	$auth = $global:ProfileConfig.ssh.auths[$name]
-	if (!$auth) {
+	if (-not $auth) {
 		Write-Output "empty auth for $name"
 		return
 	}
@@ -41,14 +41,14 @@ function global:sshup([String] $name, [String] $local, [String] $remote) {
 	if ([string]::IsNullOrEmpty($name)) { return; }
 
 	$temp = $global:ProfileConfig.ssh.auths[$name]
-	if (!$temp) {
+	if (-not $temp) {
 		Write-Output "empty auth for $name"
 		return
 	}
 
 	$port = $global:ProfileConfig.ssh.ports[$name]
-	if ( !$port ) {
-		$port = 22 
+	if (-not $port) {
+		$port = 22
 	}
 
 	$print_remote = $false;
@@ -75,8 +75,8 @@ function script:_sshdown([String] $name, [String] $remote, [String] $local) {
 	}
 
 	$port = $global:ProfileConfig.ssh.ports[$name]
-	if ( !$port ) {
-		$port = 22 
+	if (-not $port) {
+		$port = 22
 	}
 
 	if ([string]::IsNullOrEmpty($local)) {
