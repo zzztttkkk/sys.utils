@@ -35,6 +35,12 @@ function gs() {
     git submodule foreach --recursive "git status"
 }
 
+function script:Clear-ConsoleInput {
+    while ([Console]::KeyAvailable) {
+        [Console]::ReadKey($true) | Out-Null
+    }
+}
+
 function cz() {
     param (
         [switch]$offline = $false
@@ -92,6 +98,9 @@ function cz() {
     if ($null -eq $ctype) {
         return 
     }
+
+    Clear-ConsoleInput
+
     $scope = read-host -Prompt "Scope"
     $scope = $scope.trim()
 
