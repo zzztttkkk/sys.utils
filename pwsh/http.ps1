@@ -81,7 +81,6 @@ function global:http {
 
     # Header
     $headersParams = @{}
-
     if ($null -ne $headers) {
         if (($headers.Count -eq 1) -and ($headers[0] -eq "?")) {
             if (confirm "Should add header?" "No") {
@@ -91,14 +90,14 @@ function global:http {
                         break
                     }
                     $value = Read-Host "Enter header value"
-                    add $headersParams $key $value
+                    $headersParams[$key] = $value
                 }
             }
         }
         else {
             foreach ($item in $headers) {
                 $key, $value = $item -split "=", 2
-                add $headersParams $key $value
+                $headersParams[$key] = $value
             }
         }
     }
@@ -106,21 +105,20 @@ function global:http {
     # Body
     $body = $null
 
-    if ($method -in @("POST", "PUT")) {
+    if ($method -notin @("GET", "HEAD", "OPTIONS")) {
         if (confirm "Should use body?") {
             $kind = gum choose text file json
 
             switch ($kind) {
-                "text" { 
+                "text" {
                     $body = gum write -prompt "Enter body text"
 
                     if ([string]::IsNullOrWhiteSpace($body)) {
                         Write-Host "Body is empty." -ForegroundColor Yellow
                     }
                 }
-                "file" { 
+                "file" {
                     $file = gum file
-
                     if ([string]::IsNullOrWhiteSpace($file)) {
                         Write-Host "No file selected." -ForegroundColor Yellow
                         return
@@ -133,30 +131,26 @@ function global:http {
 
                     $body = Get-Content -LiteralPath $file -Raw
                 }
-                Default {}
-            }
-
-            if ($kind -eq "text") {
-                $body = gum write -prompt "Enter body text"
-
-                if ([string]::IsNullOrWhiteSpace($body)) {
-                    Write-Host "Body is empty." -ForegroundColor Yellow
+                "json" {
+                    $uuid = New-Guid
+                    $tmp = [System.IO.Path]::GetTempPath()
+                    $editor = $Global:ProfileConfig.editor
+                    $tmpfile = Join-Path $tmp "$($uuid).json"
+                    try {
+                        & $editor $tmpfile
+                        $body = Get-Content -LiteralPath $tmpfile -Raw -ErrorAction SilentlyContinue
+                    }
+                    finally {
+                        Remove-Item -LiteralPath $tmpfile -Force -ErrorAction SilentlyContinue
+                    }
+                    if ([string]::IsNullOrEmpty($body)) {
+                        Write-Host "Body is empty." -ForegroundColor Yellow
+                        return
+                    }
+                    $headersParams["Content-Type"] = "application/json"
                 }
-            }
-            elseif ($kind -eq "file") {
-                $file = gum file
-
-                if ([string]::IsNullOrWhiteSpace($file)) {
-                    Write-Host "No file selected." -ForegroundColor Yellow
-                    return
+                Default {
                 }
-
-                if (-not (Test-Path -LiteralPath $file -PathType Leaf)) {
-                    Write-Host "File does not exist: $file" -ForegroundColor Red
-                    return
-                }
-
-                $body = Get-Content -LiteralPath $file -Raw
             }
         }
     }
@@ -171,7 +165,7 @@ function global:http {
             $key = [System.Uri]::EscapeDataString([string]$_.Key);
             $vs = $_.Value;
             foreach ($v in $vs) {
-                $newQuery += "{0}={1}" -f $key, $v
+                $newQuery += "{0}={1}" -f $key, [System.Uri]::EscapeDataString($v)
             }
         }
 
