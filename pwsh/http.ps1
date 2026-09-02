@@ -5,8 +5,16 @@ function global:http {
         [Alias("m")]
         [string]$method = $null,
 
+        [Alias("q")]
+        [string[]]$query = $null,
+
+        [Alias("h")]
+        [string[]]$headers = $null,
+
         [Alias("o")]
-        [string]$output = $null
+        [string]$output = $null,
+
+        [int32]$timeout = 30
     )
 
     # URL
@@ -31,35 +39,67 @@ function global:http {
 
     $method = $method.ToUpperInvariant()
 
+    function add {
+        param (
+            [hashtable] $dest,
+            [string]$key,
+            [string]$value
+        )
+        $prev = $dest[$key]
+        if ($null -eq $prev) {
+            $dest[$key] = @($value);
+            return;
+        }
+        $prev += $value;
+        $dest[$key] = $prev;
+    }
+
     # Query
     $queryParams = @{}
+    if ($null -ne $query) {
+        if (($query.Count -eq 1) -and ($query[0] -eq "?")) {
+            if (confirm "Should add query?" "No") {
+                while ($true) {
+                    $key = Read-Host "Enter query key, empty to exit"
 
-    if (confirm "Should add query?" "No") {
-        while ($true) {
-            $key = Read-Host "Enter query key, empty to exit"
+                    if ([string]::IsNullOrWhiteSpace($key)) {
+                        break
+                    }
 
-            if ([string]::IsNullOrWhiteSpace($key)) {
-                break
+                    $value = Read-Host "Enter query value"
+                    add $queryParams $key $value
+                }
             }
-
-            $value = Read-Host "Enter query value"
-            $queryParams[$key] = $value
+        }
+        else {
+            foreach ($item in $query) {
+                $key, $value = $item -split "=", 2
+                add $queryParams $key $value
+            }
         }
     }
 
     # Header
-    $headers = @{}
+    $headersParams = @{}
 
-    if (confirm "Should add header?" "No") {
-        while ($true) {
-            $key = Read-Host "Enter header key, empty to exit"
-
-            if ([string]::IsNullOrWhiteSpace($key)) {
-                break
+    if ($null -ne $headers) {
+        if (($headers.Count -eq 1) -and ($headers[0] -eq "?")) {
+            if (confirm "Should add header?" "No") {
+                while ($true) {
+                    $key = Read-Host "Enter header key, empty to exit"
+                    if ([string]::IsNullOrWhiteSpace($key)) {
+                        break
+                    }
+                    $value = Read-Host "Enter header value"
+                    add $headersParams $key $value
+                }
             }
-
-            $value = Read-Host "Enter header value"
-            $headers[$key] = $value
+        }
+        else {
+            foreach ($item in $headers) {
+                $key, $value = $item -split "=", 2
+                add $headersParams $key $value
+            }
         }
     }
 
@@ -68,7 +108,33 @@ function global:http {
 
     if ($method -in @("POST", "PUT")) {
         if (confirm "Should use body?") {
-            $kind = gum choose text file
+            $kind = gum choose text file json
+
+            switch ($kind) {
+                "text" { 
+                    $body = gum write -prompt "Enter body text"
+
+                    if ([string]::IsNullOrWhiteSpace($body)) {
+                        Write-Host "Body is empty." -ForegroundColor Yellow
+                    }
+                }
+                "file" { 
+                    $file = gum file
+
+                    if ([string]::IsNullOrWhiteSpace($file)) {
+                        Write-Host "No file selected." -ForegroundColor Yellow
+                        return
+                    }
+
+                    if (-not (Test-Path -LiteralPath $file -PathType Leaf)) {
+                        Write-Host "File does not exist: $file" -ForegroundColor Red
+                        return
+                    }
+
+                    $body = Get-Content -LiteralPath $file -Raw
+                }
+                Default {}
+            }
 
             if ($kind -eq "text") {
                 $body = gum write -prompt "Enter body text"
@@ -100,8 +166,13 @@ function global:http {
         $builder = [System.UriBuilder]$url
         $existingQuery = $builder.Query.TrimStart('?')
 
-        $newQuery = $queryParams.GetEnumerator() | ForEach-Object {
-            "{0}={1}" -f [System.Uri]::EscapeDataString([string]$_.Key), [System.Uri]::EscapeDataString([string]$_.Value)
+        $newQuery = @();
+        $queryParams.GetEnumerator() | ForEach-Object {
+            $key = [System.Uri]::EscapeDataString([string]$_.Key);
+            $vs = $_.Value;
+            foreach ($v in $vs) {
+                $newQuery += "{0}={1}" -f $key, $v
+            }
         }
 
         if ([string]::IsNullOrWhiteSpace($existingQuery)) {
@@ -118,9 +189,9 @@ function global:http {
     $params = @{
         Uri                     = $url
         Method                  = $method
-        Headers                 = $headers
+        Headers                 = $headersParams
         ErrorAction             = "Stop"
-        OperationTimeoutSeconds = 10
+        OperationTimeoutSeconds = $timeout
     }
 
     if ($null -ne $body) {
