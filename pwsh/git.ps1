@@ -217,7 +217,7 @@ function mergefrom() {
 
     $branch = &git rev-parse --abbrev-ref HEAD
     if ($target -eq $branch) {
-        Write-Output "----------------same branch----------------" -ForegroundColor Yellow
+        Write-Host "----------------same branch----------------" -ForegroundColor Yellow
         return
     }
 

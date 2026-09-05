@@ -4,7 +4,10 @@ function global:s3 {
         [string]$bucket = "",
 
         [Alias("a")]
-        [string]$action = ""
+        [string]$action = "",
+
+        [Alias("d")]
+        [string]$wd = "."
     )
 
     $alls3 = $Global:ProfileConfig.s3

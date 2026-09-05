@@ -11,26 +11,33 @@ function script:choose() {
         [String] $root
     )
     $items = @(list $root)
-    $exclude = $null
+    $exclude = @()
     if (Test-Path "$root/.vsc.json") {
         $raw = Get-Content "$root/.vsc.json" -Raw -Encoding UTF8 | ConvertFrom-Json -ErrorAction SilentlyContinue
-        $exclude = $raw.exclude
-        if (($null -ne $raw) -and ($null -ne $raw.expands)) {
-            @($raw.expands) | ForEach-Object {
-                if (-not (Test-Path "$root/$_")) { 
-                    Write-Host "$_ is not exists" -ForegroundColor Yellow
-                    return; 
+        if ($null -ne $raw) {
+            if ($null -ne $raw.exclude) {
+                $exclude = @(@($raw.exclude) | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
+            }
+            if ($null -ne $raw.expands) {
+                @($raw.expands) | ForEach-Object {
+                    if (-not (Test-Path "$root/$_")) { 
+                        Write-Host "$_ is not exists" -ForegroundColor Yellow
+                        return; 
+                    }
+                    $prefix = $_
+                    $subitems = list "$root/$_" | ForEach-Object { "$prefix/$_" }
+                    $items += $subitems
                 }
-                $prefix = $_
-                $subitems = list "$root/$_" | ForEach-Object { "$prefix/$_" }
-                $items += $subitems
             }
         }
     }
     if ($items.Count -eq 0) { return }
 
-    if ($null -ne $exclude) {
-        $items = $items | Where-Object { -not $_.StartsWith($exclude) }
+    if ($exclude.Count -gt 0) {
+        $items = @($items | Where-Object {
+                $name = $_
+                $null -eq ($exclude | Where-Object { $name.StartsWith([string]$_) })
+            })
     }
 
     if ($items.Count -eq 0) { return }

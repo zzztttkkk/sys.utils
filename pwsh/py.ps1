@@ -9,7 +9,15 @@ function global:py {
 }
 
 function global:pv {
-    if (Test-Path "./.venv/Scripts/activate.ps1" -ErrorAction SilentlyContinue) {
-        . "./.venv/Scripts/activate.ps1"
+    $candidates = @(
+        "./.venv/Scripts/activate.ps1",
+        "./.venv/bin/activate.ps1"
+    )
+    foreach ($candidate in $candidates) {
+        if (Test-Path -LiteralPath $candidate -PathType Leaf) {
+            . $candidate
+            return
+        }
     }
+    Write-Host "no .venv found in $((Get-Location).Path)" -ForegroundColor Yellow
 }

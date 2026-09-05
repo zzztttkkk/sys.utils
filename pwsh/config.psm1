@@ -90,11 +90,11 @@ class _ProfileConfig {
 
     [void] fexpmarkadd([string] $key, [string] $target, [bool] $update) {
         if ([string]::IsNullOrEmpty($key)) {
-            Write-Warning "key is empty" -ForegroundColor Yellow
+            Write-Warning "key is empty"
             return;
         }
         if ([string]::IsNullOrEmpty($target)) {
-            Write-Warning "target is empty" -ForegroundColor Yellow
+            Write-Warning "target is empty"
             return;
         }
         if ($target -eq ".") {
@@ -111,7 +111,7 @@ class _ProfileConfig {
         $prev = $this.fexp.marks[$key]
         if (-not [string]::IsNullOrEmpty($prev)) {
             if (-not $update) {
-                Write-Warning "mark $key already exists" -ForegroundColor Yellow
+                Write-Warning "mark $key already exists"
                 return;
             }
         }

@@ -165,8 +165,21 @@ function global:sclipr {
 	$name = pickname $name
 	if ([string]::IsNullOrEmpty($name)) { return; }
 
-	$content = sshc $name "cat ~/.sshclipboard.temp"
-	$content = [Convert]::FromBase64String($content)
-	$content = [System.Text.Encoding]::UTF8.GetString($content)
+	$raw = (@(sshc $name "cat ~/.sshclipboard.temp") -join "").Trim()
+	if ([string]::IsNullOrEmpty($raw)) {
+		Write-Warning "empty remote clipboard: $name"
+		return
+	}
+
+	$bytes = $null
+	try {
+		$bytes = [Convert]::FromBase64String($raw)
+	}
+	catch {
+		Write-Warning "invalid remote clipboard content: $($_.Exception.Message)"
+		return
+	}
+
+	$content = [System.Text.Encoding]::UTF8.GetString($bytes)
 	clipw $content
 }
