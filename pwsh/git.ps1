@@ -53,44 +53,50 @@ function cz() {
         )
 
         if ([string]::IsNullOrWhiteSpace($NtpServer)) {
-            $NtpServer = @('time.windows.com', 'time.apple.com', 'pool.ntp.org') | Get-Random
+            $pool = @('time.windows.com', 'time.apple.com', 'pool.ntp.org')
+            $candidates = $pool | Get-Random -Count $pool.Count
+        }
+        else {
+            $candidates = @($NtpServer)
         }
 
         $ntpJob = {
-            param($server)
-            $udpClient = $null
-            try {
-                $ntpData = New-Object byte[] 48
-                $ntpData[0] = 0x1B
+            param([string[]]$servers)
+            foreach ($server in $servers) {
+                $udpClient = $null
+                try {
+                    $ntpData = New-Object byte[] 48
+                    $ntpData[0] = 0x1B
 
-                $udpClient = New-Object System.Net.Sockets.UdpClient($server, 123)
-                $udpClient.Client.ReceiveTimeout = 2000
+                    $udpClient = New-Object System.Net.Sockets.UdpClient($server, 123)
+                    $udpClient.Client.ReceiveTimeout = 2000
 
-                $startTime = Get-Date
-                $null = $udpClient.Send($ntpData, $ntpData.Length)
+                    $startTime = Get-Date
+                    $null = $udpClient.Send($ntpData, $ntpData.Length)
 
-                $remoteIpEndPoint = New-Object System.Net.IPEndPoint([System.Net.IPAddress]::Any, 0)
-                $receiveData = $udpClient.Receive([ref]$remoteIpEndPoint)
-                $endTime = Get-Date
+                    $remoteIpEndPoint = New-Object System.Net.IPEndPoint([System.Net.IPAddress]::Any, 0)
+                    $receiveData = $udpClient.Receive([ref]$remoteIpEndPoint)
+                    $endTime = Get-Date
 
-                $intPart = [bitconverter]::ToUInt32($receiveData[43..40], 0)
-                $ntpDateTime = (New-Object DateTime(1900, 1, 1, 0, 0, 0, [DateTimeKind]::Utc)).AddSeconds($intPart)
+                    $intPart = [bitconverter]::ToUInt32($receiveData[43..40], 0)
+                    $ntpDateTime = (New-Object DateTime(1900, 1, 1, 0, 0, 0, [DateTimeKind]::Utc)).AddSeconds($intPart)
 
-                $localTimeUtc = $startTime.ToUniversalTime().AddTicks(($endTime.Ticks - $startTime.Ticks) / 2)
-                $diff = ($ntpDateTime - $localTimeUtc).TotalSeconds
+                    $localTimeUtc = $startTime.ToUniversalTime().AddTicks(($endTime.Ticks - $startTime.Ticks) / 2)
+                    $diff = ($ntpDateTime - $localTimeUtc).TotalSeconds
 
-                return [math]::Abs([math]::Round($diff, 4))
+                    return [math]::Abs([math]::Round($diff, 4))
+                }
+                catch {
+                    Write-Warning "NTP fetch failed ($server): $($_.Exception.Message)"
+                }
+                finally {
+                    if ($null -ne $udpClient) { $udpClient.Close() }
+                }
             }
-            catch {
-                Write-Warning "NTP fetch failed: $($_.Exception.Message)"
-                return 0
-            }
-            finally {
-                if ($null -ne $udpClient) { $udpClient.Close() }
-            }
+            return 10000
         }
 
-        $job = Start-Job -ScriptBlock $ntpJob -ArgumentList $NtpServer
+        $job = Start-Job -ScriptBlock $ntpJob -ArgumentList (,$candidates)
         try {
             Wait-Job -Job $job -Timeout $TotalTimeoutSec | Out-Null
             if ($job.State -eq 'Completed') {
