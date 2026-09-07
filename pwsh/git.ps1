@@ -48,42 +48,71 @@ function cz() {
 
     function timediff {
         param (
-            $NtpServer = "ntp.aliyun.com"
+            $NtpServer,
+            $TotalTimeoutSec = 5
         )
 
+        if ([string]::IsNullOrWhiteSpace($NtpServer)) {
+            $NtpServer = @('time.windows.com', 'time.apple.com', 'pool.ntp.org') | Get-Random
+        }
+
+        $ntpJob = {
+            param($server)
+            $udpClient = $null
+            try {
+                $ntpData = New-Object byte[] 48
+                $ntpData[0] = 0x1B
+
+                $udpClient = New-Object System.Net.Sockets.UdpClient($server, 123)
+                $udpClient.Client.ReceiveTimeout = 2000
+
+                $startTime = Get-Date
+                $null = $udpClient.Send($ntpData, $ntpData.Length)
+
+                $remoteIpEndPoint = New-Object System.Net.IPEndPoint([System.Net.IPAddress]::Any, 0)
+                $receiveData = $udpClient.Receive([ref]$remoteIpEndPoint)
+                $endTime = Get-Date
+
+                $intPart = [bitconverter]::ToUInt32($receiveData[43..40], 0)
+                $ntpDateTime = (New-Object DateTime(1900, 1, 1, 0, 0, 0, [DateTimeKind]::Utc)).AddSeconds($intPart)
+
+                $localTimeUtc = $startTime.ToUniversalTime().AddTicks(($endTime.Ticks - $startTime.Ticks) / 2)
+                $diff = ($ntpDateTime - $localTimeUtc).TotalSeconds
+
+                return [math]::Abs([math]::Round($diff, 4))
+            }
+            catch {
+                Write-Warning "NTP fetch failed: $($_.Exception.Message)"
+                return 0
+            }
+            finally {
+                if ($null -ne $udpClient) { $udpClient.Close() }
+            }
+        }
+
+        $job = Start-Job -ScriptBlock $ntpJob -ArgumentList $NtpServer
         try {
-            $ntpData = New-Object byte[] 48
-            $ntpData[0] = 0x1B
-
-            $udpClient = New-Object System.Net.Sockets.UdpClient($NtpServer, 123)
-            $udpClient.Client.ReceiveTimeout = 2000 
-        
-            $startTime = Get-Date 
-            $null = $udpClient.Send($ntpData, $ntpData.Length)
-
-            $remoteIpEndPoint = New-Object System.Net.IPEndPoint([System.Net.IPAddress]::Any, 0)
-            $receiveData = $udpClient.Receive([ref]$remoteIpEndPoint)
-            $endTime = Get-Date 
-            $udpClient.Close()
-
-            $intPart = [bitconverter]::ToUInt32($receiveData[43..40], 0)
-            $ntpDateTime = (New-Object DateTime(1900, 1, 1, 0, 0, 0, [DateTimeKind]::Utc)).AddSeconds($intPart)
-
-            $localTimeUtc = $startTime.ToUniversalTime().AddTicks(($endTime.Ticks - $startTime.Ticks) / 2)
-            $diff = ($ntpDateTime - $localTimeUtc).TotalSeconds
-
-            return [math]::Abs([math]::Round($diff, 4))
+            Wait-Job -Job $job -Timeout $TotalTimeoutSec | Out-Null
+            if ($job.State -eq 'Completed') {
+                $tdiff = Receive-Job -Job $job
+            }
+            else {
+                Write-Warning "NTP fetch timed out after ${TotalTimeoutSec}s (offline?)"
+                $tdiff = 10000
+            }
         }
-        catch {
-            Write-Warning "NTP fetch failed: $($_.Exception.Message)"
-            return 0
+        finally {
+            Remove-Job -Job $job -Force
         }
+
+        if ($null -eq $tdiff) { $tdiff = 0 }
+        return [double]$tdiff
     }
 
     if (-not $offline) {
         $tdiff = timediff
         if ($tdiff -ge 60) {
-            Write-Output "System Time Diff With Intnet"
+            Write-Output "System Time Diff With Intnet Or Offline"
             return;
         }
     }
