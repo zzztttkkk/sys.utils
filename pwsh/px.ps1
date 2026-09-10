@@ -73,7 +73,7 @@ function script:args_to_string {
     $result = foreach ($arg in $argvs) {
         $str = [string]$arg
         if ($str.Length -eq 0) { "''"; continue }
-        if ($str -match '[\s''"`$@;()\[\]{}]') {
+        if ($str -match '[\s''"`$@;()\[\]{},#<>|&]') {
             "'{0}'" -f ($str -replace "'", "''")
         }
         else {

@@ -1,5 +1,3 @@
-$env:UV_INDEX = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
-
 function global:py {
     param (
         [Parameter(ValueFromRemainingArguments = $true)]

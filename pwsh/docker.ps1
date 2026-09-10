@@ -1,4 +1,4 @@
-function dps {
+function dkps {
     param(
         [Alias("a")]
         [switch] $all = $false
@@ -12,7 +12,7 @@ function dps {
     }
 }
 
-function dlog {
+function dkl {
     param (
         [string] $container,
         [Alias("n")]

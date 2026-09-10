@@ -24,10 +24,23 @@ function rdps {
 function nc() {
     param(
         [string] $_host,
-        [int] $_port
+        [int] $_port,
+        [int] $Timeout = 3
     )
 
-    Test-NetConnection -ComputerName $_host -Port $_port -InformationLevel Quiet
+    $client = New-Object System.Net.Sockets.TcpClient
+    $task = $client.ConnectAsync($_host, $_port)
+    $ok = $false
+    try {
+        if ($task.Wait($Timeout * 1000) -and -not $task.IsFaulted) { $ok = $true }
+    }
+    catch {
+        $ok = $false
+    }
+    finally {
+        try { $client.Close() } catch { }
+    }
+    return $ok
 }
 
 function tcpports() {

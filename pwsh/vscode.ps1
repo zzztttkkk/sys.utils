@@ -84,3 +84,7 @@ function vsc() {
 
     choose $root
 }
+
+function vscw {
+    vsc -w
+}
