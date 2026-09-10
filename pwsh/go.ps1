@@ -9,8 +9,6 @@ function global:gouv() {
         [switch]$sync = $false
     )
 
-    go env -w "GOPROXY=https://goproxy.cn,direct"
-
     if ([string]::IsNullOrWhiteSpace($version)) {
         $version = $(go env GOVERSION).Substring(2).Trim()
     }
@@ -32,11 +30,12 @@ function global:gouv() {
         Push-Location $dir
         try {
             if ($file.Name -eq "go.mod") {
-  
                 go mod edit -go $version
+                git commit -m "update go version to $version"
                 Write-Output "update mod: $dir"
                 if ($sync) {
                     go mod tidy
+                    git commit -m "tidy mod"
                     Write-Output "tidy mod: $dir"
                 }
             }

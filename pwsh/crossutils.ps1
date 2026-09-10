@@ -208,7 +208,11 @@ function global:fq() {
 
 function global:iselevated {
     if ($IsWindows) {
-        return [Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator);
+        return [Security.Principal.WindowsPrincipal]::new(
+            [Security.Principal.WindowsIdentity]::GetCurrent()
+        ).IsInRole(
+            [Security.Principal.WindowsBuiltInRole]::Administrator
+        );
     }
     return (id -u) -eq 0
 }

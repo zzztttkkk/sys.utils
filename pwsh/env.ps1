@@ -10,14 +10,10 @@ function Read-Env {
 
     Get-Content $path | ForEach-Object {
         $line = $_.Trim()
-        if ([string]::IsNullOrEmpty($line) -or $line.StartsWith("#")) {
-            return
-        }
+        if ([string]::IsNullOrEmpty($line) -or $line.StartsWith("#")) { return }
 
         $idx = $line.IndexOf("=")
-        if ($idx -lt 0) {
-            return
-        }
+        if ($idx -lt 0) { return }
 
         $name = $line.Substring(0, $idx).Trim()
         if (-not ($name -match '^[a-zA-Z_][a-zA-Z0-9_]*$')) {

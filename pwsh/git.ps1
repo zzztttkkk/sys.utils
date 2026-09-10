@@ -96,7 +96,7 @@ function cz() {
             return 10000
         }
 
-        $job = Start-Job -ScriptBlock $ntpJob -ArgumentList (,$candidates)
+        $job = Start-Job -ScriptBlock $ntpJob -ArgumentList (, $candidates)
         try {
             Wait-Job -Job $job -Timeout $TotalTimeoutSec | Out-Null
             if ($job.State -eq 'Completed') {
@@ -174,13 +174,12 @@ function cz() {
     if (!$scope) {
         $scope = "/"
     }
-    $m1 = "[" + $ctype + "] (" + $scope + "): " + $summary
-
+    $title = "[" + $ctype + "] (" + $scope + "): $summary"
     if ($content -eq "") {
-        git commit -m $m1
+        git commit -m $title
     }
     else {
-        git commit -m $m1 -m $content
+        git commit -m $title -m $content
     }
 }
 
