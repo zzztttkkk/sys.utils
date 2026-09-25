@@ -1,90 +1,90 @@
 function script:list {
-    param (
-        [string] $p
-    )
-    $items = Get-ChildItem -Directory $p | Select-Object -ExpandProperty name | Where-Object { -not $_.StartsWith(".") }
-    return $items
+	param (
+		[string] $p
+	)
+	$items = Get-ChildItem -Directory $p | Select-Object -ExpandProperty name | Where-Object { -not $_.StartsWith(".") }
+	return $items
 }
 
 function script:choose() {
-    param (
-        [String] $root
-    )
-    $items = @(list $root)
-    $exclude = @()
-    if (Test-Path "$root/.vsc.json") {
-        $raw = Get-Content "$root/.vsc.json" -Raw -Encoding UTF8 | ConvertFrom-Json -ErrorAction SilentlyContinue
-        if ($null -ne $raw) {
-            if ($null -ne $raw.exclude) {
-                $exclude = @(@($raw.exclude) | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
-            }
-            if ($null -ne $raw.expands) {
-                @($raw.expands) | ForEach-Object {
-                    if (-not (Test-Path "$root/$_")) { 
-                        Write-Host "$_ is not exists" -ForegroundColor Yellow
-                        return; 
-                    }
-                    $prefix = $_
-                    $subitems = list "$root/$_" | ForEach-Object { "$prefix/$_" }
-                    $items += $subitems
-                }
-            }
-        }
-    }
-    if ($items.Count -eq 0) { return }
+	param (
+		[String] $root
+	)
+	$items = @(list $root)
+	$exclude = @()
+	if (Test-Path "$root/.vsc.json") {
+		$raw = Get-Content "$root/.vsc.json" -Raw -Encoding UTF8 | ConvertFrom-Json -ErrorAction SilentlyContinue
+		if ($null -ne $raw) {
+			if ($null -ne $raw.exclude) {
+				$exclude = @(@($raw.exclude) | Where-Object { -not [string]::IsNullOrWhiteSpace([string]$_) })
+			}
+			if ($null -ne $raw.expands) {
+				@($raw.expands) | ForEach-Object {
+					if (-not (Test-Path "$root/$_")) {
+						Write-Host "$_ is not exists" -ForegroundColor Yellow
+						return;
+					}
+					$prefix = $_
+					$subitems = list "$root/$_" | ForEach-Object { "$prefix/$_" }
+					$items += $subitems
+				}
+			}
+		}
+	}
+	if ($items.Count -eq 0) { return }
 
-    if ($exclude.Count -gt 0) {
-        $items = @($items | Where-Object {
-                $name = $_
-                $null -eq ($exclude | Where-Object { $name.StartsWith([string]$_) })
-            })
-    }
+	if ($exclude.Count -gt 0) {
+		$items = @($items | Where-Object {
+				$name = $_
+				$null -eq ($exclude | Where-Object { $name.StartsWith([string]$_) })
+			})
+	}
 
-    if ($items.Count -eq 0) { return }
+	if ($items.Count -eq 0) { return }
 
-    if ($items.Count -eq 1) {
-        $name = $items
-    }
-    else {
-        $items = $items | Sort-Object
-        $name = gum filter $items
-    }
+	if ($items.Count -eq 1) {
+		$name = $items
+	}
+	else {
+		$items = $items | Sort-Object
+		$name = gum filter $items
+	}
 
-    if ( [string]::IsNullOrEmpty($name) ) {
-        return
-    }
+	if ( [string]::IsNullOrEmpty($name) ) {
+		return
+	}
 
-    $editor = "code"
-    if (Test-Path "$root/$name/.editor") {
-        $editor = (Get-Content "$root/$name/.editor" -TotalCount 1).Trim()
-    }
-    Start-Process -FilePath $editor -ArgumentList "$root/$name" -WindowStyle Hidden
+	$editor = "code"
+	if (Test-Path "$root/$name/.editor") {
+		$editor = (Get-Content "$root/$name/.editor" -TotalCount 1).Trim()
+	}
+	Start-Process -FilePath $editor -ArgumentList "$root/$name" -WindowStyle Hidden
 }
 
 function vsc() {
-    param (
-        [alias("w")]
-        [switch] $work
-    )
+	param (
+		[alias("w")]
+		[switch] $work
+	)
 
-    $root = "";
-    if ($work) {
-        $root = $global:ProfileConfig.vscwroot;
-    }
-    else {
-        $root = $global:ProfileConfig.vscroot;
-    }
+	$root = "";
+	if ($work) {
+		$root = $global:ProfileConfig.vscwroot;
+	}
+	else {
+		$root = $global:ProfileConfig.vscroot;
+	}
 
-    if ([string]::IsNullOrEmpty($root)) {
-        Write-Error "empty root"
-        return
-    }
-    $root = $ExecutionContext.InvokeCommand.ExpandString($root);
-    $root = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($root)
+	if ([string]::IsNullOrEmpty($root)) {
+		Write-Error "empty root"
+		return
+	}
+	$root = $ExecutionContext.InvokeCommand.ExpandString($root);
+	$root = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($root)
 
-    choose $root
+	choose $root
 }
 
 function vscw {
-    vsc -w
+	vsc -w
 }

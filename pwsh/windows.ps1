@@ -3,132 +3,132 @@ Set-Alias grep Select-String
 Set-Alias ll ls
 
 function rdps {
-    $names = Get-ChildItem -Path ~/Documents/ -Filter "*.rdp" | Select-Object -ExpandProperty Name
-    if ($names.Count -eq 0) {
-        Write-Output "no rdp files found"
-        return
-    }
-    if ($names.Count -eq 1) {
-        $name = "$names"
-    }
-    else {
-        $name = gum choose $names
-    }
-    if ([string]::IsNullOrEmpty($name)) {
-        return
-    }
-    $path = resolve-path ~/Documents/$name
-    mstsc.exe $path /w:1920 /h:1080
+	$names = Get-ChildItem -Path ~/Documents/ -Filter "*.rdp" | Select-Object -ExpandProperty Name
+	if ($names.Count -eq 0) {
+		Write-Output "no rdp files found"
+		return
+	}
+	if ($names.Count -eq 1) {
+		$name = "$names"
+	}
+	else {
+		$name = gum choose $names
+	}
+	if ([string]::IsNullOrEmpty($name)) {
+		return
+	}
+	$path = resolve-path ~/Documents/$name
+	mstsc.exe $path /w:1920 /h:1080
 }
 
 function nc() {
-    param(
-        [string] $_host,
-        [int] $_port,
-        [int] $Timeout = 3
-    )
+	param(
+		[string] $_host,
+		[int] $_port,
+		[int] $Timeout = 3
+	)
 
-    $client = New-Object System.Net.Sockets.TcpClient
-    $task = $client.ConnectAsync($_host, $_port)
-    $ok = $false
-    try {
-        if ($task.Wait($Timeout * 1000) -and -not $task.IsFaulted) { $ok = $true }
-    }
-    catch {
-        $ok = $false
-    }
-    finally {
-        try { $client.Close() } catch { }
-    }
-    return $ok
+	$client = New-Object System.Net.Sockets.TcpClient
+	$task = $client.ConnectAsync($_host, $_port)
+	$ok = $false
+	try {
+		if ($task.Wait($Timeout * 1000) -and -not $task.IsFaulted) { $ok = $true }
+	}
+	catch {
+		$ok = $false
+	}
+	finally {
+		try { $client.Close() } catch { }
+	}
+	return $ok
 }
 
 function tcpports() {
-    netstat -ano -p TCP | grep LISTENING
+	netstat -ano -p TCP | grep LISTENING
 }
 
 function netreset() {
-    $tasks = {
-        ipconfig /flushdns
-        ipconfig /registerdns
-        ipconfig /release
-        ipconfig /renew
-        netsh winsock reset
-    }
-    sudo pwsh $tasks
+	$tasks = {
+		ipconfig /flushdns
+		ipconfig /registerdns
+		ipconfig /release
+		ipconfig /renew
+		netsh winsock reset
+	}
+	sudo pwsh $tasks
 }
 
 function hvrun {
-    param (
-        [Alias("c")]
-        [switch] $connect
-    )
+	param (
+		[Alias("c")]
+		[switch] $connect
+	)
 
-    sudo pwsh -NoProfile -c {
-        $c = $args[0]["c"]
+	sudo pwsh -NoProfile -c {
+		$c = $args[0]["c"]
 
-        $items = @(Get-VM | Select-Object -ExpandProperty Name)
-        if ($items.Count -lt 1) { return; }
-        
-        $name = gum filter $items
-        if ([string]::IsNullOrEmpty($name)) { return; }
+		$items = @(Get-VM | Select-Object -ExpandProperty Name)
+		if ($items.Count -lt 1) { return; }
 
-        Start-VM -Name $name
-        if ($c) {
-            Start-Process vmconnect -ArgumentList "localhost", $name
-        }
-    } -args @{ c = $connect }
+		$name = gum filter $items
+		if ([string]::IsNullOrEmpty($name)) { return; }
+
+		Start-VM -Name $name
+		if ($c) {
+			Start-Process vmconnect -ArgumentList "localhost", $name
+		}
+	} -args @{ c = $connect }
 }
 
 function cclr() {
-    # node
-    Write-Output ">>>>>>>>>>>> npm <<<<<<<<<<<<<<<"
-    npm cache clean --force
-    Write-Output ">>>>>>>>>>>> pnpm <<<<<<<<<<<<<<<"
-    pnpm cache delete
-    pnpm store prune
+	# node
+	Write-Output ">>>>>>>>>>>> npm <<<<<<<<<<<<<<<"
+	npm cache clean --force
+	Write-Output ">>>>>>>>>>>> pnpm <<<<<<<<<<<<<<<"
+	pnpm cache delete
+	pnpm store prune
 
-    # go
-    Write-Output ">>>>>>>>>>>> go <<<<<<<<<<<<<<<"
-    go clean -cache
-    $gopls = "$HOME/AppData/Local/gopls"
-    if (Test-Path $gopls) {
-        Remove-Item -r -fo $gopls
-    }
+	# go
+	Write-Output ">>>>>>>>>>>> go <<<<<<<<<<<<<<<"
+	go clean -cache
+	$gopls = "$HOME/AppData/Local/gopls"
+	if (Test-Path $gopls) {
+		Remove-Item -r -fo $gopls
+	}
 
-    # rust
-    Write-Output ">>>>>>>>>>>> rust <<<<<<<<<<<<<<<"
-    cargo cache -a
+	# rust
+	Write-Output ">>>>>>>>>>>> rust <<<<<<<<<<<<<<<"
+	cargo cache -a
 
-    # system
-    Write-Output ">>>>>>>>>>>> system <<<<<<<<<<<<<<<"
-    Remove-Item -Recurse -Force "$env:TEMP/*" -ErrorAction SilentlyContinue
+	# system
+	Write-Output ">>>>>>>>>>>> system <<<<<<<<<<<<<<<"
+	Remove-Item -Recurse -Force "$env:TEMP/*" -ErrorAction SilentlyContinue
 
-    # scoop
-    Write-Output ">>>>>>>>>>>> scoop <<<<<<<<<<<<<<<"
-    scoop cache rm *
+	# scoop
+	Write-Output ">>>>>>>>>>>> scoop <<<<<<<<<<<<<<<"
+	scoop cache rm *
 
-    #python
-    Write-Output ">>>>>>>>>>>> uv <<<<<<<<<<<<<<<"
-    uv cache clean
-    
-    #fnm
-    Write-Output ">>>>>>>>>>>> fnm <<<<<<<<<<<<<<<"
-    & {
-        $c = $env:FNM_MULTISHELL_PATH
-        if (Test-Path $c) {
-            $p = Split-Path -Path $c -Parent
-            Get-ChildItem -Path $p -Directory | Remove-Item -Recurse -Force
-        }
-    }
+	# python
+	Write-Output ">>>>>>>>>>>> uv <<<<<<<<<<<<<<<"
+	uv cache clean
+
+	# fnm
+	Write-Output ">>>>>>>>>>>> fnm <<<<<<<<<<<<<<<"
+	& {
+		$c = $env:FNM_MULTISHELL_PATH
+		if (Test-Path $c) {
+			$p = Split-Path -Path $c -Parent
+			Get-ChildItem -Path $p -Directory | Remove-Item -Recurse -Force
+		}
+	}
 }
 
 function global:wtc {
-    param(
-        [string] $dir
-    )
-    if ([string]::IsNullOrEmpty($dir)) {
-        $dir = (Get-Location).Path
-    }
-    wt -d $dir
+	param(
+		[string] $dir
+	)
+	if ([string]::IsNullOrEmpty($dir)) {
+		$dir = (Get-Location).Path
+	}
+	wt -d $dir
 }

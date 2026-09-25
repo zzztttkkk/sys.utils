@@ -1,12 +1,12 @@
 Import-Module "$PSScriptRoot/config.psm1"
 
-$Global:ProfileConfig.load()	
+$Global:ProfileConfig.load()
 
 $OutputEncoding = [System.Console]::OutputEncoding = [System.Console]::InputEncoding = [System.Text.Encoding]::UTF8
 $PSDefaultParameterValues['*:Encoding'] = 'utf8'
 
 if (-not (Get-Command cls -ErrorAction Ignore)) {
-    Set-Alias cls Clear-Host
+	Set-Alias cls Clear-Host
 }
 
 . $PSScriptRoot/crossutils.ps1
@@ -21,84 +21,85 @@ if (-not (Get-Command cls -ErrorAction Ignore)) {
 . $PSScriptRoot/s3.ps1
 . $PSScriptRoot/aes.ps1
 . $PSScriptRoot/http.ps1
-	
+. $PSScriptRoot/pn.ps1
+
 if ($IsWindows) {
-    . $PSScriptRoot/windows.ps1
+	. $PSScriptRoot/windows.ps1
 }
 if ($IsLinux) {
-    . $PSScriptRoot/linux.ps1
+	. $PSScriptRoot/linux.ps1
 }
 if ($IsMacOS) {
-    . $PSScriptRoot/mac.ps1
+	. $PSScriptRoot/mac.ps1
 }
 if (Get-Command docker -ErrorAction SilentlyContinue) {
-    . $PSScriptRoot/docker.ps1
+	. $PSScriptRoot/docker.ps1
 }
 
 function script:enablereadline {
-    if (-not $Global:ProfileConfig.feats.readline) { return; }
-    if ($null -eq $Host.UI.RawUI) { return; }
-    if ($Host.UI.RawUI.WindowSize.Width -lt 50) { return; }
-    if ($Host.UI.RawUI.WindowSize.Height -lt 5) { return; }
+	if (-not $Global:ProfileConfig.feats.readline) { return; }
+	if ($null -eq $Host.UI.RawUI) { return; }
+	if ($Host.UI.RawUI.WindowSize.Width -lt 50) { return; }
+	if ($Host.UI.RawUI.WindowSize.Height -lt 5) { return; }
 
-    ensure "PSReadLine"
-    ensure "CompletionPredictor"
+	ensure "PSReadLine"
+	ensure "CompletionPredictor"
 
-    Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
-    Set-PSReadLineOption -PredictionSource HistoryAndPlugin
-    Set-PSReadLineOption -PredictionViewStyle ListView
-    Remove-PSReadLineKeyHandler -Key F2
-    Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
+	Set-PSReadLineOption -Colors @{ "Selection" = "`e[7m" }
+	Set-PSReadLineOption -PredictionSource HistoryAndPlugin
+	Set-PSReadLineOption -PredictionViewStyle ListView
+	Remove-PSReadLineKeyHandler -Key F2
+	Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
 }
 
 function script:ensure {
-    param (
-        [String] $name
-    )
-    $info = Get-PSResource -Name $name -ErrorAction SilentlyContinue
-    if ( $null -eq $info ) {
-        Install-PSResource -Name $name -Scope CurrentUser
-    }
-    Import-Module -Name $name
+	param (
+		[String] $name
+	)
+	$info = Get-PSResource -Name $name -ErrorAction SilentlyContinue
+	if ( $null -eq $info ) {
+		Install-PSResource -Name $name -Scope CurrentUser
+	}
+	Import-Module -Name $name
 }
 
 enablereadline
 
 function script:reloadrc {
-    $rc = "$HOME/.pwshrc.ps1"
-    if (Test-Path -Path $rc) {
-        . $rc
-    }
+	$rc = "$HOME/.pwshrc.ps1"
+	if (Test-Path -Path $rc) {
+		. $rc
+	}
 }
 
 function script:ep {
-    param (
-        [switch] $code = $false
-    )
-    $ep = $global:ProfileConfig.editor
-    if ($code) {
-        $ep = "code"
-    }
-    return $ep
+	param (
+		[switch] $code = $false
+	)
+	$ep = $global:ProfileConfig.editor
+	if ($code) {
+		$ep = "code"
+	}
+	return $ep
 }
 
 function editrc {
-    param (
-        [switch] $code = $false
-    )
-    $epv = @{ code = $code }
-    & $(ep @epv) "$HOME/.pwshrc.ps1"
-    if ($code) { return; }
+	param (
+		[switch] $code = $false
+	)
+	$epv = @{ code = $code }
+	& $(ep @epv) "$HOME/.pwshrc.ps1"
+	if ($code) { return; }
 }
 
 function editmycfg {
-    param (
-        [switch] $code = $false
-    )
-    $epv = @{ code = $code }
-    & $(ep @epv) "$HOME/.pwsh.profile.json"
-    if ($code) { return; }
-    $Global:ProfileConfig.load();
+	param (
+		[switch] $code = $false
+	)
+	$epv = @{ code = $code }
+	& $(ep @epv) "$HOME/.pwsh.profile.json"
+	if ($code) { return; }
+	$Global:ProfileConfig.load();
 }
 
 reloadrc

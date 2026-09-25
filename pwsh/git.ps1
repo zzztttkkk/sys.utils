@@ -1,344 +1,344 @@
 Import-Module "$PSScriptRoot/config.psm1"
 
 function gitswitchauth() {
-    $auths = $Global:ProfileConfig.git.auths;
-    if ($auths.Count -gt 0) {
-        $name = gum filter $auths.Keys
-        if ([string]::IsNullOrEmpty($name)) {
-            Write-Warning "no name selected"
-            return
-        }
-        $email = $auths[$name]
-        if ([string]::IsNullOrEmpty($email)) {
-            Write-Warning "no email selected"
-            return
-        }
+	$auths = $Global:ProfileConfig.git.auths;
+	if ($auths.Count -gt 0) {
+		$name = gum filter $auths.Keys
+		if ([string]::IsNullOrEmpty($name)) {
+			Write-Warning "no name selected"
+			return
+		}
+		$email = $auths[$name]
+		if ([string]::IsNullOrEmpty($email)) {
+			Write-Warning "no email selected"
+			return
+		}
 
-        git config user.name $name
-        git config user.email $email
-    }
-    else {
-        Write-Warning "no auth info found"
-    }
-    if (confirm "Use proxy?") {
-        git config http.proxy $Global:ProfileConfig.proxy
-        git config https.proxy $Global:ProfileConfig.proxy    
-    }
-    else {
-        git config --unset http.proxy
-        git config --unset https.proxy
-    }
+		git config user.name $name
+		git config user.email $email
+	}
+	else {
+		Write-Warning "no auth info found"
+	}
+	if (confirm "Use proxy?") {
+		git config http.proxy $Global:ProfileConfig.proxy
+		git config https.proxy $Global:ProfileConfig.proxy
+	}
+	else {
+		git config --unset http.proxy
+		git config --unset https.proxy
+	}
 }
 
 function gs() {
-    git status
-    git submodule foreach --recursive "git status"
+	git status
+	git submodule foreach --recursive "git status"
 }
 
 function script:Clear-ConsoleInput {
-    while ([Console]::KeyAvailable) {
-        [Console]::ReadKey($true) | Out-Null
-    }
+	while ([Console]::KeyAvailable) {
+		[Console]::ReadKey($true) | Out-Null
+	}
 }
 
 function cz() {
-    param (
-        [switch]$offline = $false
-    )
+	param (
+		[switch]$offline = $false
+	)
 
-    function timediff {
-        param (
-            $NtpServer,
-            $TotalTimeoutSec = 5
-        )
+	function timediff {
+		param (
+			$NtpServer,
+			$TotalTimeoutSec = 5
+		)
 
-        if ([string]::IsNullOrWhiteSpace($NtpServer)) {
-            $pool = @('time.windows.com', 'time.apple.com', 'pool.ntp.org')
-            $candidates = $pool | Get-Random -Count $pool.Count
-        }
-        else {
-            $candidates = @($NtpServer)
-        }
+		if ([string]::IsNullOrWhiteSpace($NtpServer)) {
+			$pool = @('time.windows.com', 'time.apple.com', 'pool.ntp.org')
+			$candidates = $pool | Get-Random -Count $pool.Count
+		}
+		else {
+			$candidates = @($NtpServer)
+		}
 
-        $ntpJob = {
-            param([string[]]$servers)
-            foreach ($server in $servers) {
-                $udpClient = $null
-                try {
-                    $ntpData = New-Object byte[] 48
-                    $ntpData[0] = 0x1B
+		$ntpJob = {
+			param([string[]]$servers)
+			foreach ($server in $servers) {
+				$udpClient = $null
+				try {
+					$ntpData = New-Object byte[] 48
+					$ntpData[0] = 0x1B
 
-                    $udpClient = New-Object System.Net.Sockets.UdpClient($server, 123)
-                    $udpClient.Client.ReceiveTimeout = 2000
+					$udpClient = New-Object System.Net.Sockets.UdpClient($server, 123)
+					$udpClient.Client.ReceiveTimeout = 2000
 
-                    $startTime = Get-Date
-                    $null = $udpClient.Send($ntpData, $ntpData.Length)
+					$startTime = Get-Date
+					$null = $udpClient.Send($ntpData, $ntpData.Length)
 
-                    $remoteIpEndPoint = New-Object System.Net.IPEndPoint([System.Net.IPAddress]::Any, 0)
-                    $receiveData = $udpClient.Receive([ref]$remoteIpEndPoint)
-                    $endTime = Get-Date
+					$remoteIpEndPoint = New-Object System.Net.IPEndPoint([System.Net.IPAddress]::Any, 0)
+					$receiveData = $udpClient.Receive([ref]$remoteIpEndPoint)
+					$endTime = Get-Date
 
-                    $intPart = [bitconverter]::ToUInt32($receiveData[43..40], 0)
-                    $ntpDateTime = (New-Object DateTime(1900, 1, 1, 0, 0, 0, [DateTimeKind]::Utc)).AddSeconds($intPart)
+					$intPart = [bitconverter]::ToUInt32($receiveData[43..40], 0)
+					$ntpDateTime = (New-Object DateTime(1900, 1, 1, 0, 0, 0, [DateTimeKind]::Utc)).AddSeconds($intPart)
 
-                    $localTimeUtc = $startTime.ToUniversalTime().AddTicks(($endTime.Ticks - $startTime.Ticks) / 2)
-                    $diff = ($ntpDateTime - $localTimeUtc).TotalSeconds
+					$localTimeUtc = $startTime.ToUniversalTime().AddTicks(($endTime.Ticks - $startTime.Ticks) / 2)
+					$diff = ($ntpDateTime - $localTimeUtc).TotalSeconds
 
-                    return [math]::Abs([math]::Round($diff, 4))
-                }
-                catch {
-                    Write-Warning "NTP fetch failed ($server): $($_.Exception.Message)"
-                }
-                finally {
-                    if ($null -ne $udpClient) { $udpClient.Close() }
-                }
-            }
-            return 10000
-        }
+					return [math]::Abs([math]::Round($diff, 4))
+				}
+				catch {
+					Write-Warning "NTP fetch failed ($server): $($_.Exception.Message)"
+				}
+				finally {
+					if ($null -ne $udpClient) { $udpClient.Close() }
+				}
+			}
+			return 10000
+		}
 
-        $job = Start-Job -ScriptBlock $ntpJob -ArgumentList (, $candidates)
-        try {
-            Wait-Job -Job $job -Timeout $TotalTimeoutSec | Out-Null
-            if ($job.State -eq 'Completed') {
-                $tdiff = Receive-Job -Job $job
-            }
-            else {
-                Write-Warning "NTP fetch timed out after ${TotalTimeoutSec}s (offline?)"
-                $tdiff = 10000
-            }
-        }
-        finally {
-            Remove-Job -Job $job -Force
-        }
+		$job = Start-Job -ScriptBlock $ntpJob -ArgumentList (, $candidates)
+		try {
+			Wait-Job -Job $job -Timeout $TotalTimeoutSec | Out-Null
+			if ($job.State -eq 'Completed') {
+				$tdiff = Receive-Job -Job $job
+			}
+			else {
+				Write-Warning "NTP fetch timed out after ${TotalTimeoutSec}s (offline?)"
+				$tdiff = 10000
+			}
+		}
+		finally {
+			Remove-Job -Job $job -Force
+		}
 
-        if ($null -eq $tdiff) { $tdiff = 0 }
-        return [double]$tdiff
-    }
+		if ($null -eq $tdiff) { $tdiff = 0 }
+		return [double]$tdiff
+	}
 
-    if (-not $offline) {
-        $tdiff = timediff
-        if ($tdiff -ge 60) {
-            Write-Output "System Time Diff With Intnet Or Offline"
-            return;
-        }
-    }
+	if (-not $offline) {
+		$tdiff = timediff
+		if ($tdiff -ge 60) {
+			Write-Output "System Time Diff With Intnet Or Offline"
+			return;
+		}
+	}
 
-    [string[]] $allctypes = @(
-        "🚧 WIP", "♿ Aiiy", "✨ Feat", "🎨 Style",
-        "🐛 Bugfix", "🛠 Refactor",
-        "📚 Doc", "🧪 Test", "🎉 Release", "🌐 I18n",
-        "⚡️ Perf", "🗑 Reverts", "🧹 Chore", "⚙️ Ci"
-    )
-    $ctype = gum filter $allctypes
-    if ($null -eq $ctype) {
-        return 
-    }
+	[string[]] $allctypes = @(
+		"🚧 WIP", "♿ Aiiy", "✨ Feat", "🎨 Style",
+		"🐛 Bugfix", "🛠 Refactor",
+		"📚 Doc", "🧪 Test", "🎉 Release", "🌐 I18n",
+		"⚡️ Perf", "🗑 Reverts", "🧹 Chore", "⚙️ Ci"
+	)
+	$ctype = gum filter $allctypes
+	if ($null -eq $ctype) {
+		return
+	}
 
-    Clear-ConsoleInput
+	Clear-ConsoleInput
 
-    $scope = read-host -Prompt "Scope"
-    $scope = $scope.trim()
+	$scope = read-host -Prompt "Scope"
+	$scope = $scope.trim()
 
-    $summary = ""
-    do {
-        $summary = read-host -Prompt "Summary"
-        $summary = $summary.trim()
-    } while ( $summary.Length -lt 2 )
+	$summary = ""
+	do {
+		$summary = read-host -Prompt "Summary"
+		$summary = $summary.trim()
+	} while ( $summary.Length -lt 2 )
 
-    $_cl = 0;
-    $content = "";
-    $_el = 0;
-    while (1) {
-        if ($_cl -eq 0) {
-            $line = read-host -Prompt "Content"
-        }
-        else {
-            $line = read-host
-        }
-        if ($line.trim() -eq "") {
-            $_el = $_el + 1;
-            if ($_el -eq 2) {
-                break;
-            }
-        }
-        else {
-            $_el = 0;
-        }
-        $content = $content + $line + "`n"
-        $_cl = $_cl + 1
-    }
+	$_cl = 0;
+	$content = "";
+	$_el = 0;
+	while (1) {
+		if ($_cl -eq 0) {
+			$line = read-host -Prompt "Content"
+		}
+		else {
+			$line = read-host
+		}
+		if ($line.trim() -eq "") {
+			$_el = $_el + 1;
+			if ($_el -eq 2) {
+				break;
+			}
+		}
+		else {
+			$_el = 0;
+		}
+		$content = $content + $line + "`n"
+		$_cl = $_cl + 1
+	}
 
-    $content = $content.trim();
+	$content = $content.trim();
 
-    git add -A
-    if (!$scope) {
-        $scope = "/"
-    }
-    $title = "[" + $ctype + "] (" + $scope + "): $summary"
-    if ($content -eq "") {
-        git commit -m $title
-    }
-    else {
-        git commit -m $title -m $content
-    }
+	git add -A
+	if (!$scope) {
+		$scope = "/"
+	}
+	$title = "[" + $ctype + "] (" + $scope + "): $summary"
+	if ($content -eq "") {
+		git commit -m $title
+	}
+	else {
+		git commit -m $title -m $content
+	}
 }
 
 function script:difflines {
-    $out = git diff HEAD --numstat 2>$null
-    if ($LASTEXITCODE -ne 0) {
-        throw "git diff failed"
-    }
-    if ([string]::IsNullOrEmpty($out)) {
-        return 0
-    }
-    $out = $out.trim()
-    if ([string]::IsNullOrEmpty($out)) {
-        return 0
-    }
-    $tlc = 0
-    $out -split "`n" | ForEach-Object {
-        if ($_ -match '^(\d+)\s+(\d+)\s+') {
-            $tlc += [int]$Matches[1] + [int]$Matches[2]
-        }
-    }
-    return $tlc
+	$out = git diff HEAD --numstat 2>$null
+	if ($LASTEXITCODE -ne 0) {
+		throw "git diff failed"
+	}
+	if ([string]::IsNullOrEmpty($out)) {
+		return 0
+	}
+	$out = $out.trim()
+	if ([string]::IsNullOrEmpty($out)) {
+		return 0
+	}
+	$tlc = 0
+	$out -split "`n" | ForEach-Object {
+		if ($_ -match '^(\d+)\s+(\d+)\s+') {
+			$tlc += [int]$Matches[1] + [int]$Matches[2]
+		}
+	}
+	return $tlc
 }
 
 function grh() {
-    param (
-        [switch]$dryrun,
-        [alias("l")]
-        [int]$threshold = 50
-    )
-    $tlc = difflines
-    if ($tlc -ge $threshold) {
-        Write-Host "⚠️  changed lines >= $threshold" -ForegroundColor Yellow
-        $c = Read-Host "ensure continue ? (n/y)"
-        if ($c -ne "y") { return }
-    }
-    if ($dryrun) {
-        Write-Host "dryrun, no action taken. lines: $tlc" -ForegroundColor Green
-        return;
-    }
-    git reset --hard
+	param (
+		[switch]$dryrun,
+		[alias("l")]
+		[int]$threshold = 50
+	)
+	$tlc = difflines
+	if ($tlc -ge $threshold) {
+		Write-Host "⚠️  changed lines >= $threshold" -ForegroundColor Yellow
+		$c = Read-Host "ensure continue ? (n/y)"
+		if ($c -ne "y") { return }
+	}
+	if ($dryrun) {
+		Write-Host "dryrun, no action taken. lines: $tlc" -ForegroundColor Green
+		return;
+	}
+	git reset --hard
 }
 
-function pulla() {    
-    $branch = &git rev-parse --abbrev-ref HEAD
-    git pull origin $branch --allow-unrelated-histories
-    git submodule foreach --recursive "pwsh -Command pulla"
+function pulla() {
+	$branch = &git rev-parse --abbrev-ref HEAD
+	git pull origin $branch --allow-unrelated-histories
+	git submodule foreach --recursive "pwsh -Command pulla"
 }
 
-function fa() {    
-    git fetch --all
-    git submodule sync --recursive
-    git fetch --all --prune --recurse-submodules
+function fa() {
+	git fetch --all
+	git submodule sync --recursive
+	git fetch --all --prune --recurse-submodules
 }
 
 function pushc() {
-    $branch = &git rev-parse --abbrev-ref HEAD
-    git push origin $branch
-    glch
+	$branch = &git rev-parse --abbrev-ref HEAD
+	git push origin $branch
+	glch
 }
 
 function mergefrom() {
-    param (
-        [string]$target
-    )
-    if ($target -eq "") {
-        return
-    }
+	param (
+		[string]$target
+	)
+	if ($target -eq "") {
+		return
+	}
 
-    $branch = &git rev-parse --abbrev-ref HEAD
-    if ($target -eq $branch) {
-        Write-Host "----------------same branch----------------" -ForegroundColor Yellow
-        return
-    }
+	$branch = &git rev-parse --abbrev-ref HEAD
+	if ($target -eq $branch) {
+		Write-Host "----------------same branch----------------" -ForegroundColor Yellow
+		return
+	}
 
-    if (!(worktreeclean)) {
-        Write-Output "Working tree is not clean, please commit or stash your changes."
-        return
-    }
+	if (!(worktreeclean)) {
+		Write-Output "Working tree is not clean, please commit or stash your changes."
+		return
+	}
 
-    if (confirm ">>>>>>>>>>>>>>>>> Merge from $target to $branch ? <<<<<<<<<<<<<<<<<<<<") {
-        git fetch origin $target
-        git merge origin/$target 
-    }
+	if (confirm ">>>>>>>>>>>>>>>>> Merge from $target to $branch ? <<<<<<<<<<<<<<<<<<<<") {
+		git fetch origin $target
+		git merge origin/$target
+	}
 }
 
 # git last commit hash
 function glch() {
-    param (
-        [switch] $long
-    )
-    if ( $long ) {
-        git rev-parse HEAD
-    }
-    else {
-        git rev-parse --short HEAD
-    }
+	param (
+		[switch] $long
+	)
+	if ( $long ) {
+		git rev-parse HEAD
+	}
+	else {
+		git rev-parse --short HEAD
+	}
 }
 
 function script:worktreeclean() {
-    $status = git status --porcelain
-    return [string]::IsNullOrWhiteSpace($status)
+	$status = git status --porcelain
+	return [string]::IsNullOrWhiteSpace($status)
 }
 
 function mktag() {
-    param (
-        [string] $tag
-    )
+	param (
+		[string] $tag
+	)
 
-    if ([string]::IsNullOrWhiteSpace($tag)) {
-        $tag = (gum input --placeholder="tag name").Trim()
-    }
-    if ([string]::IsNullOrWhiteSpace($tag)) {
-        Write-Output "empty tag name, canceled"
-        return
-    }
-	
-    if ( !(worktreeclean) ) {
-        gum confirm "Working tree is not clean, should make a commit?" --default="no" && cz
-    }
-    if ( !(worktreeclean) ) {
-        Write-Output "working tree is not clean, canceled"
-        return
-    }
-	
-    $summary = gum input --placeholder="tag summary"
-    $summary = $summary.trim()
-    if ([string]::IsNullOrWhiteSpace($summary)) {
-        Write-Output "empty tag summary, canceled"
-        return
-    }
+	if ([string]::IsNullOrWhiteSpace($tag)) {
+		$tag = (gum input --placeholder="tag name").Trim()
+	}
+	if ([string]::IsNullOrWhiteSpace($tag)) {
+		Write-Output "empty tag name, canceled"
+		return
+	}
 
-    git tag -a $tag -m $summary
-    git push origin $tag
+	if ( !(worktreeclean) ) {
+		gum confirm "Working tree is not clean, should make a commit?" --default="no" && cz
+	}
+	if ( !(worktreeclean) ) {
+		Write-Output "working tree is not clean, canceled"
+		return
+	}
+
+	$summary = gum input --placeholder="tag summary"
+	$summary = $summary.trim()
+	if ([string]::IsNullOrWhiteSpace($summary)) {
+		Write-Output "empty tag summary, canceled"
+		return
+	}
+
+	git tag -a $tag -m $summary
+	git push origin $tag
 }
 
 function deltag() {
-    param (
-        [string] $tag
-    )
-    if ($tag -eq "") {
-        $tag = git tag -l | gum filter
-    }
-    if ([string]::IsNullOrWhiteSpace($tag)) {
-        Write-Output "empty tag name, canceled"
-        return
-    }
-    git tag -d $tag
-    git push origin --delete $tag
+	param (
+		[string] $tag
+	)
+	if ($tag -eq "") {
+		$tag = git tag -l | gum filter
+	}
+	if ([string]::IsNullOrWhiteSpace($tag)) {
+		Write-Output "empty tag name, canceled"
+		return
+	}
+	git tag -d $tag
+	git push origin --delete $tag
 }
 
 function gitpack() {
-    param (
-        [alias("o")]
-        [string] $out = ""
-    )
-    if ([string]::IsNullOrWhiteSpace($out)) {
-        $name = Split-Path -Path $PWD -Leaf
-        $out = "$HOME/Downloads/$name.zip"
-    }
-    git archive --format=zip -o $out HEAD
+	param (
+		[alias("o")]
+		[string] $out = ""
+	)
+	if ([string]::IsNullOrWhiteSpace($out)) {
+		$name = Split-Path -Path $PWD -Leaf
+		$out = "$HOME/Downloads/$name.zip"
+	}
+	git archive --format=zip -o $out HEAD
 }

@@ -1,242 +1,242 @@
 function global:useproxy() {
-    $proxy = $Global:ProfileConfig.proxy
-    $env:http_proxy = $proxy
-    $env:https_proxy = $proxy
-    $env:HTTP_PROXY = $proxy
-    $env:HTTPS_PROXY = $proxy
+	$proxy = $Global:ProfileConfig.proxy
+	$env:http_proxy = $proxy
+	$env:https_proxy = $proxy
+	$env:HTTP_PROXY = $proxy
+	$env:HTTPS_PROXY = $proxy
 }
 
 function global:unsetproxy() {
-    $env:http_proxy = $null
-    $env:https_proxy = $null
-    $env:HTTP_PROXY = $null
-    $env:HTTPS_PROXY = $null
+	$env:http_proxy = $null
+	$env:https_proxy = $null
+	$env:HTTP_PROXY = $null
+	$env:HTTPS_PROXY = $null
 }
 
 function global:loop() {
-    param (
-        [Parameter(Mandatory = $true)]
-        [scriptblock] $cmd,
-        [Int] $times = 1,
-        [Int] $sleep = 1
-    )
+	param (
+		[Parameter(Mandatory = $true)]
+		[scriptblock] $cmd,
+		[Int] $times = 1,
+		[Int] $sleep = 1
+	)
 
-    for ($i = 1; $i -le $times; $i++) {
-        & $cmd
-        if ($sleep -gt 0) {
-            Start-Sleep -Seconds $sleep
-        }
-    }
+	for ($i = 1; $i -le $times; $i++) {
+		& $cmd
+		if ($sleep -gt 0) {
+			Start-Sleep -Seconds $sleep
+		}
+	}
 }
 
 function global:urandom() {
-    param (
-        [Int] $length = 16
-    )
+	param (
+		[Int] $length = 16
+	)
 
-    $alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
-    $result = New-Object System.Text.StringBuilder
-    for ($i = 0; $i -lt $length; $i++) {
-        $index = [System.Security.Cryptography.RandomNumberGenerator]::GetInt32($alphabet.Length)
-        [void]$result.Append($alphabet[$index])
-    }
-    return $result.ToString()
+	$alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+	$result = New-Object System.Text.StringBuilder
+	for ($i = 0; $i -lt $length; $i++) {
+		$index = [System.Security.Cryptography.RandomNumberGenerator]::GetInt32($alphabet.Length)
+		[void]$result.Append($alphabet[$index])
+	}
+	return $result.ToString()
 }
 
 function global:uuid() {
-    param (
-        [switch] $random
-    )
-    if ($random) { return [guid]::NewGuid().ToString() }
-    return [guid]::CreateVersion7().ToString()
+	param (
+		[switch] $random
+	)
+	if ($random) { return [guid]::NewGuid().ToString() }
+	return [guid]::CreateVersion7().ToString()
 }
 
 function global:confirm() {
-    param (
-        [string] $msg = "Are you sure?",
-        [string] $default = "Yes"
-    )
-    gum confirm $msg --default=$default
-    if ($LASTEXITCODE -eq 0) {
-        return $true
-    }
-    return $false
+	param (
+		[string] $msg = "Are you sure?",
+		[string] $default = "Yes"
+	)
+	gum confirm $msg --default=$default
+	if ($LASTEXITCODE -eq 0) {
+		return $true
+	}
+	return $false
 }
 
 function global:fexp {
-    param (
-        [string]$target = ".",
-        [alias("q")]
-        [switch]$quick = $false,
-        [alias("t")]
-        [switch]$terminal = $false
-    )
-    if ($target -eq ".") {
-        if ($quick) {
-            $marks = $Global:ProfileConfig.fexp.marks
-            if ($null -eq $marks) {
-                Write-Host "empty marks" -ForegroundColor Yellow
-                return;
-            }
-            $key = gum filter $marks.Keys
-            if ([string]::IsNullOrEmpty($key)) { return; }
-            $target = $marks[$key];
-        }
-    }
-    if ([string]::IsNullOrEmpty($target)) { return; }
+	param (
+		[string]$target = ".",
+		[alias("q")]
+		[switch]$quick = $false,
+		[alias("t")]
+		[switch]$terminal = $false
+	)
+	if ($target -eq ".") {
+		if ($quick) {
+			$marks = $Global:ProfileConfig.fexp.marks
+			if ($null -eq $marks) {
+				Write-Host "empty marks" -ForegroundColor Yellow
+				return;
+			}
+			$key = gum filter $marks.Keys
+			if ([string]::IsNullOrEmpty($key)) { return; }
+			$target = $marks[$key];
+		}
+	}
+	if ([string]::IsNullOrEmpty($target)) { return; }
 
-    $target = $ExecutionContext.InvokeCommand.ExpandString($target)
-    $path = Resolve-Path $target
-    $exe = ""
-    if ($IsWindows) {
-        $exe = "explorer.exe"
-    }
-    if ($IsLinux) {
-        $exe = "xdg-open"
-    }
-    if ($IsMacOS) {
-        $exe = "open"
-    }
-    if ($terminal) {
-        if ([System.IO.File]::Exists($path)) {
-            $path = Split-Path $path -Parent
-        }
-        Set-Location $path
-        return
-    }
-    Start-Process $exe -ArgumentList $path
+	$target = $ExecutionContext.InvokeCommand.ExpandString($target)
+	$path = Resolve-Path $target
+	$exe = ""
+	if ($IsWindows) {
+		$exe = "explorer.exe"
+	}
+	if ($IsLinux) {
+		$exe = "xdg-open"
+	}
+	if ($IsMacOS) {
+		$exe = "open"
+	}
+	if ($terminal) {
+		if ([System.IO.File]::Exists($path)) {
+			$path = Split-Path $path -Parent
+		}
+		Set-Location $path
+		return
+	}
+	Start-Process $exe -ArgumentList $path
 }
 
 function global:z {
-    param (
-        [Alias("t")]
-        [string] $test = ".z.json",
+	param (
+		[Alias("t")]
+		[string] $test = ".z.json",
 
-        [Alias("g")]
-        [switch] $git,
-        [Alias("q")]
-        [switch] $quick
-    )
+		[Alias("g")]
+		[switch] $git,
+		[Alias("q")]
+		[switch] $quick
+	)
 
-    if ($git) {
-        $root = $(git rev-parse --show-toplevel 2>$null)
-        if ($LASTEXITCODE -ne 0) {
-            Write-Host "not inside a git repo" -ForegroundColor Yellow
-            return
-        }
-        Set-Location $root
-        return
-    }
+	if ($git) {
+		$root = $(git rev-parse --show-toplevel 2>$null)
+		if ($LASTEXITCODE -ne 0) {
+			Write-Host "not inside a git repo" -ForegroundColor Yellow
+			return
+		}
+		Set-Location $root
+		return
+	}
 
-    if ($quick) {
-        $quick = $test -eq ".z.json"
-    }
+	if ($quick) {
+		$quick = $test -eq ".z.json"
+	}
 
-    [string]$current = (Get-Location).Path
-    while (1) {
-        if (Test-Path -Path "$current/$test") {
-            if ($quick) {
-                $fc = Get-Content "$current/$test" -Raw -Encoding utf8 | ConvertFrom-Json -ErrorAction Stop
-                [hashtable]$marks = $fc.marks
-                if (($null -eq $marks) -or ($marks.Count -lt 1)) {
-                    Write-Host "empty marks" -ForegroundColor Yellow
-                    return;
-                }
-                [string]$key = gum filter $marks.Keys
-                if ([string]::IsNullOrEmpty($key)) { return; }
+	[string]$current = (Get-Location).Path
+	while (1) {
+		if (Test-Path -Path "$current/$test") {
+			if ($quick) {
+				$fc = Get-Content "$current/$test" -Raw -Encoding utf8 | ConvertFrom-Json -ErrorAction Stop
+				[hashtable]$marks = $fc.marks
+				if (($null -eq $marks) -or ($marks.Count -lt 1)) {
+					Write-Host "empty marks" -ForegroundColor Yellow
+					return;
+				}
+				[string]$key = gum filter $marks.Keys
+				if ([string]::IsNullOrEmpty($key)) { return; }
 
-                [string]$val = $marks[$key];
-                if ($val.StartsWith("./")) {
-                    $val = "$current$($val.Substring(1))"
-                }
-                Set-Location $val
-                return;
-            }
-            Set-Location $current
-            return
-        }
-        $tmp = $current
-        $current = Split-Path -Path $current -Parent -ErrorAction SilentlyContinue
-        if (($tmp -eq $current) -or ([string]::IsNullOrEmpty($current))) {
-            break
-        }
-    }
+				[string]$val = $marks[$key];
+				if ($val.StartsWith("./")) {
+					$val = "$current$($val.Substring(1))"
+				}
+				Set-Location $val
+				return;
+			}
+			Set-Location $current
+			return
+		}
+		$tmp = $current
+		$current = Split-Path -Path $current -Parent -ErrorAction SilentlyContinue
+		if (($tmp -eq $current) -or ([string]::IsNullOrEmpty($current))) {
+			break
+		}
+	}
 
-    Write-Host "jump failed" -ForegroundColor Yellow
-    return
+	Write-Host "jump failed" -ForegroundColor Yellow
+	return
 }
 
 # filter kill
 function global:fq() {
-    param (
-        [String[]] $vals,
-        [String] $op = "eq"
-    )
-    if (($null -eq $vals) -or ($vals.Length -eq 0)) { return }
-    
-    $procs = Get-Process | Where-Object -FilterScript {
-        $pn = $($_.ProcessName)
-        foreach ($val in $vals) {
-            switch ($op) {
-                "eq" { 
-                    if ($pn -eq $val) {
-                        return $true
-                    }
-                }
-                "like" {
-                    if ($pn -like $val) {
-                        return $true                        
-                    }
-                }
-                "match" {
-                    if ($pn -match $val) {
-                        return $true
-                    }
-                }
-                Default {
-                    return $false
-                }
-            }
-        }
-        return $false
-    }
-    foreach ( $proc in $procs ) {
-        Write-Host "kill process: $($proc.Name) $($proc.Id)"
-        Stop-Process -id $proc.Id -ErrorAction SilentlyContinue
-    }
+	param (
+		[String[]] $vals,
+		[String] $op = "eq"
+	)
+	if (($null -eq $vals) -or ($vals.Length -eq 0)) { return }
+
+	$procs = Get-Process | Where-Object -FilterScript {
+		$pn = $($_.ProcessName)
+		foreach ($val in $vals) {
+			switch ($op) {
+				"eq" {
+					if ($pn -eq $val) {
+						return $true
+					}
+				}
+				"like" {
+					if ($pn -like $val) {
+						return $true
+					}
+				}
+				"match" {
+					if ($pn -match $val) {
+						return $true
+					}
+				}
+				Default {
+					return $false
+				}
+			}
+		}
+		return $false
+	}
+	foreach ( $proc in $procs ) {
+		Write-Host "kill process: $($proc.Name) $($proc.Id)"
+		Stop-Process -id $proc.Id -ErrorAction SilentlyContinue
+	}
 }
 
 function global:iselevated {
-    if ($IsWindows) {
-        return [Security.Principal.WindowsPrincipal]::new(
-            [Security.Principal.WindowsIdentity]::GetCurrent()
-        ).IsInRole(
-            [Security.Principal.WindowsBuiltInRole]::Administrator
-        );
-    }
-    return (id -u) -eq 0
+	if ($IsWindows) {
+		return [Security.Principal.WindowsPrincipal]::new(
+			[Security.Principal.WindowsIdentity]::GetCurrent()
+		).IsInRole(
+		[Security.Principal.WindowsBuiltInRole]::Administrator
+	);
+}
+return (id -u) -eq 0
 }
 
 function global:edithosts {
-    $editor = $global:ProfileConfig.editor
-    if ($IsWindows) {
-        $cmd = "$editor $env:windir\System32\drivers\etc\hosts" 
-        sudo pwsh -c $cmd
-        return
-    }
-    & sudo $editor /etc/hosts
+	$editor = $global:ProfileConfig.editor
+	if ($IsWindows) {
+		$cmd = "$editor $env:windir\System32\drivers\etc\hosts"
+		sudo pwsh -c $cmd
+		return
+	}
+	& sudo $editor /etc/hosts
 }
 
 function global:filehashs {
-    param (
-        [string] $wd = ".",
-        [string] $match = "*.*"
-    )
+	param (
+		[string] $wd = ".",
+		[string] $match = "*.*"
+	)
 
-    $files = Get-ChildItem -File -Path $wd -Filter $match | Select-Object -ExpandProperty FullName
+	$files = Get-ChildItem -File -Path $wd -Filter $match | Select-Object -ExpandProperty FullName
 
-    $files | ForEach-Object {
-        $hash = Get-FileHash -Path $_ -Algorithm SHA256
-        Write-Host "$_`:`:$($hash.Hash)" -ForegroundColor Green
-    }
+	$files | ForEach-Object {
+		$hash = Get-FileHash -Path $_ -Algorithm SHA256
+		Write-Host "$_`:`:$($hash.Hash)" -ForegroundColor Green
+	}
 }
