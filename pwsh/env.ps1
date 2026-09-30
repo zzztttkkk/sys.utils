@@ -1,6 +1,7 @@
 function Read-Env {
 	param (
-		[string]$path = ".env"
+		[string] $path = ".env",
+		[switch] $verbose = $false
 	)
 
 	if (-not (Test-Path $path)) {
@@ -27,7 +28,9 @@ function Read-Env {
 		}
 
 		[Environment]::SetEnvironmentVariable($name, $value)
-		Write-Verbose "Set env $name = $value"
+		if ($verbose) {
+			Write-Verbose "Set env $name = $value"
+		}
 	}
 }
 
