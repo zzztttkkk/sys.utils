@@ -64,7 +64,7 @@ function hvrun {
 		[switch] $connect
 	)
 
-	sudo pwsh -NoProfile -c {
+	sudo --inline pwsh -nop -c {
 		$c = $args[0]["c"]
 
 		$items = @(Get-VM | Select-Object -ExpandProperty Name)
@@ -113,10 +113,10 @@ function cclr() {
 	uv cache clean
 
 	# fnm
-	Write-Output ">>>>>>>>>>>> fnm <<<<<<<<<<<<<<<"
 	& {
 		$c = $env:FNM_MULTISHELL_PATH
 		if (Test-Path $c) {
+			Write-Output ">>>>>>>>>>>> fnm <<<<<<<<<<<<<<<"
 			$p = Split-Path -Path $c -Parent
 			Get-ChildItem -Path $p -Directory | Remove-Item -Recurse -Force
 		}
@@ -131,4 +131,19 @@ function global:wtc {
 		$dir = (Get-Location).Path
 	}
 	wt -d $dir
+}
+
+function global:dfe {
+	param(
+		[string[]] $dirs = @(".")
+	)
+	
+	$fps = foreach ($d in $dirs) {
+		$ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($d)
+	}
+	
+	sudo --inline pwsh -nop -c {
+		$fps = $args[0]
+		Add-MpPreference -ExclusionPath @($fps)
+	} -args $fps
 }
