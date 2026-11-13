@@ -136,7 +136,7 @@ function global:z {
 	while (1) {
 		if (Test-Path -Path "$current/$test") {
 			if ($quick) {
-				$fc = Get-Content "$current/$test" -Raw -Encoding utf8 | ConvertFrom-Json -ErrorAction Stop
+				$fc = Get-Content "$current/$test" -Raw -Encoding utf8 | ConvertFrom-Json -ErrorAction Stop -AsHashtable
 				[hashtable]$marks = $fc.marks
 				if (($null -eq $marks) -or ($marks.Count -lt 1)) {
 					Write-Host "empty marks" -ForegroundColor Yellow
@@ -211,10 +211,10 @@ function global:iselevated {
 		return [Security.Principal.WindowsPrincipal]::new(
 			[Security.Principal.WindowsIdentity]::GetCurrent()
 		).IsInRole(
-		[Security.Principal.WindowsBuiltInRole]::Administrator
-	);
-}
-return (id -u) -eq 0
+			[Security.Principal.WindowsBuiltInRole]::Administrator
+		);
+	}
+	return (id -u) -eq 0
 }
 
 function global:edithosts {

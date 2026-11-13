@@ -53,8 +53,12 @@ function cz() {
 		)
 
 		if ([string]::IsNullOrWhiteSpace($NtpServer)) {
-			$pool = @('time.windows.com', 'time.apple.com', 'pool.ntp.org')
-			$candidates = $pool | Get-Random -Count $pool.Count
+			$pool = @(
+				'time.windows.com', 'time-macos.apple.com', 'pool.ntp.org',
+				'ntp.ntsc.ac.cn', 'ntp.aliyun.com', 'ntp.tencent.com',
+				'ntp.jdcloud.com', 'cn.pool.ntp.org', 'time.cloudflare.com'
+			)
+			$candidates = $pool | Get-Random -Count 2
 		}
 		else {
 			$candidates = @($NtpServer)
@@ -87,7 +91,6 @@ function cz() {
 					return [math]::Abs([math]::Round($diff, 4))
 				}
 				catch {
-					Write-Warning "NTP fetch failed ($server): $($_.Exception.Message)"
 				}
 				finally {
 					if ($null -ne $udpClient) { $udpClient.Close() }
@@ -103,7 +106,7 @@ function cz() {
 				$tdiff = Receive-Job -Job $job
 			}
 			else {
-				Write-Warning "NTP fetch timed out after ${TotalTimeoutSec}s (offline?)"
+				Write-Warning "NTP fetch timed out after ${TotalTimeoutSec}s (offline?); servers $candidates"
 				$tdiff = 10000
 			}
 		}
@@ -329,16 +332,4 @@ function deltag() {
 	}
 	git tag -d $tag
 	git push origin --delete $tag
-}
-
-function gitpack() {
-	param (
-		[alias("o")]
-		[string] $out = ""
-	)
-	if ([string]::IsNullOrWhiteSpace($out)) {
-		$name = Split-Path -Path $PWD -Leaf
-		$out = "$HOME/Downloads/$name.zip"
-	}
-	git archive --format=zip -o $out HEAD
 }
