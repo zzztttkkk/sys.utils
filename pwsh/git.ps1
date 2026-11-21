@@ -54,9 +54,10 @@ function cz() {
 
 		if ([string]::IsNullOrWhiteSpace($NtpServer)) {
 			$pool = @(
-				'time.windows.com', 'time-macos.apple.com', 'pool.ntp.org',
-				'ntp.ntsc.ac.cn', 'ntp.aliyun.com', 'ntp.tencent.com',
-				'ntp.jdcloud.com', 'cn.pool.ntp.org', 'time.cloudflare.com'
+				'time.windows.com', 'time-macos.apple.com',
+				'ntp.ntsc.ac.cn', 'ntp.aliyun.com',
+				'ntp.tencent.com',
+				'cn.pool.ntp.org', 'time.cloudflare.com'
 			)
 			$candidates = $pool | Get-Random -Count 2
 		}
@@ -106,7 +107,6 @@ function cz() {
 				$tdiff = Receive-Job -Job $job
 			}
 			else {
-				Write-Warning "NTP fetch timed out after ${TotalTimeoutSec}s (offline?); servers $candidates"
 				$tdiff = 10000
 			}
 		}
